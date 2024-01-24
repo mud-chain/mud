@@ -26,8 +26,8 @@ func (suite *ParamsTestSuite) TestParamsValidate() {
 
 	validInflationDistribution := InflationDistribution{
 		StakingRewards:  sdk.NewDecWithPrec(533334, 6),
-		UsageIncentives: sdk.NewDecWithPrec(333333, 6),
-		CommunityPool:   sdk.NewDecWithPrec(133333, 6),
+		UsageIncentives: sdk.ZeroDec(),
+		CommunityPool:   sdk.NewDecWithPrec(466666, 6),
 	}
 
 	testCases := []struct {

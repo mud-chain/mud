@@ -1,16 +1,16 @@
 package keeper_test
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"time"
 
-	"github.com/evmos/evmos/v12/x/inflation/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	//nolint:revive // dot imports are fine for Ginkgo
 	. "github.com/onsi/ginkgo/v2"
+	//nolint:revive // dot imports are fine for Ginkgo
 	. "github.com/onsi/gomega"
 
 	epochstypes "github.com/evmos/evmos/v12/x/epochs/types"
-	incentivestypes "github.com/evmos/evmos/v12/x/incentives/types"
+	"github.com/evmos/evmos/v12/x/inflation/types"
 )
 
 var (
@@ -25,7 +25,7 @@ var _ = Describe("Inflation", Ordered, func() {
 	})
 
 	Describe("Committing a block", func() {
-		addr := s.app.AccountKeeper.GetModuleAddress(incentivestypes.ModuleName)
+		addr := s.app.AccountKeeper.GetModuleAddress("incentives")
 
 		Context("with inflation param enabled and exponential calculation params changed", func() {
 			BeforeEach(func() {
@@ -38,7 +38,9 @@ var _ = Describe("Inflation", Ordered, func() {
 					BondingTarget: sdk.NewDecWithPrec(66, 2), // 66%
 					MaxVariance:   sdk.ZeroDec(),             // 0%
 				}
-				_ = s.app.InflationKeeper.SetParams(s.ctx, params)
+				params.InflationDistribution = types.DefaultInflationDistribution
+				err := s.app.InflationKeeper.SetParams(s.ctx, params)
+				Expect(err).ToNot(HaveOccurred(), "error while setting params")
 			})
 
 			Context("before an epoch ends", func() {
@@ -47,9 +49,9 @@ var _ = Describe("Inflation", Ordered, func() {
 					s.CommitAfter(time.Hour * 23) // End Epoch
 				})
 
-				It("should not allocate funds to usage incentives", func() {
+				It("should not allocate funds to usage incentives (Deprecated)", func() {
 					balance := s.app.BankKeeper.GetBalance(s.ctx, addr, denomMint)
-					Expect(balance.IsZero()).To(BeTrue())
+					Expect(balance.IsZero()).To(BeTrue(), "balance should be zero")
 				})
 				It("should not allocate funds to the community pool", func() {
 					balance := s.app.DistrKeeper.GetFeePoolCommunityCoins(s.ctx)
@@ -57,21 +59,21 @@ var _ = Describe("Inflation", Ordered, func() {
 				})
 			})
 
-			Context("after an epoch ends", func() { //nolint:dupl
+			Context("after an epoch ends", func() { //nolint:dupl // these tests are not duplicates
 				BeforeEach(func() {
 					s.CommitAfter(time.Minute)    // Start Epoch
 					s.CommitAfter(time.Hour * 25) // End Epoch
 				})
 
-				It("should allocate funds to usage incentives", func() {
+				It("should not allocate funds to usage incentives (deprecated)", func() {
 					actual := s.app.BankKeeper.GetBalance(s.ctx, addr, denomMint)
 
 					provision := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
 					params := s.app.InflationKeeper.GetParams(s.ctx)
-					distribution := params.InflationDistribution.UsageIncentives
+					distribution := params.InflationDistribution.UsageIncentives //nolint:staticcheck
 					expected := (provision.Mul(distribution)).TruncateInt()
 
-					Expect(actual.IsZero()).ToNot(BeTrue())
+					Expect(actual.IsZero()).To(BeTrue())
 					Expect(actual.Amount).To(Equal(expected))
 				})
 
@@ -94,9 +96,9 @@ var _ = Describe("Inflation", Ordered, func() {
 				params := s.app.InflationKeeper.GetParams(s.ctx)
 				params.EnableInflation = true
 				params.InflationDistribution = types.InflationDistribution{
-					UsageIncentives: sdk.NewDecWithPrec(533333334, 9), // 0.53 = 40% / (1 - 25%)
-					StakingRewards:  sdk.NewDecWithPrec(333333333, 9), // 0.33 = 25% / (1 - 25%)
-					CommunityPool:   sdk.NewDecWithPrec(133333333, 9), // 0.13 = 10% / (1 - 25%)
+					StakingRewards:  sdk.NewDecWithPrec(333333333, 9),
+					CommunityPool:   sdk.NewDecWithPrec(666666667, 9),
+					UsageIncentives: sdk.ZeroDec(), // Deprecated
 				}
 				_ = s.app.InflationKeeper.SetParams(s.ctx, params)
 			})
@@ -124,15 +126,15 @@ var _ = Describe("Inflation", Ordered, func() {
 					s.CommitAfter(time.Hour * 25) // End Epoch
 				})
 
-				It("should allocate funds to usage incentives", func() {
+				It("should not allocate funds to usage incentives (deprecated)", func() {
 					actual := s.app.BankKeeper.GetBalance(s.ctx, addr, denomMint)
 
 					provision := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
 					params := s.app.InflationKeeper.GetParams(s.ctx)
-					distribution := params.InflationDistribution.UsageIncentives
+					distribution := params.InflationDistribution.UsageIncentives //nolint:staticcheck
 					expected := (provision.Mul(distribution)).TruncateInt()
 
-					Expect(actual.IsZero()).ToNot(BeTrue())
+					Expect(actual.IsZero()).To(BeTrue())
 					Expect(actual.Amount).To(Equal(expected))
 				})
 
@@ -179,15 +181,15 @@ var _ = Describe("Inflation", Ordered, func() {
 					s.CommitAfter(time.Hour * 25) // End Epoch
 				})
 
-				It("should allocate funds to usage incentives", func() {
+				It("should not allocate funds to usage incentives (deprecated)", func() {
 					actual := s.app.BankKeeper.GetBalance(s.ctx, addr, denomMint)
 
 					provision := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
 					params := s.app.InflationKeeper.GetParams(s.ctx)
-					distribution := params.InflationDistribution.UsageIncentives
+					distribution := params.InflationDistribution.UsageIncentives //nolint:staticcheck
 					expected := (provision.Mul(distribution)).TruncateInt()
 
-					Expect(actual.IsZero()).ToNot(BeTrue())
+					Expect(actual.IsZero()).To(BeTrue())
 					Expect(actual.Amount).To(Equal(expected))
 				})
 				It("should allocate funds to the community pool", func() {
