@@ -41,7 +41,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Features
 
-- (app) [#24](https://github.com/qstars-ai/qstars/pull/24) Remove upgrades.
+- (app) [#24](https://github.com/luchenqun/ethos/pull/24) Remove upgrades.
+- (recovery) [#25](https://github.com/luchenqun/ethos/pull/25) Remove recovery module.
 
 ### API Breaking
 
