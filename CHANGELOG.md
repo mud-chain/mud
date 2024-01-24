@@ -35,6 +35,21 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
+## [v1.0.0] - 2024-01-20
+
+### State Machine Breaking
+
+### Features
+
+- (app) [#24](https://github.com/qstars-ai/qstars/pull/24) Remove upgrades.
+
+### API Breaking
+
+### Improvements
+
+### Bug Fixes
+
+
 ## [v12.1.6] - 2023-07-04
 
 ### Improvement

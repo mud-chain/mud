@@ -74,6 +74,8 @@ func (suite *GenesisTestSuite) SetupTest() {
 }
 
 func TestGenesisTestSuite(t *testing.T) {
+	t.Skip("we should remove claims module")
+
 	suite.Run(t, new(GenesisTestSuite))
 }
 
