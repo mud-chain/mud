@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (app) [#24](https://github.com/luchenqun/ethos/pull/24) Remove upgrades.
 - (recovery) [#25](https://github.com/luchenqun/ethos/pull/25) Remove recovery module.
 - (incentives) [#26](https://github.com/luchenqun/ethos/pull/26) Remove incentives module.
+- (claims) [#28](https://github.com/luchenqun/ethos/pull/28) Remove claims module and migrate the `EVMChannels` param to the `x/evm` module params.
 
 ### API Breaking
 

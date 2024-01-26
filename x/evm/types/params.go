@@ -16,7 +16,10 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"fmt"
+	channeltypes "github.com/cosmos/ibc-go/v6/modules/core/04-channel/types"
+	host "github.com/cosmos/ibc-go/v6/modules/core/24-host"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/core/vm"
@@ -25,6 +28,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/evmos/evmos/v12/utils"
+	"golang.org/x/exp/slices"
 )
 
 var (
@@ -36,6 +40,14 @@ var (
 	DefaultEnableCreate = true
 	// DefaultEnableCall enables contract calls (i.e true)
 	DefaultEnableCall = true
+	// DefaultExtraEIPs defines the default extra EIPs to be included
+	// On v15, EIP 3855 was enabled
+	DefaultExtraEIPs   = []int64{3855}
+	DefaultEVMChannels = []string{
+		"channel-10", // Injective
+		"channel-31", // Cronos
+		"channel-83", // Kava
+	}
 )
 
 // AvailableExtraEIPs define the list of all EIPs that can be enabled by the
@@ -46,7 +58,7 @@ var (
 var AvailableExtraEIPs = []int64{1344, 1884, 2200, 2929, 3198, 3529}
 
 // NewParams creates a new Params instance
-func NewParams(evmDenom string, allowUnprotectedTxs, enableCreate, enableCall bool, config ChainConfig, extraEIPs []int64) Params {
+func NewParams(evmDenom string, allowUnprotectedTxs, enableCreate, enableCall bool, config ChainConfig, extraEIPs []int64, evmChannels []string) Params {
 	return Params{
 		EvmDenom:            evmDenom,
 		AllowUnprotectedTxs: allowUnprotectedTxs,
@@ -54,6 +66,7 @@ func NewParams(evmDenom string, allowUnprotectedTxs, enableCreate, enableCall bo
 		EnableCall:          enableCall,
 		ExtraEIPs:           extraEIPs,
 		ChainConfig:         config,
+		EVMChannels:         evmChannels,
 	}
 }
 
@@ -67,7 +80,26 @@ func DefaultParams() Params {
 		ChainConfig:         DefaultChainConfig(),
 		ExtraEIPs:           nil,
 		AllowUnprotectedTxs: DefaultAllowUnprotectedTxs,
+		EVMChannels:         DefaultEVMChannels,
 	}
+}
+
+// validateChannels checks if channels ids are valid
+func validateChannels(i interface{}) error {
+	channels, ok := i.([]string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	for _, channel := range channels {
+		if err := host.ChannelIdentifierValidator(channel); err != nil {
+			return errorsmod.Wrap(
+				channeltypes.ErrInvalidChannelIdentifier, err.Error(),
+			)
+		}
+	}
+
+	return nil
 }
 
 // Validate performs basic validation on evm parameters.
@@ -92,7 +124,11 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	return validateChainConfig(p.ChainConfig)
+	if err := validateChainConfig(p.ChainConfig); err != nil {
+		return err
+	}
+
+	return validateChannels(p.EVMChannels)
 }
 
 // EIPs returns the ExtraEIPS as a int slice
@@ -102,6 +138,12 @@ func (p Params) EIPs() []int {
 		eips[i] = int(eip)
 	}
 	return eips
+}
+
+// IsEVMChannel returns true if the channel provided is in the list of
+// EVM channels
+func (p Params) IsEVMChannel(channel string) bool {
+	return slices.Contains(p.EVMChannels, channel)
 }
 
 func validateEVMDenom(i interface{}) error {
