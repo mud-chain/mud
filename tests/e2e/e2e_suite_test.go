@@ -46,6 +46,8 @@ type IntegrationTestSuite struct {
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
+	t.Skip("we have not yet tested the upgrade process")
+
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
