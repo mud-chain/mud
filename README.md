@@ -4,39 +4,19 @@ parent:
 -->
 
 <div align="center">
-  <h1> Evmos </h1>
+  <h1> ethos </h1>
 </div>
 
+Thanks to evmos for bringing evm into the world of cosmos.we respect the great work of evmos very much.
+
+Since evmos has modified the license, commercial use of versions above v13.x requires permission from the evmos team. But I really like the related functions of pre-compiled contracts, I decided based on the LGPLv3 license of evmos v12.1.6, remove some modules that I felt were no longer needed, such as recovery, incentives, and claims, and then implement the functions related to pre-compiled contracts. 
+
+My goal is to implement all modules such as staking, gov, and distribution using precompiled contracts. Since evmos has implemented some related pre-compiled contract functions, in order to avoid legal risks, I will refer to the project [fx-core](https://github.com/FunctionX/fx-core/) whose license is Apache License 2.0 to implement all pre-compiled contract related functions. 
+
+more details see [Evmos Signals Ethereum Alignment By Fully Deprecating Cosmos Transactions](https://medium.com/evmos/evmos-signals-ethereum-alignment-by-fully-deprecating-cosmos-transactions-d1f92c2cd443)
+
 <div align="center">
-  <a href="https://github.com/evmos/evmos/releases/latest">
-    <img alt="Version" src="https://img.shields.io/github/tag/tharsis/evmos.svg" />
-  </a>
-  <a href="https://github.com/evmos/evmos/blob/main/LICENSE">
-    <img alt="License: Apache-2.0" src="https://img.shields.io/github/license/tharsis/evmos.svg" />
-  </a>
-  <a href="https://pkg.go.dev/github.com/evmos/evmos">
-    <img alt="GoDoc" src="https://godoc.org/github.com/evmos/evmos?status.svg" />
-  </a>
-  <a href="https://goreportcard.com/report/github.com/evmos/evmos">
-    <img alt="Go report card" src="https://goreportcard.com/badge/github.com/evmos/evmos"/>
-  </a>
-  <a href="https://bestpractices.coreinfrastructure.org/projects/5018">
-    <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/tharsis/evmos">
-  </a>
-</div>
-<div align="center">
-  <a href="https://discord.gg/evmos">
-    <img alt="Discord" src="https://img.shields.io/discord/809048090249134080.svg" />
-  </a>
-  <a href="https://github.com/evmos/evmos/actions?query=branch%3Amain+workflow%3ALint">
-    <img alt="Lint Status" src="https://github.com/evmos/evmos/actions/workflows/lint.yml/badge.svg?branch=main" />
-  </a>
-  <a href="https://codecov.io/gh/evmos/evmos">
-    <img alt="Code Coverage" src="https://codecov.io/gh/evmos/evmos/branch/main/graph/badge.svg" />
-  </a>
-  <a href="https://twitter.com/EvmosOrg">
-    <img alt="Twitter Follow Evmos" src="https://img.shields.io/twitter/follow/EvmosOrg"/>
-  </a>
+  <h1> Evmos </h1>
 </div>
 
 Evmos is a scalable, high-throughput Proof-of-Stake blockchain
