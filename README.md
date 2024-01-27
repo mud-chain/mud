@@ -7,7 +7,7 @@ parent:
   <h1> ethos </h1>
 </div>
 
-Thanks to evmos for bringing evm into the world of cosmos.we respect the great work of evmos very much.
+Thanks to evmos for bringing evm into the world of cosmos. we respect the great work of evmos very much.
 
 Since evmos has modified the license, commercial use of versions above v13.x requires permission from the evmos team. But I really like the related functions of pre-compiled contracts, I decided based on the LGPLv3 license of evmos v12.1.6, remove some modules that I felt were no longer needed, such as recovery, incentives, and claims, and then implement the functions related to pre-compiled contracts. 
 
