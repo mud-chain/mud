@@ -1,5 +1,5 @@
 {
-  "name": "@functionx_io/contracts",
+  "name": "@ethos/contracts",
   "description": "Smart Contract library for Solidity",
   "version": "0.1.2",
   "files": [

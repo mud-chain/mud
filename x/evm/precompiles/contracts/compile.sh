@@ -23,36 +23,34 @@ fi
 echo "===> Compiling contracts"
 (cd "$project_dir/solidity" && yarn compile)
 
-[[ ! -d "$project_dir/contract/artifacts" ]] && mkdir -p "$project_dir/contract/artifacts"
+[[ ! -d "$project_dir/x/evm/precompiles/contracts/artifacts" ]] && mkdir -p "$project_dir/x/evm/precompiles/contracts/artifacts"
 
 # add core contracts
 contracts=(IStaking)
 contracts_test=(StakingTest)
 # add 3rd party contracts
-contracts+=(ERC1967Proxy)
-contracts_test+=(ERC721TokenTest)
 
 for contract in "${contracts[@]}"; do
   echo "===> Ethereum ABI wrapper code generator: $contract"
   file_path=$(find "$project_dir/solidity/artifacts" -name "${contract}.json" -type f)
-  jq -c '.abi' "$file_path" >"$project_dir/contract/artifacts/${contract}.abi"
-  jq -r '.bytecode' "$file_path" >"$project_dir/contract/artifacts/${contract}.bin"
-  abigen --abi "$project_dir/contract/artifacts/${contract}.abi" \
-    --bin "$project_dir/contract/artifacts/${contract}.bin" \
-    --type "${contract}" --pkg contract \
-    --out "$project_dir/contract/${contract}.go"
+  jq -c '.abi' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.abi"
+  jq -r '.bytecode' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.bin"
+  abigen --abi "$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.abi" \
+    --bin "$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.bin" \
+    --type "${contract}" --pkg contracts \
+    --out "$project_dir/x/evm/precompiles/contracts/${contract}.go"
 done
 
 # test contracts
 for contract_test in "${contracts_test[@]}"; do
   echo "===> Ethereum ABI wrapper code generator: $contract_test"
   file_path=$(find "$project_dir/solidity/artifacts" -name "${contract_test}.json" -type f)
-  jq -c '.abi' "$file_path" >"$project_dir/contract/artifacts/${contract_test}.abi"
-  jq -r '.bytecode' "$file_path" >"$project_dir/contract/artifacts/${contract_test}.bin"
-  abigen --abi "$project_dir/contract/artifacts/${contract_test}.abi" \
-    --bin "$project_dir/contract/artifacts/${contract_test}.bin" \
-    --type "${contract_test}" --pkg contract \
-    --out "$project_dir/tests/contract/${contract_test}.go"
+  jq -c '.abi' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.abi"
+  jq -r '.bytecode' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.bin"
+  abigen --abi "$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.abi" \
+    --bin "$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.bin" \
+    --type "${contract_test}" --pkg contracts \
+    --out "$project_dir/tests/contracts/${contract_test}.go"
 done
 
-rm -rf "$project_dir/contract/artifacts"
+rm -rf "$project_dir/x/evm/precompiles/contracts/artifacts"

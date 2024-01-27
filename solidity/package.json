@@ -1,5 +1,5 @@
 {
-  "name": "fxcore-solidity",
+  "name": "ethos-solidity",
   "description": "Smart Contract library for Solidity",
   "version": "0.1.2",
   "files": [
@@ -25,10 +25,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/FunctionX/fx-core.git"
+    "url": "https://github.com/luchenqun/ethos.git"
   },
   "bugs": {
-    "url": "https://github.com/FunctionX/fx-core/issues"
+    "url": "https://github.com/luchenqun/ethos/issues"
   },
   "license": "Apache-2.0",
   "dependencies": {

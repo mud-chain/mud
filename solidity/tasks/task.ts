@@ -10,7 +10,6 @@ import {
     TransactionToJson
 } from "./subtasks";
 
-import "./bridge_tasks"
 import "./contract_task"
 
 const send = task("send", "send tx, Example: npx hardhat send 0x... transfer(address,uint256) 0x... 1000000000000000000 --privateKey ...")

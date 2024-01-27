@@ -49,43 +49,6 @@ contract StakingTest is IStaking {
         return amount;
     }
 
-    function approveShares(
-        string memory _val,
-        address _spender,
-        uint256 _shares
-    ) external override returns (bool) {
-        bool success = StakingCall.approveShares(_val, _spender, _shares);
-        return success;
-    }
-
-    function transferShares(
-        string memory _val,
-        address _to,
-        uint256 _shares
-    ) external override returns (uint256, uint256) {
-        (uint256 token, uint256 reward) = StakingCall.transferShares(
-            _val,
-            _to,
-            _shares
-        );
-        return (token, reward);
-    }
-
-    function transferFromShares(
-        string memory _val,
-        address _from,
-        address _to,
-        uint256 _shares
-    ) external override returns (uint256, uint256) {
-        (uint256 token, uint256 reward) = StakingCall.transferFromShares(
-            _val,
-            _from,
-            _to,
-            _shares
-        );
-        return (token, reward);
-    }
-
     function delegation(
         string memory _val,
         address _del
@@ -98,13 +61,5 @@ contract StakingTest is IStaking {
         address _del
     ) public view override returns (uint256) {
         return StakingCall.delegationRewards(_val, _del);
-    }
-
-    function allowanceShares(
-        string memory _val,
-        address _owner,
-        address _spender
-    ) public view override returns (uint256) {
-        return StakingCall.allowanceShares(_val, _owner, _spender);
     }
 }

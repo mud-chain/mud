@@ -30,7 +30,7 @@ var (
 
 // IStakingMetaData contains all meta data concerning the IStaking contract.
 var IStakingMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"ApproveShares\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"Delegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valSrc\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valDst\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Redelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"token\",\"type\":\"uint256\"}],\"name\":\"TransferShares\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Undelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_spender\",\"type\":\"address\"}],\"name\":\"allowanceShares\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"approveShares\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_result\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"delegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegation\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_delegateAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegationRewards\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_valSrc\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_valDst\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"redelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"transferFromShares\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_token\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"transferShares\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_token\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"undelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"Delegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valSrc\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valDst\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Redelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Undelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"delegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegation\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_delegateAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegationRewards\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_valSrc\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_valDst\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"redelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"undelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IStakingABI is the input ABI used to generate the binding from.
@@ -134,11 +134,11 @@ func NewIStakingFilterer(address common.Address, filterer bind.ContractFilterer)
 
 // bindIStaking binds a generic wrapper to an already deployed contract.
 func bindIStaking(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
-	parsed, err := IStakingMetaData.GetAbi()
+	parsed, err := abi.JSON(strings.NewReader(IStakingABI))
 	if err != nil {
 		return nil, err
 	}
-	return bind.NewBoundContract(address, *parsed, caller, transactor, filterer), nil
+	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
 }
 
 // Call invokes the (constant) contract method with params as input values and
@@ -179,43 +179,13 @@ func (_IStaking *IStakingTransactorRaw) Transact(opts *bind.TransactOpts, method
 	return _IStaking.Contract.contract.Transact(opts, method, params...)
 }
 
-// AllowanceShares is a free data retrieval call binding the contract method 0x7b625c0f.
-//
-// Solidity: function allowanceShares(string _val, address _owner, address _spender) view returns(uint256 _shares)
-func (_IStaking *IStakingCaller) AllowanceShares(opts *bind.CallOpts, _val string, _owner common.Address, _spender common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _IStaking.contract.Call(opts, &out, "allowanceShares", _val, _owner, _spender)
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-}
-
-// AllowanceShares is a free data retrieval call binding the contract method 0x7b625c0f.
-//
-// Solidity: function allowanceShares(string _val, address _owner, address _spender) view returns(uint256 _shares)
-func (_IStaking *IStakingSession) AllowanceShares(_val string, _owner common.Address, _spender common.Address) (*big.Int, error) {
-	return _IStaking.Contract.AllowanceShares(&_IStaking.CallOpts, _val, _owner, _spender)
-}
-
-// AllowanceShares is a free data retrieval call binding the contract method 0x7b625c0f.
-//
-// Solidity: function allowanceShares(string _val, address _owner, address _spender) view returns(uint256 _shares)
-func (_IStaking *IStakingCallerSession) AllowanceShares(_val string, _owner common.Address, _spender common.Address) (*big.Int, error) {
-	return _IStaking.Contract.AllowanceShares(&_IStaking.CallOpts, _val, _owner, _spender)
-}
-
 // Delegation is a free data retrieval call binding the contract method 0xd5c498eb.
 //
 // Solidity: function delegation(string _val, address _del) view returns(uint256 _shares, uint256 _delegateAmount)
 func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, _val string, _del common.Address) (struct {
 	Shares         *big.Int
 	DelegateAmount *big.Int
-}, error,
-) {
+}, error) {
 	var out []interface{}
 	err := _IStaking.contract.Call(opts, &out, "delegation", _val, _del)
 
@@ -231,6 +201,7 @@ func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, _val string, _d
 	outstruct.DelegateAmount = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
 
 	return *outstruct, err
+
 }
 
 // Delegation is a free data retrieval call binding the contract method 0xd5c498eb.
@@ -239,8 +210,7 @@ func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, _val string, _d
 func (_IStaking *IStakingSession) Delegation(_val string, _del common.Address) (struct {
 	Shares         *big.Int
 	DelegateAmount *big.Int
-}, error,
-) {
+}, error) {
 	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, _val, _del)
 }
 
@@ -250,8 +220,7 @@ func (_IStaking *IStakingSession) Delegation(_val string, _del common.Address) (
 func (_IStaking *IStakingCallerSession) Delegation(_val string, _del common.Address) (struct {
 	Shares         *big.Int
 	DelegateAmount *big.Int
-}, error,
-) {
+}, error) {
 	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, _val, _del)
 }
 
@@ -261,6 +230,7 @@ func (_IStaking *IStakingCallerSession) Delegation(_val string, _del common.Addr
 func (_IStaking *IStakingCaller) DelegationRewards(opts *bind.CallOpts, _val string, _del common.Address) (*big.Int, error) {
 	var out []interface{}
 	err := _IStaking.contract.Call(opts, &out, "delegationRewards", _val, _del)
+
 	if err != nil {
 		return *new(*big.Int), err
 	}
@@ -268,6 +238,7 @@ func (_IStaking *IStakingCaller) DelegationRewards(opts *bind.CallOpts, _val str
 	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
 	return out0, err
+
 }
 
 // DelegationRewards is a free data retrieval call binding the contract method 0x51af513a.
@@ -282,27 +253,6 @@ func (_IStaking *IStakingSession) DelegationRewards(_val string, _del common.Add
 // Solidity: function delegationRewards(string _val, address _del) view returns(uint256 _reward)
 func (_IStaking *IStakingCallerSession) DelegationRewards(_val string, _del common.Address) (*big.Int, error) {
 	return _IStaking.Contract.DelegationRewards(&_IStaking.CallOpts, _val, _del)
-}
-
-// ApproveShares is a paid mutator transaction binding the contract method 0x49da433e.
-//
-// Solidity: function approveShares(string _val, address _spender, uint256 _shares) returns(bool _result)
-func (_IStaking *IStakingTransactor) ApproveShares(opts *bind.TransactOpts, _val string, _spender common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.contract.Transact(opts, "approveShares", _val, _spender, _shares)
-}
-
-// ApproveShares is a paid mutator transaction binding the contract method 0x49da433e.
-//
-// Solidity: function approveShares(string _val, address _spender, uint256 _shares) returns(bool _result)
-func (_IStaking *IStakingSession) ApproveShares(_val string, _spender common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.ApproveShares(&_IStaking.TransactOpts, _val, _spender, _shares)
-}
-
-// ApproveShares is a paid mutator transaction binding the contract method 0x49da433e.
-//
-// Solidity: function approveShares(string _val, address _spender, uint256 _shares) returns(bool _result)
-func (_IStaking *IStakingTransactorSession) ApproveShares(_val string, _spender common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.ApproveShares(&_IStaking.TransactOpts, _val, _spender, _shares)
 }
 
 // Delegate is a paid mutator transaction binding the contract method 0x9ddb511a.
@@ -347,48 +297,6 @@ func (_IStaking *IStakingTransactorSession) Redelegate(_valSrc string, _valDst s
 	return _IStaking.Contract.Redelegate(&_IStaking.TransactOpts, _valSrc, _valDst, _shares)
 }
 
-// TransferFromShares is a paid mutator transaction binding the contract method 0xdc6ffc7d.
-//
-// Solidity: function transferFromShares(string _val, address _from, address _to, uint256 _shares) returns(uint256 _token, uint256 _reward)
-func (_IStaking *IStakingTransactor) TransferFromShares(opts *bind.TransactOpts, _val string, _from common.Address, _to common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.contract.Transact(opts, "transferFromShares", _val, _from, _to, _shares)
-}
-
-// TransferFromShares is a paid mutator transaction binding the contract method 0xdc6ffc7d.
-//
-// Solidity: function transferFromShares(string _val, address _from, address _to, uint256 _shares) returns(uint256 _token, uint256 _reward)
-func (_IStaking *IStakingSession) TransferFromShares(_val string, _from common.Address, _to common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.TransferFromShares(&_IStaking.TransactOpts, _val, _from, _to, _shares)
-}
-
-// TransferFromShares is a paid mutator transaction binding the contract method 0xdc6ffc7d.
-//
-// Solidity: function transferFromShares(string _val, address _from, address _to, uint256 _shares) returns(uint256 _token, uint256 _reward)
-func (_IStaking *IStakingTransactorSession) TransferFromShares(_val string, _from common.Address, _to common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.TransferFromShares(&_IStaking.TransactOpts, _val, _from, _to, _shares)
-}
-
-// TransferShares is a paid mutator transaction binding the contract method 0x161298c1.
-//
-// Solidity: function transferShares(string _val, address _to, uint256 _shares) returns(uint256 _token, uint256 _reward)
-func (_IStaking *IStakingTransactor) TransferShares(opts *bind.TransactOpts, _val string, _to common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.contract.Transact(opts, "transferShares", _val, _to, _shares)
-}
-
-// TransferShares is a paid mutator transaction binding the contract method 0x161298c1.
-//
-// Solidity: function transferShares(string _val, address _to, uint256 _shares) returns(uint256 _token, uint256 _reward)
-func (_IStaking *IStakingSession) TransferShares(_val string, _to common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.TransferShares(&_IStaking.TransactOpts, _val, _to, _shares)
-}
-
-// TransferShares is a paid mutator transaction binding the contract method 0x161298c1.
-//
-// Solidity: function transferShares(string _val, address _to, uint256 _shares) returns(uint256 _token, uint256 _reward)
-func (_IStaking *IStakingTransactorSession) TransferShares(_val string, _to common.Address, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.TransferShares(&_IStaking.TransactOpts, _val, _to, _shares)
-}
-
 // Undelegate is a paid mutator transaction binding the contract method 0x8dfc8897.
 //
 // Solidity: function undelegate(string _val, uint256 _shares) returns(uint256 _amount, uint256 _reward, uint256 _completionTime)
@@ -429,159 +337,6 @@ func (_IStaking *IStakingSession) Withdraw(_val string) (*types.Transaction, err
 // Solidity: function withdraw(string _val) returns(uint256 _reward)
 func (_IStaking *IStakingTransactorSession) Withdraw(_val string) (*types.Transaction, error) {
 	return _IStaking.Contract.Withdraw(&_IStaking.TransactOpts, _val)
-}
-
-// IStakingApproveSharesIterator is returned from FilterApproveShares and is used to iterate over the raw logs and unpacked data for ApproveShares events raised by the IStaking contract.
-type IStakingApproveSharesIterator struct {
-	Event *IStakingApproveShares // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *IStakingApproveSharesIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(IStakingApproveShares)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(IStakingApproveShares)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *IStakingApproveSharesIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *IStakingApproveSharesIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// IStakingApproveShares represents a ApproveShares event raised by the IStaking contract.
-type IStakingApproveShares struct {
-	Owner     common.Address
-	Spender   common.Address
-	Validator string
-	Shares    *big.Int
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterApproveShares is a free log retrieval operation binding the contract event 0xbd99ef1c86c593a90a79f794ca07759c5a04cf54bf800cfb77bb0b9fdb9bc04a.
-//
-// Solidity: event ApproveShares(address indexed owner, address indexed spender, string validator, uint256 shares)
-func (_IStaking *IStakingFilterer) FilterApproveShares(opts *bind.FilterOpts, owner []common.Address, spender []common.Address) (*IStakingApproveSharesIterator, error) {
-	var ownerRule []interface{}
-	for _, ownerItem := range owner {
-		ownerRule = append(ownerRule, ownerItem)
-	}
-	var spenderRule []interface{}
-	for _, spenderItem := range spender {
-		spenderRule = append(spenderRule, spenderItem)
-	}
-
-	logs, sub, err := _IStaking.contract.FilterLogs(opts, "ApproveShares", ownerRule, spenderRule)
-	if err != nil {
-		return nil, err
-	}
-	return &IStakingApproveSharesIterator{contract: _IStaking.contract, event: "ApproveShares", logs: logs, sub: sub}, nil
-}
-
-// WatchApproveShares is a free log subscription operation binding the contract event 0xbd99ef1c86c593a90a79f794ca07759c5a04cf54bf800cfb77bb0b9fdb9bc04a.
-//
-// Solidity: event ApproveShares(address indexed owner, address indexed spender, string validator, uint256 shares)
-func (_IStaking *IStakingFilterer) WatchApproveShares(opts *bind.WatchOpts, sink chan<- *IStakingApproveShares, owner []common.Address, spender []common.Address) (event.Subscription, error) {
-	var ownerRule []interface{}
-	for _, ownerItem := range owner {
-		ownerRule = append(ownerRule, ownerItem)
-	}
-	var spenderRule []interface{}
-	for _, spenderItem := range spender {
-		spenderRule = append(spenderRule, spenderItem)
-	}
-
-	logs, sub, err := _IStaking.contract.WatchLogs(opts, "ApproveShares", ownerRule, spenderRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(IStakingApproveShares)
-				if err := _IStaking.contract.UnpackLog(event, "ApproveShares", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseApproveShares is a log parse operation binding the contract event 0xbd99ef1c86c593a90a79f794ca07759c5a04cf54bf800cfb77bb0b9fdb9bc04a.
-//
-// Solidity: event ApproveShares(address indexed owner, address indexed spender, string validator, uint256 shares)
-func (_IStaking *IStakingFilterer) ParseApproveShares(log types.Log) (*IStakingApproveShares, error) {
-	event := new(IStakingApproveShares)
-	if err := _IStaking.contract.UnpackLog(event, "ApproveShares", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
 }
 
 // IStakingDelegateIterator is returned from FilterDelegate and is used to iterate over the raw logs and unpacked data for Delegate events raised by the IStaking contract.
@@ -664,6 +419,7 @@ type IStakingDelegate struct {
 //
 // Solidity: event Delegate(address indexed delegator, string validator, uint256 amount, uint256 shares)
 func (_IStaking *IStakingFilterer) FilterDelegate(opts *bind.FilterOpts, delegator []common.Address) (*IStakingDelegateIterator, error) {
+
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
@@ -680,6 +436,7 @@ func (_IStaking *IStakingFilterer) FilterDelegate(opts *bind.FilterOpts, delegat
 //
 // Solidity: event Delegate(address indexed delegator, string validator, uint256 amount, uint256 shares)
 func (_IStaking *IStakingFilterer) WatchDelegate(opts *bind.WatchOpts, sink chan<- *IStakingDelegate, delegator []common.Address) (event.Subscription, error) {
+
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
@@ -811,6 +568,7 @@ type IStakingRedelegate struct {
 //
 // Solidity: event Redelegate(address indexed sender, string valSrc, string valDst, uint256 shares, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) FilterRedelegate(opts *bind.FilterOpts, sender []common.Address) (*IStakingRedelegateIterator, error) {
+
 	var senderRule []interface{}
 	for _, senderItem := range sender {
 		senderRule = append(senderRule, senderItem)
@@ -827,6 +585,7 @@ func (_IStaking *IStakingFilterer) FilterRedelegate(opts *bind.FilterOpts, sende
 //
 // Solidity: event Redelegate(address indexed sender, string valSrc, string valDst, uint256 shares, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) WatchRedelegate(opts *bind.WatchOpts, sink chan<- *IStakingRedelegate, sender []common.Address) (event.Subscription, error) {
+
 	var senderRule []interface{}
 	for _, senderItem := range sender {
 		senderRule = append(senderRule, senderItem)
@@ -870,160 +629,6 @@ func (_IStaking *IStakingFilterer) WatchRedelegate(opts *bind.WatchOpts, sink ch
 func (_IStaking *IStakingFilterer) ParseRedelegate(log types.Log) (*IStakingRedelegate, error) {
 	event := new(IStakingRedelegate)
 	if err := _IStaking.contract.UnpackLog(event, "Redelegate", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// IStakingTransferSharesIterator is returned from FilterTransferShares and is used to iterate over the raw logs and unpacked data for TransferShares events raised by the IStaking contract.
-type IStakingTransferSharesIterator struct {
-	Event *IStakingTransferShares // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *IStakingTransferSharesIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(IStakingTransferShares)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(IStakingTransferShares)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *IStakingTransferSharesIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *IStakingTransferSharesIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// IStakingTransferShares represents a TransferShares event raised by the IStaking contract.
-type IStakingTransferShares struct {
-	From      common.Address
-	To        common.Address
-	Validator string
-	Shares    *big.Int
-	Token     *big.Int
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterTransferShares is a free log retrieval operation binding the contract event 0x77a2ac7846d05ab9937faf9bf901529bef4b499a2939e632f99b3fab92448344.
-//
-// Solidity: event TransferShares(address indexed from, address indexed to, string validator, uint256 shares, uint256 token)
-func (_IStaking *IStakingFilterer) FilterTransferShares(opts *bind.FilterOpts, from []common.Address, to []common.Address) (*IStakingTransferSharesIterator, error) {
-	var fromRule []interface{}
-	for _, fromItem := range from {
-		fromRule = append(fromRule, fromItem)
-	}
-	var toRule []interface{}
-	for _, toItem := range to {
-		toRule = append(toRule, toItem)
-	}
-
-	logs, sub, err := _IStaking.contract.FilterLogs(opts, "TransferShares", fromRule, toRule)
-	if err != nil {
-		return nil, err
-	}
-	return &IStakingTransferSharesIterator{contract: _IStaking.contract, event: "TransferShares", logs: logs, sub: sub}, nil
-}
-
-// WatchTransferShares is a free log subscription operation binding the contract event 0x77a2ac7846d05ab9937faf9bf901529bef4b499a2939e632f99b3fab92448344.
-//
-// Solidity: event TransferShares(address indexed from, address indexed to, string validator, uint256 shares, uint256 token)
-func (_IStaking *IStakingFilterer) WatchTransferShares(opts *bind.WatchOpts, sink chan<- *IStakingTransferShares, from []common.Address, to []common.Address) (event.Subscription, error) {
-	var fromRule []interface{}
-	for _, fromItem := range from {
-		fromRule = append(fromRule, fromItem)
-	}
-	var toRule []interface{}
-	for _, toItem := range to {
-		toRule = append(toRule, toItem)
-	}
-
-	logs, sub, err := _IStaking.contract.WatchLogs(opts, "TransferShares", fromRule, toRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(IStakingTransferShares)
-				if err := _IStaking.contract.UnpackLog(event, "TransferShares", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTransferShares is a log parse operation binding the contract event 0x77a2ac7846d05ab9937faf9bf901529bef4b499a2939e632f99b3fab92448344.
-//
-// Solidity: event TransferShares(address indexed from, address indexed to, string validator, uint256 shares, uint256 token)
-func (_IStaking *IStakingFilterer) ParseTransferShares(log types.Log) (*IStakingTransferShares, error) {
-	event := new(IStakingTransferShares)
-	if err := _IStaking.contract.UnpackLog(event, "TransferShares", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -1111,6 +716,7 @@ type IStakingUndelegate struct {
 //
 // Solidity: event Undelegate(address indexed sender, string validator, uint256 shares, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) FilterUndelegate(opts *bind.FilterOpts, sender []common.Address) (*IStakingUndelegateIterator, error) {
+
 	var senderRule []interface{}
 	for _, senderItem := range sender {
 		senderRule = append(senderRule, senderItem)
@@ -1127,6 +733,7 @@ func (_IStaking *IStakingFilterer) FilterUndelegate(opts *bind.FilterOpts, sende
 //
 // Solidity: event Undelegate(address indexed sender, string validator, uint256 shares, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) WatchUndelegate(opts *bind.WatchOpts, sink chan<- *IStakingUndelegate, sender []common.Address) (event.Subscription, error) {
+
 	var senderRule []interface{}
 	for _, senderItem := range sender {
 		senderRule = append(senderRule, senderItem)
@@ -1255,6 +862,7 @@ type IStakingWithdraw struct {
 //
 // Solidity: event Withdraw(address indexed sender, string validator, uint256 reward)
 func (_IStaking *IStakingFilterer) FilterWithdraw(opts *bind.FilterOpts, sender []common.Address) (*IStakingWithdrawIterator, error) {
+
 	var senderRule []interface{}
 	for _, senderItem := range sender {
 		senderRule = append(senderRule, senderItem)
@@ -1271,6 +879,7 @@ func (_IStaking *IStakingFilterer) FilterWithdraw(opts *bind.FilterOpts, sender 
 //
 // Solidity: event Withdraw(address indexed sender, string validator, uint256 reward)
 func (_IStaking *IStakingFilterer) WatchWithdraw(opts *bind.WatchOpts, sink chan<- *IStakingWithdraw, sender []common.Address) (event.Subscription, error) {
+
 	var senderRule []interface{}
 	for _, senderItem := range sender {
 		senderRule = append(senderRule, senderItem)
