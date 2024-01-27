@@ -48,13 +48,13 @@ var (
 	DelegateMethod = abi.NewMethod(
 		DelegateMethodName,
 		DelegateMethodName,
-		abi.Function, "payable", false, false,
+		abi.Function, "nonpayable", false, false,
 		abi.Arguments{
-			abi.Argument{Name: "_val", Type: types.TypeString},
+			abi.Argument{Name: "validatorAddress", Type: types.TypeAddress},
+			abi.Argument{Name: "amount", Type: types.TypeUint256},
 		},
 		abi.Arguments{
-			abi.Argument{Name: "_shares", Type: types.TypeUint256},
-			abi.Argument{Name: "_reward", Type: types.TypeUint256},
+			abi.Argument{Name: "success", Type: types.TypeBool},
 		},
 	)
 
@@ -106,20 +106,24 @@ var (
 )
 
 type DelegateArgs struct {
-	Validator string `abi:"_val"`
+	ValidatorAddress common.Address `abi:"validatorAddress"`
+	Amount           *big.Int       `abi:"amount"`
 }
 
 // Validate validates the args
 func (args *DelegateArgs) Validate() error {
-	if _, err := sdk.ValAddressFromBech32(args.Validator); err != nil {
-		return fmt.Errorf("invalid validator address: %s", args.Validator)
+	if args.ValidatorAddress == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddress)
+	}
+	if args.Amount == nil || args.Amount.Sign() <= 0 {
+		return errors.New("invalid amount")
 	}
 	return nil
 }
 
 // GetValidator returns the validator address, caller must ensure the validator address is valid
 func (args *DelegateArgs) GetValidator() sdk.ValAddress {
-	valAddr, _ := sdk.ValAddressFromBech32(args.Validator)
+	valAddr := sdk.ValAddress(args.ValidatorAddress.Bytes())
 	return valAddr
 }
 

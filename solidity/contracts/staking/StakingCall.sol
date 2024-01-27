@@ -10,15 +10,10 @@ import "./Decode.sol";
 
 library StakingCall {
     address public constant STAKING_ADDRESS =
-        address(0x0000000000000000000000000000000000001003);
+    address(0x0000000000000000000000000000000000001003);
 
-    function delegate(
-        string memory _val,
-        uint256 _value
-    ) internal returns (uint256, uint256) {
-        (bool result, bytes memory data) = STAKING_ADDRESS.call{value: _value}(
-            Encode.delegate(_val)
-        );
+    function delegate(address validatorAddress, uint256 amount) internal returns (bool) {
+        (bool result, bytes memory data) = STAKING_ADDRESS.call(Encode.delegate(validatorAddress, amount));
         Decode.ok(result, data, "delegate failed");
         return Decode.delegate(data);
     }

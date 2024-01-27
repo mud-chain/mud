@@ -4,9 +4,10 @@ pragma solidity ^0.8.0;
 
 library Encode {
     function delegate(
-        string memory _validator
+        address validatorAddress,
+        uint256 amount
     ) internal pure returns (bytes memory) {
-        return abi.encodeWithSignature("delegate(string)", _validator);
+        return abi.encodeWithSignature("delegate(address,uint256)", validatorAddress, amount);
     }
 
     function undelegate(
@@ -15,10 +16,10 @@ library Encode {
     ) internal pure returns (bytes memory) {
         return
             abi.encodeWithSignature(
-                "undelegate(string,uint256)",
-                _validator,
-                _shares
-            );
+            "undelegate(string,uint256)",
+            _validator,
+            _shares
+        );
     }
 
     function redelegate(
@@ -28,11 +29,11 @@ library Encode {
     ) internal pure returns (bytes memory) {
         return
             abi.encodeWithSignature(
-                "redelegate(string,string,uint256)",
-                _valSrc,
-                _valDst,
-                _shares
-            );
+            "redelegate(string,string,uint256)",
+            _valSrc,
+            _valDst,
+            _shares
+        );
     }
 
     function withdraw(
@@ -47,10 +48,10 @@ library Encode {
     ) internal pure returns (bytes memory) {
         return
             abi.encodeWithSignature(
-                "delegation(string,address)",
-                _validator,
-                _delegate
-            );
+            "delegation(string,address)",
+            _validator,
+            _delegate
+        );
     }
 
     function delegationRewards(
@@ -59,9 +60,9 @@ library Encode {
     ) internal pure returns (bytes memory) {
         return
             abi.encodeWithSignature(
-                "delegationRewards(string,address)",
-                _validator,
-                _delegate
-            );
+            "delegationRewards(string,address)",
+            _validator,
+            _delegate
+        );
     }
 }

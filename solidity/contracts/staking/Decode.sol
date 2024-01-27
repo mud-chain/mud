@@ -5,9 +5,9 @@ pragma solidity ^0.8.0;
 library Decode {
     function delegate(
         bytes memory data
-    ) internal pure returns (uint256, uint256) {
-        (uint256 shares, uint256 reward) = abi.decode(data, (uint256, uint256));
-        return (shares, reward);
+    ) internal pure returns (bool) {
+        (bool success) = abi.decode(data, (bool));
+        return success;
     }
 
     function undelegate(

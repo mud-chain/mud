@@ -30,7 +30,7 @@ var (
 
 // IStakingMetaData contains all meta data concerning the IStaking contract.
 var IStakingMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"Delegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valSrc\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valDst\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Redelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Undelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"delegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegation\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_delegateAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegationRewards\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_valSrc\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_valDst\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"redelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"undelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Delegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valSrc\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valDst\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Redelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Undelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"delegate\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegation\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_delegateAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegationRewards\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_valSrc\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_valDst\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"redelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"undelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IStakingABI is the input ABI used to generate the binding from.
@@ -255,25 +255,25 @@ func (_IStaking *IStakingCallerSession) DelegationRewards(_val string, _del comm
 	return _IStaking.Contract.DelegationRewards(&_IStaking.CallOpts, _val, _del)
 }
 
-// Delegate is a paid mutator transaction binding the contract method 0x9ddb511a.
+// Delegate is a paid mutator transaction binding the contract method 0x026e402b.
 //
-// Solidity: function delegate(string _val) payable returns(uint256 _shares, uint256 _reward)
-func (_IStaking *IStakingTransactor) Delegate(opts *bind.TransactOpts, _val string) (*types.Transaction, error) {
-	return _IStaking.contract.Transact(opts, "delegate", _val)
+// Solidity: function delegate(address validatorAddress, uint256 amount) returns(bool success)
+func (_IStaking *IStakingTransactor) Delegate(opts *bind.TransactOpts, validatorAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.contract.Transact(opts, "delegate", validatorAddress, amount)
 }
 
-// Delegate is a paid mutator transaction binding the contract method 0x9ddb511a.
+// Delegate is a paid mutator transaction binding the contract method 0x026e402b.
 //
-// Solidity: function delegate(string _val) payable returns(uint256 _shares, uint256 _reward)
-func (_IStaking *IStakingSession) Delegate(_val string) (*types.Transaction, error) {
-	return _IStaking.Contract.Delegate(&_IStaking.TransactOpts, _val)
+// Solidity: function delegate(address validatorAddress, uint256 amount) returns(bool success)
+func (_IStaking *IStakingSession) Delegate(validatorAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.Delegate(&_IStaking.TransactOpts, validatorAddress, amount)
 }
 
-// Delegate is a paid mutator transaction binding the contract method 0x9ddb511a.
+// Delegate is a paid mutator transaction binding the contract method 0x026e402b.
 //
-// Solidity: function delegate(string _val) payable returns(uint256 _shares, uint256 _reward)
-func (_IStaking *IStakingTransactorSession) Delegate(_val string) (*types.Transaction, error) {
-	return _IStaking.Contract.Delegate(&_IStaking.TransactOpts, _val)
+// Solidity: function delegate(address validatorAddress, uint256 amount) returns(bool success)
+func (_IStaking *IStakingTransactorSession) Delegate(validatorAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.Delegate(&_IStaking.TransactOpts, validatorAddress, amount)
 }
 
 // Redelegate is a paid mutator transaction binding the contract method 0x7dd0209d.
@@ -409,40 +409,47 @@ func (it *IStakingDelegateIterator) Close() error {
 // IStakingDelegate represents a Delegate event raised by the IStaking contract.
 type IStakingDelegate struct {
 	Delegator common.Address
-	Validator string
+	Validator common.Address
 	Amount    *big.Int
-	Shares    *big.Int
 	Raw       types.Log // Blockchain specific contextual infos
 }
 
-// FilterDelegate is a free log retrieval operation binding the contract event 0x5a5adf903ba232ef17ed8be4ef872e1f60d17c5ba26a1ecbf44e388a672b118a.
+// FilterDelegate is a free log retrieval operation binding the contract event 0x510b11bb3f3c799b11307c01ab7db0d335683ef5b2da98f7697de744f465eacc.
 //
-// Solidity: event Delegate(address indexed delegator, string validator, uint256 amount, uint256 shares)
-func (_IStaking *IStakingFilterer) FilterDelegate(opts *bind.FilterOpts, delegator []common.Address) (*IStakingDelegateIterator, error) {
+// Solidity: event Delegate(address indexed delegator, address indexed validator, uint256 amount)
+func (_IStaking *IStakingFilterer) FilterDelegate(opts *bind.FilterOpts, delegator []common.Address, validator []common.Address) (*IStakingDelegateIterator, error) {
 
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
 	}
+	var validatorRule []interface{}
+	for _, validatorItem := range validator {
+		validatorRule = append(validatorRule, validatorItem)
+	}
 
-	logs, sub, err := _IStaking.contract.FilterLogs(opts, "Delegate", delegatorRule)
+	logs, sub, err := _IStaking.contract.FilterLogs(opts, "Delegate", delegatorRule, validatorRule)
 	if err != nil {
 		return nil, err
 	}
 	return &IStakingDelegateIterator{contract: _IStaking.contract, event: "Delegate", logs: logs, sub: sub}, nil
 }
 
-// WatchDelegate is a free log subscription operation binding the contract event 0x5a5adf903ba232ef17ed8be4ef872e1f60d17c5ba26a1ecbf44e388a672b118a.
+// WatchDelegate is a free log subscription operation binding the contract event 0x510b11bb3f3c799b11307c01ab7db0d335683ef5b2da98f7697de744f465eacc.
 //
-// Solidity: event Delegate(address indexed delegator, string validator, uint256 amount, uint256 shares)
-func (_IStaking *IStakingFilterer) WatchDelegate(opts *bind.WatchOpts, sink chan<- *IStakingDelegate, delegator []common.Address) (event.Subscription, error) {
+// Solidity: event Delegate(address indexed delegator, address indexed validator, uint256 amount)
+func (_IStaking *IStakingFilterer) WatchDelegate(opts *bind.WatchOpts, sink chan<- *IStakingDelegate, delegator []common.Address, validator []common.Address) (event.Subscription, error) {
 
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
 	}
+	var validatorRule []interface{}
+	for _, validatorItem := range validator {
+		validatorRule = append(validatorRule, validatorItem)
+	}
 
-	logs, sub, err := _IStaking.contract.WatchLogs(opts, "Delegate", delegatorRule)
+	logs, sub, err := _IStaking.contract.WatchLogs(opts, "Delegate", delegatorRule, validatorRule)
 	if err != nil {
 		return nil, err
 	}
@@ -474,9 +481,9 @@ func (_IStaking *IStakingFilterer) WatchDelegate(opts *bind.WatchOpts, sink chan
 	}), nil
 }
 
-// ParseDelegate is a log parse operation binding the contract event 0x5a5adf903ba232ef17ed8be4ef872e1f60d17c5ba26a1ecbf44e388a672b118a.
+// ParseDelegate is a log parse operation binding the contract event 0x510b11bb3f3c799b11307c01ab7db0d335683ef5b2da98f7697de744f465eacc.
 //
-// Solidity: event Delegate(address indexed delegator, string validator, uint256 amount, uint256 shares)
+// Solidity: event Delegate(address indexed delegator, address indexed validator, uint256 amount)
 func (_IStaking *IStakingFilterer) ParseDelegate(log types.Log) (*IStakingDelegate, error) {
 	event := new(IStakingDelegate)
 	if err := _IStaking.contract.UnpackLog(event, "Delegate", log); err != nil {

@@ -12,14 +12,14 @@ contract StakingTest is IStaking {
     mapping(string => uint256) public validatorShares;
 
     function delegate(
-        string memory _val
-    ) external payable override returns (uint256, uint256) {
-        (uint256 newShares, uint256 reward) = StakingCall.delegate(
-            _val,
-            msg.value
+        address validatorAddress,
+        uint256 amount
+    ) external override returns (bool) {
+        (bool success) = StakingCall.delegate(
+            validatorAddress,
+            amount
         );
-        validatorShares[_val] += newShares;
-        return (newShares, reward);
+        return success;
     }
 
     function undelegate(

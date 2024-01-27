@@ -4,23 +4,22 @@ pragma solidity ^0.8.0;
 
 interface IStaking {
     function delegate(
-        string memory _val
-    ) external payable returns (uint256 _shares, uint256 _reward);
+        address validatorAddress,
+        uint256 amount
+    ) external returns (bool success);
 
     function undelegate(
         string memory _val,
         uint256 _shares
-    )
-        external
-        returns (uint256 _amount, uint256 _reward, uint256 _completionTime);
+    ) external returns (uint256 _amount, uint256 _reward, uint256 _completionTime);
 
     function redelegate(
         string memory _valSrc,
         string memory _valDst,
         uint256 _shares
     )
-        external
-        returns (uint256 _amount, uint256 _reward, uint256 _completionTime);
+    external
+    returns (uint256 _amount, uint256 _reward, uint256 _completionTime);
 
     function withdraw(string memory _val) external returns (uint256 _reward);
 
@@ -36,9 +35,8 @@ interface IStaking {
 
     event Delegate(
         address indexed delegator,
-        string validator,
-        uint256 amount,
-        uint256 shares
+        address indexed validator,
+        uint256 amount
     );
 
     event Undelegate(

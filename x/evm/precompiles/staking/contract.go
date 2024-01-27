@@ -9,6 +9,8 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
 
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
 
@@ -16,14 +18,14 @@ type Contract struct {
 	ctx           sdk.Context
 	bankKeeper    BankKeeper
 	distrKeeper   DistrKeeper
-	stakingKeeper StakingKeeper
+	stakingKeeper stakingkeeper.Keeper
 	evmKeeper     EvmKeeper
 }
 
 func NewPrecompiledContract(
 	ctx sdk.Context,
 	bankKeeper BankKeeper,
-	stakingKeeper StakingKeeper,
+	stakingKeeper stakingkeeper.Keeper,
 	distrKeeper DistrKeeper,
 	evmKeeper EvmKeeper,
 ) *Contract {
