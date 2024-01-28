@@ -214,7 +214,6 @@ func (_StakingTest *StakingTestTransactorRaw) Transact(opts *bind.TransactOpts, 
 func (_StakingTest *StakingTestCaller) Delegation(opts *bind.CallOpts, delegatorAddress common.Address, validatorAddress common.Address) (*big.Int, Coin, error) {
 	var out []interface{}
 	err := _StakingTest.contract.Call(opts, &out, "delegation", delegatorAddress, validatorAddress)
-
 	if err != nil {
 		return *new(*big.Int), *new(Coin), err
 	}
@@ -223,7 +222,6 @@ func (_StakingTest *StakingTestCaller) Delegation(opts *bind.CallOpts, delegator
 	out1 := *abi.ConvertType(out[1], new(Coin)).(*Coin)
 
 	return out0, out1, err
-
 }
 
 // Delegation is a free data retrieval call binding the contract method 0x046d3307.
@@ -246,7 +244,6 @@ func (_StakingTest *StakingTestCallerSession) Delegation(delegatorAddress common
 func (_StakingTest *StakingTestCaller) ValidatorShares(opts *bind.CallOpts, arg0 string) (*big.Int, error) {
 	var out []interface{}
 	err := _StakingTest.contract.Call(opts, &out, "validatorShares", arg0)
-
 	if err != nil {
 		return *new(*big.Int), err
 	}
@@ -254,7 +251,6 @@ func (_StakingTest *StakingTestCaller) ValidatorShares(opts *bind.CallOpts, arg0
 	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
 	return out0, err
-
 }
 
 // ValidatorShares is a free data retrieval call binding the contract method 0xbf98d772.
@@ -435,7 +431,6 @@ type StakingTestCancelUnbondingDelegation struct {
 //
 // Solidity: event CancelUnbondingDelegation(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 creationHeight)
 func (_StakingTest *StakingTestFilterer) FilterCancelUnbondingDelegation(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorAddress []common.Address) (*StakingTestCancelUnbondingDelegationIterator, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -456,7 +451,6 @@ func (_StakingTest *StakingTestFilterer) FilterCancelUnbondingDelegation(opts *b
 //
 // Solidity: event CancelUnbondingDelegation(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 creationHeight)
 func (_StakingTest *StakingTestFilterer) WatchCancelUnbondingDelegation(opts *bind.WatchOpts, sink chan<- *StakingTestCancelUnbondingDelegation, delegatorAddress []common.Address, validatorAddress []common.Address) (event.Subscription, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -589,7 +583,6 @@ type StakingTestDelegate struct {
 //
 // Solidity: event Delegate(address indexed delegator, address indexed validator, uint256 amount)
 func (_StakingTest *StakingTestFilterer) FilterDelegate(opts *bind.FilterOpts, delegator []common.Address, validator []common.Address) (*StakingTestDelegateIterator, error) {
-
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
@@ -610,7 +603,6 @@ func (_StakingTest *StakingTestFilterer) FilterDelegate(opts *bind.FilterOpts, d
 //
 // Solidity: event Delegate(address indexed delegator, address indexed validator, uint256 amount)
 func (_StakingTest *StakingTestFilterer) WatchDelegate(opts *bind.WatchOpts, sink chan<- *StakingTestDelegate, delegator []common.Address, validator []common.Address) (event.Subscription, error) {
-
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
@@ -745,7 +737,6 @@ type StakingTestRedelegate struct {
 //
 // Solidity: event Redelegate(address indexed delegatorAddress, address indexed validatorSrcAddress, address indexed validatorDstAddress, uint256 amount, uint256 completionTime)
 func (_StakingTest *StakingTestFilterer) FilterRedelegate(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorSrcAddress []common.Address, validatorDstAddress []common.Address) (*StakingTestRedelegateIterator, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -770,7 +761,6 @@ func (_StakingTest *StakingTestFilterer) FilterRedelegate(opts *bind.FilterOpts,
 //
 // Solidity: event Redelegate(address indexed delegatorAddress, address indexed validatorSrcAddress, address indexed validatorDstAddress, uint256 amount, uint256 completionTime)
 func (_StakingTest *StakingTestFilterer) WatchRedelegate(opts *bind.WatchOpts, sink chan<- *StakingTestRedelegate, delegatorAddress []common.Address, validatorSrcAddress []common.Address, validatorDstAddress []common.Address) (event.Subscription, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -908,7 +898,6 @@ type StakingTestUndelegate struct {
 //
 // Solidity: event Undelegate(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 completionTime)
 func (_StakingTest *StakingTestFilterer) FilterUndelegate(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorAddress []common.Address) (*StakingTestUndelegateIterator, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -929,7 +918,6 @@ func (_StakingTest *StakingTestFilterer) FilterUndelegate(opts *bind.FilterOpts,
 //
 // Solidity: event Undelegate(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 completionTime)
 func (_StakingTest *StakingTestFilterer) WatchUndelegate(opts *bind.WatchOpts, sink chan<- *StakingTestUndelegate, delegatorAddress []common.Address, validatorAddress []common.Address) (event.Subscription, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)

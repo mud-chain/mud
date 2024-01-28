@@ -1,9 +1,10 @@
 package staking
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"math/big"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"

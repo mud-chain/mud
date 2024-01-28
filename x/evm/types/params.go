@@ -16,11 +16,13 @@
 package types
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
+	"math/big"
+
+	errorsmod "cosmossdk.io/errors"
+
 	channeltypes "github.com/cosmos/ibc-go/v6/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v6/modules/core/24-host"
-	"math/big"
 
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/params"
