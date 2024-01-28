@@ -5,7 +5,6 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/evmos/evmos/v12/x/evm/precompiles/contracts"
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
 
@@ -36,7 +35,7 @@ func (c *Contract) Delegation(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	}
 
 	shares := resp.DelegationResponse.Delegation.GetShares().TruncateInt().BigInt()
-	balance := contracts.Coin{
+	balance := Coin{
 		Denom:  resp.DelegationResponse.Balance.Denom,
 		Amount: resp.DelegationResponse.Balance.Amount.BigInt(),
 	}
