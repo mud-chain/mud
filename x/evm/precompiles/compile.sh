@@ -27,18 +27,20 @@ echo "===> Compiling contracts"
 
 # add core contracts
 contracts=(IStaking)
-contracts_test=(StakingTest)
+contracts_test=()
 # add 3rd party contracts
 
 for contract in "${contracts[@]}"; do
   echo "===> Ethereum ABI wrapper code generator: $contract"
+  pkg=$(echo "$contract" | tr '[:upper:]' '[:lower:]')
+  pkg=${pkg:1}
   file_path=$(find "$project_dir/solidity/artifacts" -name "${contract}.json" -type f)
   jq -c '.abi' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.abi"
   jq -r '.bytecode' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.bin"
   abigen --abi "$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.abi" \
     --bin "$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.bin" \
-    --type "${contract}" --pkg contracts \
-    --out "$project_dir/x/evm/precompiles/contracts/${contract}.go"
+    --type "${contract}" --pkg ${pkg} \
+    --out "$project_dir/x/evm/precompiles/${pkg}/${contract}.go"
 done
 
 # test contracts
@@ -53,4 +55,4 @@ for contract_test in "${contracts_test[@]}"; do
     --out "$project_dir/tests/contracts/${contract_test}.go"
 done
 
-rm -rf "$project_dir/x/evm/precompiles/contracts/artifacts"
+rm -rf "$project_dir/x/evm/precompiles/contracts"

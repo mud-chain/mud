@@ -12,12 +12,11 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/evmos/evmos/v12/types"
-	"github.com/evmos/evmos/v12/x/evm/precompiles/contracts"
 )
 
 var (
 	stakingAddress = common.HexToAddress(types.StakingAddress)
-	stakingABI     = types.MustABIJson(contracts.IStakingMetaData.ABI)
+	stakingABI     = types.MustABIJson(IStakingMetaData.ABI)
 )
 
 func GetAddress() common.Address {
