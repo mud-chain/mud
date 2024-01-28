@@ -9,8 +9,7 @@ import "./Decode.sol";
 /* solhint-enable no-global-import */
 
 library StakingCall {
-    address public constant STAKING_ADDRESS =
-    address(0x0000000000000000000000000000000000001003);
+    address public constant STAKING_ADDRESS = address(0x0000000000000000000000000000000000001003);
 
     function delegate(
         address validatorAddress,
