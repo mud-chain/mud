@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"time"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	//nolint:revive // dot imports are fine for Ginkgo
 	. "github.com/onsi/ginkgo/v2"
@@ -70,7 +71,7 @@ var _ = Describe("Inflation", Ordered, func() {
 
 					provision := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
 					params := s.app.InflationKeeper.GetParams(s.ctx)
-					distribution := params.InflationDistribution.UsageIncentives //nolint:staticcheck
+					distribution := params.InflationDistribution.UsageIncentives
 					expected := (provision.Mul(distribution)).TruncateInt()
 
 					Expect(actual.IsZero()).To(BeTrue())
@@ -131,7 +132,7 @@ var _ = Describe("Inflation", Ordered, func() {
 
 					provision := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
 					params := s.app.InflationKeeper.GetParams(s.ctx)
-					distribution := params.InflationDistribution.UsageIncentives //nolint:staticcheck
+					distribution := params.InflationDistribution.UsageIncentives
 					expected := (provision.Mul(distribution)).TruncateInt()
 
 					Expect(actual.IsZero()).To(BeTrue())
@@ -186,7 +187,7 @@ var _ = Describe("Inflation", Ordered, func() {
 
 					provision := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
 					params := s.app.InflationKeeper.GetParams(s.ctx)
-					distribution := params.InflationDistribution.UsageIncentives //nolint:staticcheck
+					distribution := params.InflationDistribution.UsageIncentives
 					expected := (provision.Mul(distribution)).TruncateInt()
 
 					Expect(actual.IsZero()).To(BeTrue())

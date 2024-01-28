@@ -192,7 +192,8 @@ func (_IStaking *IStakingTransactorRaw) Transact(opts *bind.TransactOpts, method
 func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, delegatorAddress common.Address, validatorAddress common.Address) (struct {
 	Shares  *big.Int
 	Balance Coin
-}, error) {
+}, error,
+) {
 	var out []interface{}
 	err := _IStaking.contract.Call(opts, &out, "delegation", delegatorAddress, validatorAddress)
 
@@ -208,7 +209,6 @@ func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, delegatorAddres
 	outstruct.Balance = *abi.ConvertType(out[1], new(Coin)).(*Coin)
 
 	return *outstruct, err
-
 }
 
 // Delegation is a free data retrieval call binding the contract method 0x046d3307.
@@ -217,7 +217,8 @@ func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, delegatorAddres
 func (_IStaking *IStakingSession) Delegation(delegatorAddress common.Address, validatorAddress common.Address) (struct {
 	Shares  *big.Int
 	Balance Coin
-}, error) {
+}, error,
+) {
 	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, delegatorAddress, validatorAddress)
 }
 
@@ -227,7 +228,8 @@ func (_IStaking *IStakingSession) Delegation(delegatorAddress common.Address, va
 func (_IStaking *IStakingCallerSession) Delegation(delegatorAddress common.Address, validatorAddress common.Address) (struct {
 	Shares  *big.Int
 	Balance Coin
-}, error) {
+}, error,
+) {
 	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, delegatorAddress, validatorAddress)
 }
 
@@ -395,7 +397,6 @@ type IStakingCancelUnbondingDelegation struct {
 //
 // Solidity: event CancelUnbondingDelegation(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 creationHeight)
 func (_IStaking *IStakingFilterer) FilterCancelUnbondingDelegation(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorAddress []common.Address) (*IStakingCancelUnbondingDelegationIterator, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -416,7 +417,6 @@ func (_IStaking *IStakingFilterer) FilterCancelUnbondingDelegation(opts *bind.Fi
 //
 // Solidity: event CancelUnbondingDelegation(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 creationHeight)
 func (_IStaking *IStakingFilterer) WatchCancelUnbondingDelegation(opts *bind.WatchOpts, sink chan<- *IStakingCancelUnbondingDelegation, delegatorAddress []common.Address, validatorAddress []common.Address) (event.Subscription, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -549,7 +549,6 @@ type IStakingDelegate struct {
 //
 // Solidity: event Delegate(address indexed delegator, address indexed validator, uint256 amount)
 func (_IStaking *IStakingFilterer) FilterDelegate(opts *bind.FilterOpts, delegator []common.Address, validator []common.Address) (*IStakingDelegateIterator, error) {
-
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
@@ -570,7 +569,6 @@ func (_IStaking *IStakingFilterer) FilterDelegate(opts *bind.FilterOpts, delegat
 //
 // Solidity: event Delegate(address indexed delegator, address indexed validator, uint256 amount)
 func (_IStaking *IStakingFilterer) WatchDelegate(opts *bind.WatchOpts, sink chan<- *IStakingDelegate, delegator []common.Address, validator []common.Address) (event.Subscription, error) {
-
 	var delegatorRule []interface{}
 	for _, delegatorItem := range delegator {
 		delegatorRule = append(delegatorRule, delegatorItem)
@@ -705,7 +703,6 @@ type IStakingRedelegate struct {
 //
 // Solidity: event Redelegate(address indexed delegatorAddress, address indexed validatorSrcAddress, address indexed validatorDstAddress, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) FilterRedelegate(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorSrcAddress []common.Address, validatorDstAddress []common.Address) (*IStakingRedelegateIterator, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -730,7 +727,6 @@ func (_IStaking *IStakingFilterer) FilterRedelegate(opts *bind.FilterOpts, deleg
 //
 // Solidity: event Redelegate(address indexed delegatorAddress, address indexed validatorSrcAddress, address indexed validatorDstAddress, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) WatchRedelegate(opts *bind.WatchOpts, sink chan<- *IStakingRedelegate, delegatorAddress []common.Address, validatorSrcAddress []common.Address, validatorDstAddress []common.Address) (event.Subscription, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -868,7 +864,6 @@ type IStakingUndelegate struct {
 //
 // Solidity: event Undelegate(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) FilterUndelegate(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorAddress []common.Address) (*IStakingUndelegateIterator, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
@@ -889,7 +884,6 @@ func (_IStaking *IStakingFilterer) FilterUndelegate(opts *bind.FilterOpts, deleg
 //
 // Solidity: event Undelegate(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) WatchUndelegate(opts *bind.WatchOpts, sink chan<- *IStakingUndelegate, delegatorAddress []common.Address, validatorAddress []common.Address) (event.Subscription, error) {
-
 	var delegatorAddressRule []interface{}
 	for _, delegatorAddressItem := range delegatorAddress {
 		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)

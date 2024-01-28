@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"errors"
 	"fmt"
-	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	"math/big"
+
+	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 
 	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/erc20/keeper"

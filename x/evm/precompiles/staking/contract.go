@@ -63,24 +63,26 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 	snapshot := evm.StateDB.Snapshot()
 
 	method, err := GetMethodByID(contract.Input)
+	if err == nil {
+		// parse input
+		switch method.Name {
+		case DelegateMethodName:
+			ret, err = c.Delegate(cacheCtx, evm, contract, readonly)
+		case UndelegateMethodName:
+			ret, err = c.Undelegate(cacheCtx, evm, contract, readonly)
+		case RedelegateMethodName:
+			ret, err = c.Redelegatge(cacheCtx, evm, contract, readonly)
+		case CancelUnbondingDelegationMethodName:
+			ret, err = c.CancelUnbondingDelegation(cacheCtx, evm, contract, readonly)
+		case DelegationMethodName:
+			ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
+		}
+	}
+
 	if err != nil {
 		// revert evm state
 		evm.StateDB.RevertToSnapshot(snapshot)
 		return types.PackRetError(err.Error())
-	}
-
-	// parse input
-	switch method.Name {
-	case DelegateMethodName:
-		ret, err = c.Delegate(cacheCtx, evm, contract, readonly)
-	case UndelegateMethodName:
-		ret, err = c.Undelegate(cacheCtx, evm, contract, readonly)
-	case RedelegateMethodName:
-		ret, err = c.Redelegatge(cacheCtx, evm, contract, readonly)
-	case CancelUnbondingDelegationMethodName:
-		ret, err = c.CancelUnbondingDelegation(cacheCtx, evm, contract, readonly)
-	case DelegationMethodName:
-		ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
 	}
 
 	// commit and append events
