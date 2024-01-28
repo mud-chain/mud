@@ -130,6 +130,7 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
 	evmkeeper "github.com/evmos/evmos/v12/x/evm/keeper"
+	precompilesstaking "github.com/evmos/evmos/v12/x/evm/precompiles/staking"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	"github.com/evmos/evmos/v12/x/feemarket"
 	feemarketkeeper "github.com/evmos/evmos/v12/x/feemarket/keeper"
@@ -161,6 +162,7 @@ import (
 	transferkeeper "github.com/evmos/evmos/v12/x/ibc/transfer/keeper"
 
 	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	"github.com/ethereum/go-ethereum/core/vm"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 )
@@ -750,6 +752,7 @@ func NewEvmos(
 	app.setPostHandler()
 	app.SetEndBlocker(app.EndBlocker)
 	app.setupUpgradeHandlers()
+	app.EvmPrecompiled()
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
@@ -1062,8 +1065,20 @@ func initParamsKeeper(
 	return paramsKeeper
 }
 
-func (app *Evmos) setupUpgradeHandlers() {
+// EvmPrecompiled  set evm precompiled contracts
+func (app *Evmos) EvmPrecompiled() {
+	precompiled := evmkeeper.BerlinPrecompiled()
 
+	// staking precompile
+	precompiled[precompilesstaking.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesstaking.NewPrecompiledContract(ctx, app.StakingKeeper)
+	}
+
+	// set precompiled contracts
+	app.EvmKeeper.WithPrecompiled(precompiled)
+}
+
+func (app *Evmos) setupUpgradeHandlers() {
 	// When a planned update height is reached, the old binary will panic
 	// writing on disk the height and name of the update that triggered it
 	// This will read that value, and execute the preparations for the upgrade.
@@ -1079,7 +1094,6 @@ func (app *Evmos) setupUpgradeHandlers() {
 	var storeUpgrades *storetypes.StoreUpgrades
 
 	switch upgradeInfo.Name {
-
 	}
 
 	if storeUpgrades != nil {
