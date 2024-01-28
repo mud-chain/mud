@@ -1071,13 +1071,7 @@ func (app *Evmos) EvmPrecompiled() {
 
 	// staking precompile
 	precompiled[precompilesstaking.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
-		return precompilesstaking.NewPrecompiledContract(
-			ctx,
-			app.BankKeeper,
-			app.StakingKeeper,
-			app.DistrKeeper,
-			app.EvmKeeper,
-		)
+		return precompilesstaking.NewPrecompiledContract(ctx, app.StakingKeeper)
 	}
 
 	// set precompiled contracts

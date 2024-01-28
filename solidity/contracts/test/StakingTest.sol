@@ -15,7 +15,7 @@ contract StakingTest is IStaking {
         address validatorAddress,
         uint256 amount
     ) external override returns (bool) {
-        (bool success) = StakingCall.delegate(
+        bool success = StakingCall.delegate(
             validatorAddress,
             amount
         );
@@ -23,43 +23,46 @@ contract StakingTest is IStaking {
     }
 
     function undelegate(
-        string memory _val,
-        uint256 _shares
-    ) external override returns (uint256, uint256, uint256) {
-        (uint256 amount, uint256 reward, uint256 completionTime) = StakingCall
-            .undelegate(_val, _shares);
-        validatorShares[_val] -= _shares;
-        return (amount, reward, completionTime);
+        address validatorAddress,
+        uint256 amount
+    ) external override returns (uint256) {
+        uint256 completionTime = StakingCall.undelegate(
+            validatorAddress,
+            amount
+        );
+        return completionTime;
     }
 
     function redelegate(
-        string memory _valSrc,
-        string memory _valDst,
-        uint256 _shares
-    ) external override returns (uint256, uint256, uint256) {
-        (uint256 amount, uint256 reward, uint256 completionTime) = StakingCall
-            .redelegate(_valSrc, _valDst, _shares);
-        validatorShares[_valSrc] -= _shares;
-        validatorShares[_valDst] += _shares;
-        return (amount, reward, completionTime);
+        address validatorSrcAddress,
+        address validatorDstAddress,
+        uint256 amount
+    ) external override returns (uint256) {
+        uint256 completionTime = StakingCall.redelegate(
+            validatorSrcAddress,
+            validatorDstAddress,
+            amount
+        );
+        return completionTime;
     }
 
-    function withdraw(string memory _val) external override returns (uint256) {
-        uint256 amount = StakingCall.withdraw(_val);
-        return amount;
+    function cancelUnbondingDelegation(
+        address validatorAddress,
+        uint256 amount,
+        uint256 creationHeight
+    ) external override returns (bool) {
+        bool success = StakingCall.cancelUnbondingDelegation(
+            validatorAddress,
+            amount,
+            creationHeight
+        );
+        return success;
     }
 
     function delegation(
-        string memory _val,
-        address _del
-    ) public view override returns (uint256, uint256) {
-        return StakingCall.delegation(_val, _del);
-    }
-
-    function delegationRewards(
-        string memory _val,
-        address _del
-    ) public view override returns (uint256) {
-        return StakingCall.delegationRewards(_val, _del);
+        address delegatorAddress,
+        address validatorAddress
+    ) public view override returns (uint256, types.Coin memory) {
+        return StakingCall.delegation(delegatorAddress, validatorAddress);
     }
 }

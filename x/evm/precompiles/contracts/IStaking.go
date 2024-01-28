@@ -26,11 +26,18 @@ var (
 	_ = common.Big1
 	_ = types.BloomLookup
 	_ = event.NewSubscription
+	_ = abi.ConvertType
 )
+
+// Coin is an auto generated low-level Go binding around an user-defined struct.
+type Coin struct {
+	Denom  string
+	Amount *big.Int
+}
 
 // IStakingMetaData contains all meta data concerning the IStaking contract.
 var IStakingMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Delegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valSrc\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"valDst\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Redelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Undelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"validator\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"delegate\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegation\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_delegateAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_del\",\"type\":\"address\"}],\"name\":\"delegationRewards\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_valSrc\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_valDst\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"redelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_shares\",\"type\":\"uint256\"}],\"name\":\"undelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_val\",\"type\":\"string\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_reward\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"creationHeight\",\"type\":\"uint256\"}],\"name\":\"CancelUnbondingDelegation\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Delegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validatorSrcAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validatorDstAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Redelegate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"name\":\"Undelegate\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"creationHeight\",\"type\":\"uint256\"}],\"name\":\"cancelUnbondingDelegation\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"delegate\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"delegation\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"balance\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorSrcAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"validatorDstAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"redelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"undelegate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"completionTime\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IStakingABI is the input ABI used to generate the binding from.
@@ -134,11 +141,11 @@ func NewIStakingFilterer(address common.Address, filterer bind.ContractFilterer)
 
 // bindIStaking binds a generic wrapper to an already deployed contract.
 func bindIStaking(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
-	parsed, err := abi.JSON(strings.NewReader(IStakingABI))
+	parsed, err := IStakingMetaData.GetAbi()
 	if err != nil {
 		return nil, err
 	}
-	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
+	return bind.NewBoundContract(address, *parsed, caller, transactor, filterer), nil
 }
 
 // Call invokes the (constant) contract method with params as input values and
@@ -179,80 +186,70 @@ func (_IStaking *IStakingTransactorRaw) Transact(opts *bind.TransactOpts, method
 	return _IStaking.Contract.contract.Transact(opts, method, params...)
 }
 
-// Delegation is a free data retrieval call binding the contract method 0xd5c498eb.
+// Delegation is a free data retrieval call binding the contract method 0x046d3307.
 //
-// Solidity: function delegation(string _val, address _del) view returns(uint256 _shares, uint256 _delegateAmount)
-func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, _val string, _del common.Address) (struct {
-	Shares         *big.Int
-	DelegateAmount *big.Int
+// Solidity: function delegation(address delegatorAddress, address validatorAddress) view returns(uint256 shares, (string,uint256) balance)
+func (_IStaking *IStakingCaller) Delegation(opts *bind.CallOpts, delegatorAddress common.Address, validatorAddress common.Address) (struct {
+	Shares  *big.Int
+	Balance Coin
 }, error) {
 	var out []interface{}
-	err := _IStaking.contract.Call(opts, &out, "delegation", _val, _del)
+	err := _IStaking.contract.Call(opts, &out, "delegation", delegatorAddress, validatorAddress)
 
 	outstruct := new(struct {
-		Shares         *big.Int
-		DelegateAmount *big.Int
+		Shares  *big.Int
+		Balance Coin
 	})
 	if err != nil {
 		return *outstruct, err
 	}
 
 	outstruct.Shares = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-	outstruct.DelegateAmount = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	outstruct.Balance = *abi.ConvertType(out[1], new(Coin)).(*Coin)
 
 	return *outstruct, err
 
 }
 
-// Delegation is a free data retrieval call binding the contract method 0xd5c498eb.
+// Delegation is a free data retrieval call binding the contract method 0x046d3307.
 //
-// Solidity: function delegation(string _val, address _del) view returns(uint256 _shares, uint256 _delegateAmount)
-func (_IStaking *IStakingSession) Delegation(_val string, _del common.Address) (struct {
-	Shares         *big.Int
-	DelegateAmount *big.Int
+// Solidity: function delegation(address delegatorAddress, address validatorAddress) view returns(uint256 shares, (string,uint256) balance)
+func (_IStaking *IStakingSession) Delegation(delegatorAddress common.Address, validatorAddress common.Address) (struct {
+	Shares  *big.Int
+	Balance Coin
 }, error) {
-	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, _val, _del)
+	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, delegatorAddress, validatorAddress)
 }
 
-// Delegation is a free data retrieval call binding the contract method 0xd5c498eb.
+// Delegation is a free data retrieval call binding the contract method 0x046d3307.
 //
-// Solidity: function delegation(string _val, address _del) view returns(uint256 _shares, uint256 _delegateAmount)
-func (_IStaking *IStakingCallerSession) Delegation(_val string, _del common.Address) (struct {
-	Shares         *big.Int
-	DelegateAmount *big.Int
+// Solidity: function delegation(address delegatorAddress, address validatorAddress) view returns(uint256 shares, (string,uint256) balance)
+func (_IStaking *IStakingCallerSession) Delegation(delegatorAddress common.Address, validatorAddress common.Address) (struct {
+	Shares  *big.Int
+	Balance Coin
 }, error) {
-	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, _val, _del)
+	return _IStaking.Contract.Delegation(&_IStaking.CallOpts, delegatorAddress, validatorAddress)
 }
 
-// DelegationRewards is a free data retrieval call binding the contract method 0x51af513a.
+// CancelUnbondingDelegation is a paid mutator transaction binding the contract method 0x50826aef.
 //
-// Solidity: function delegationRewards(string _val, address _del) view returns(uint256 _reward)
-func (_IStaking *IStakingCaller) DelegationRewards(opts *bind.CallOpts, _val string, _del common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _IStaking.contract.Call(opts, &out, "delegationRewards", _val, _del)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
+// Solidity: function cancelUnbondingDelegation(address validatorAddress, uint256 amount, uint256 creationHeight) returns(bool success)
+func (_IStaking *IStakingTransactor) CancelUnbondingDelegation(opts *bind.TransactOpts, validatorAddress common.Address, amount *big.Int, creationHeight *big.Int) (*types.Transaction, error) {
+	return _IStaking.contract.Transact(opts, "cancelUnbondingDelegation", validatorAddress, amount, creationHeight)
 }
 
-// DelegationRewards is a free data retrieval call binding the contract method 0x51af513a.
+// CancelUnbondingDelegation is a paid mutator transaction binding the contract method 0x50826aef.
 //
-// Solidity: function delegationRewards(string _val, address _del) view returns(uint256 _reward)
-func (_IStaking *IStakingSession) DelegationRewards(_val string, _del common.Address) (*big.Int, error) {
-	return _IStaking.Contract.DelegationRewards(&_IStaking.CallOpts, _val, _del)
+// Solidity: function cancelUnbondingDelegation(address validatorAddress, uint256 amount, uint256 creationHeight) returns(bool success)
+func (_IStaking *IStakingSession) CancelUnbondingDelegation(validatorAddress common.Address, amount *big.Int, creationHeight *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.CancelUnbondingDelegation(&_IStaking.TransactOpts, validatorAddress, amount, creationHeight)
 }
 
-// DelegationRewards is a free data retrieval call binding the contract method 0x51af513a.
+// CancelUnbondingDelegation is a paid mutator transaction binding the contract method 0x50826aef.
 //
-// Solidity: function delegationRewards(string _val, address _del) view returns(uint256 _reward)
-func (_IStaking *IStakingCallerSession) DelegationRewards(_val string, _del common.Address) (*big.Int, error) {
-	return _IStaking.Contract.DelegationRewards(&_IStaking.CallOpts, _val, _del)
+// Solidity: function cancelUnbondingDelegation(address validatorAddress, uint256 amount, uint256 creationHeight) returns(bool success)
+func (_IStaking *IStakingTransactorSession) CancelUnbondingDelegation(validatorAddress common.Address, amount *big.Int, creationHeight *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.CancelUnbondingDelegation(&_IStaking.TransactOpts, validatorAddress, amount, creationHeight)
 }
 
 // Delegate is a paid mutator transaction binding the contract method 0x026e402b.
@@ -276,67 +273,201 @@ func (_IStaking *IStakingTransactorSession) Delegate(validatorAddress common.Add
 	return _IStaking.Contract.Delegate(&_IStaking.TransactOpts, validatorAddress, amount)
 }
 
-// Redelegate is a paid mutator transaction binding the contract method 0x7dd0209d.
+// Redelegate is a paid mutator transaction binding the contract method 0x6bd8f804.
 //
-// Solidity: function redelegate(string _valSrc, string _valDst, uint256 _shares) returns(uint256 _amount, uint256 _reward, uint256 _completionTime)
-func (_IStaking *IStakingTransactor) Redelegate(opts *bind.TransactOpts, _valSrc string, _valDst string, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.contract.Transact(opts, "redelegate", _valSrc, _valDst, _shares)
+// Solidity: function redelegate(address validatorSrcAddress, address validatorDstAddress, uint256 amount) returns(uint256 completionTime)
+func (_IStaking *IStakingTransactor) Redelegate(opts *bind.TransactOpts, validatorSrcAddress common.Address, validatorDstAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.contract.Transact(opts, "redelegate", validatorSrcAddress, validatorDstAddress, amount)
 }
 
-// Redelegate is a paid mutator transaction binding the contract method 0x7dd0209d.
+// Redelegate is a paid mutator transaction binding the contract method 0x6bd8f804.
 //
-// Solidity: function redelegate(string _valSrc, string _valDst, uint256 _shares) returns(uint256 _amount, uint256 _reward, uint256 _completionTime)
-func (_IStaking *IStakingSession) Redelegate(_valSrc string, _valDst string, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.Redelegate(&_IStaking.TransactOpts, _valSrc, _valDst, _shares)
+// Solidity: function redelegate(address validatorSrcAddress, address validatorDstAddress, uint256 amount) returns(uint256 completionTime)
+func (_IStaking *IStakingSession) Redelegate(validatorSrcAddress common.Address, validatorDstAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.Redelegate(&_IStaking.TransactOpts, validatorSrcAddress, validatorDstAddress, amount)
 }
 
-// Redelegate is a paid mutator transaction binding the contract method 0x7dd0209d.
+// Redelegate is a paid mutator transaction binding the contract method 0x6bd8f804.
 //
-// Solidity: function redelegate(string _valSrc, string _valDst, uint256 _shares) returns(uint256 _amount, uint256 _reward, uint256 _completionTime)
-func (_IStaking *IStakingTransactorSession) Redelegate(_valSrc string, _valDst string, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.Redelegate(&_IStaking.TransactOpts, _valSrc, _valDst, _shares)
+// Solidity: function redelegate(address validatorSrcAddress, address validatorDstAddress, uint256 amount) returns(uint256 completionTime)
+func (_IStaking *IStakingTransactorSession) Redelegate(validatorSrcAddress common.Address, validatorDstAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.Redelegate(&_IStaking.TransactOpts, validatorSrcAddress, validatorDstAddress, amount)
 }
 
-// Undelegate is a paid mutator transaction binding the contract method 0x8dfc8897.
+// Undelegate is a paid mutator transaction binding the contract method 0x4d99dd16.
 //
-// Solidity: function undelegate(string _val, uint256 _shares) returns(uint256 _amount, uint256 _reward, uint256 _completionTime)
-func (_IStaking *IStakingTransactor) Undelegate(opts *bind.TransactOpts, _val string, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.contract.Transact(opts, "undelegate", _val, _shares)
+// Solidity: function undelegate(address validatorAddress, uint256 amount) returns(uint256 completionTime)
+func (_IStaking *IStakingTransactor) Undelegate(opts *bind.TransactOpts, validatorAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.contract.Transact(opts, "undelegate", validatorAddress, amount)
 }
 
-// Undelegate is a paid mutator transaction binding the contract method 0x8dfc8897.
+// Undelegate is a paid mutator transaction binding the contract method 0x4d99dd16.
 //
-// Solidity: function undelegate(string _val, uint256 _shares) returns(uint256 _amount, uint256 _reward, uint256 _completionTime)
-func (_IStaking *IStakingSession) Undelegate(_val string, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.Undelegate(&_IStaking.TransactOpts, _val, _shares)
+// Solidity: function undelegate(address validatorAddress, uint256 amount) returns(uint256 completionTime)
+func (_IStaking *IStakingSession) Undelegate(validatorAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.Undelegate(&_IStaking.TransactOpts, validatorAddress, amount)
 }
 
-// Undelegate is a paid mutator transaction binding the contract method 0x8dfc8897.
+// Undelegate is a paid mutator transaction binding the contract method 0x4d99dd16.
 //
-// Solidity: function undelegate(string _val, uint256 _shares) returns(uint256 _amount, uint256 _reward, uint256 _completionTime)
-func (_IStaking *IStakingTransactorSession) Undelegate(_val string, _shares *big.Int) (*types.Transaction, error) {
-	return _IStaking.Contract.Undelegate(&_IStaking.TransactOpts, _val, _shares)
+// Solidity: function undelegate(address validatorAddress, uint256 amount) returns(uint256 completionTime)
+func (_IStaking *IStakingTransactorSession) Undelegate(validatorAddress common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _IStaking.Contract.Undelegate(&_IStaking.TransactOpts, validatorAddress, amount)
 }
 
-// Withdraw is a paid mutator transaction binding the contract method 0x31fb67c2.
-//
-// Solidity: function withdraw(string _val) returns(uint256 _reward)
-func (_IStaking *IStakingTransactor) Withdraw(opts *bind.TransactOpts, _val string) (*types.Transaction, error) {
-	return _IStaking.contract.Transact(opts, "withdraw", _val)
+// IStakingCancelUnbondingDelegationIterator is returned from FilterCancelUnbondingDelegation and is used to iterate over the raw logs and unpacked data for CancelUnbondingDelegation events raised by the IStaking contract.
+type IStakingCancelUnbondingDelegationIterator struct {
+	Event *IStakingCancelUnbondingDelegation // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
 }
 
-// Withdraw is a paid mutator transaction binding the contract method 0x31fb67c2.
-//
-// Solidity: function withdraw(string _val) returns(uint256 _reward)
-func (_IStaking *IStakingSession) Withdraw(_val string) (*types.Transaction, error) {
-	return _IStaking.Contract.Withdraw(&_IStaking.TransactOpts, _val)
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IStakingCancelUnbondingDelegationIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IStakingCancelUnbondingDelegation)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IStakingCancelUnbondingDelegation)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
 }
 
-// Withdraw is a paid mutator transaction binding the contract method 0x31fb67c2.
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IStakingCancelUnbondingDelegationIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IStakingCancelUnbondingDelegationIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IStakingCancelUnbondingDelegation represents a CancelUnbondingDelegation event raised by the IStaking contract.
+type IStakingCancelUnbondingDelegation struct {
+	DelegatorAddress common.Address
+	ValidatorAddress common.Address
+	Amount           *big.Int
+	CreationHeight   *big.Int
+	Raw              types.Log // Blockchain specific contextual infos
+}
+
+// FilterCancelUnbondingDelegation is a free log retrieval operation binding the contract event 0x6dbe2fb6b2613bdd8e3d284a6111592e06c3ab0af846ff89b6688d48f408dbb5.
 //
-// Solidity: function withdraw(string _val) returns(uint256 _reward)
-func (_IStaking *IStakingTransactorSession) Withdraw(_val string) (*types.Transaction, error) {
-	return _IStaking.Contract.Withdraw(&_IStaking.TransactOpts, _val)
+// Solidity: event CancelUnbondingDelegation(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 creationHeight)
+func (_IStaking *IStakingFilterer) FilterCancelUnbondingDelegation(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorAddress []common.Address) (*IStakingCancelUnbondingDelegationIterator, error) {
+
+	var delegatorAddressRule []interface{}
+	for _, delegatorAddressItem := range delegatorAddress {
+		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
+	}
+	var validatorAddressRule []interface{}
+	for _, validatorAddressItem := range validatorAddress {
+		validatorAddressRule = append(validatorAddressRule, validatorAddressItem)
+	}
+
+	logs, sub, err := _IStaking.contract.FilterLogs(opts, "CancelUnbondingDelegation", delegatorAddressRule, validatorAddressRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IStakingCancelUnbondingDelegationIterator{contract: _IStaking.contract, event: "CancelUnbondingDelegation", logs: logs, sub: sub}, nil
+}
+
+// WatchCancelUnbondingDelegation is a free log subscription operation binding the contract event 0x6dbe2fb6b2613bdd8e3d284a6111592e06c3ab0af846ff89b6688d48f408dbb5.
+//
+// Solidity: event CancelUnbondingDelegation(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 creationHeight)
+func (_IStaking *IStakingFilterer) WatchCancelUnbondingDelegation(opts *bind.WatchOpts, sink chan<- *IStakingCancelUnbondingDelegation, delegatorAddress []common.Address, validatorAddress []common.Address) (event.Subscription, error) {
+
+	var delegatorAddressRule []interface{}
+	for _, delegatorAddressItem := range delegatorAddress {
+		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
+	}
+	var validatorAddressRule []interface{}
+	for _, validatorAddressItem := range validatorAddress {
+		validatorAddressRule = append(validatorAddressRule, validatorAddressItem)
+	}
+
+	logs, sub, err := _IStaking.contract.WatchLogs(opts, "CancelUnbondingDelegation", delegatorAddressRule, validatorAddressRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IStakingCancelUnbondingDelegation)
+				if err := _IStaking.contract.UnpackLog(event, "CancelUnbondingDelegation", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseCancelUnbondingDelegation is a log parse operation binding the contract event 0x6dbe2fb6b2613bdd8e3d284a6111592e06c3ab0af846ff89b6688d48f408dbb5.
+//
+// Solidity: event CancelUnbondingDelegation(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 creationHeight)
+func (_IStaking *IStakingFilterer) ParseCancelUnbondingDelegation(log types.Log) (*IStakingCancelUnbondingDelegation, error) {
+	event := new(IStakingCancelUnbondingDelegation)
+	if err := _IStaking.contract.UnpackLog(event, "CancelUnbondingDelegation", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // IStakingDelegateIterator is returned from FilterDelegate and is used to iterate over the raw logs and unpacked data for Delegate events raised by the IStaking contract.
@@ -562,43 +693,58 @@ func (it *IStakingRedelegateIterator) Close() error {
 
 // IStakingRedelegate represents a Redelegate event raised by the IStaking contract.
 type IStakingRedelegate struct {
-	Sender         common.Address
-	ValSrc         string
-	ValDst         string
-	Shares         *big.Int
-	Amount         *big.Int
-	CompletionTime *big.Int
-	Raw            types.Log // Blockchain specific contextual infos
+	DelegatorAddress    common.Address
+	ValidatorSrcAddress common.Address
+	ValidatorDstAddress common.Address
+	Amount              *big.Int
+	CompletionTime      *big.Int
+	Raw                 types.Log // Blockchain specific contextual infos
 }
 
-// FilterRedelegate is a free log retrieval operation binding the contract event 0x14e0e9558f524ca41364e4e284ebe7aabee65559c8ea32a6fca4d812e0a1d9e6.
+// FilterRedelegate is a free log retrieval operation binding the contract event 0x82b07f2421474f1e3f1e0b34738cb5ffb925273f408e7591d9c803dcae8da657.
 //
-// Solidity: event Redelegate(address indexed sender, string valSrc, string valDst, uint256 shares, uint256 amount, uint256 completionTime)
-func (_IStaking *IStakingFilterer) FilterRedelegate(opts *bind.FilterOpts, sender []common.Address) (*IStakingRedelegateIterator, error) {
+// Solidity: event Redelegate(address indexed delegatorAddress, address indexed validatorSrcAddress, address indexed validatorDstAddress, uint256 amount, uint256 completionTime)
+func (_IStaking *IStakingFilterer) FilterRedelegate(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorSrcAddress []common.Address, validatorDstAddress []common.Address) (*IStakingRedelegateIterator, error) {
 
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
+	var delegatorAddressRule []interface{}
+	for _, delegatorAddressItem := range delegatorAddress {
+		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
+	}
+	var validatorSrcAddressRule []interface{}
+	for _, validatorSrcAddressItem := range validatorSrcAddress {
+		validatorSrcAddressRule = append(validatorSrcAddressRule, validatorSrcAddressItem)
+	}
+	var validatorDstAddressRule []interface{}
+	for _, validatorDstAddressItem := range validatorDstAddress {
+		validatorDstAddressRule = append(validatorDstAddressRule, validatorDstAddressItem)
 	}
 
-	logs, sub, err := _IStaking.contract.FilterLogs(opts, "Redelegate", senderRule)
+	logs, sub, err := _IStaking.contract.FilterLogs(opts, "Redelegate", delegatorAddressRule, validatorSrcAddressRule, validatorDstAddressRule)
 	if err != nil {
 		return nil, err
 	}
 	return &IStakingRedelegateIterator{contract: _IStaking.contract, event: "Redelegate", logs: logs, sub: sub}, nil
 }
 
-// WatchRedelegate is a free log subscription operation binding the contract event 0x14e0e9558f524ca41364e4e284ebe7aabee65559c8ea32a6fca4d812e0a1d9e6.
+// WatchRedelegate is a free log subscription operation binding the contract event 0x82b07f2421474f1e3f1e0b34738cb5ffb925273f408e7591d9c803dcae8da657.
 //
-// Solidity: event Redelegate(address indexed sender, string valSrc, string valDst, uint256 shares, uint256 amount, uint256 completionTime)
-func (_IStaking *IStakingFilterer) WatchRedelegate(opts *bind.WatchOpts, sink chan<- *IStakingRedelegate, sender []common.Address) (event.Subscription, error) {
+// Solidity: event Redelegate(address indexed delegatorAddress, address indexed validatorSrcAddress, address indexed validatorDstAddress, uint256 amount, uint256 completionTime)
+func (_IStaking *IStakingFilterer) WatchRedelegate(opts *bind.WatchOpts, sink chan<- *IStakingRedelegate, delegatorAddress []common.Address, validatorSrcAddress []common.Address, validatorDstAddress []common.Address) (event.Subscription, error) {
 
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
+	var delegatorAddressRule []interface{}
+	for _, delegatorAddressItem := range delegatorAddress {
+		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
+	}
+	var validatorSrcAddressRule []interface{}
+	for _, validatorSrcAddressItem := range validatorSrcAddress {
+		validatorSrcAddressRule = append(validatorSrcAddressRule, validatorSrcAddressItem)
+	}
+	var validatorDstAddressRule []interface{}
+	for _, validatorDstAddressItem := range validatorDstAddress {
+		validatorDstAddressRule = append(validatorDstAddressRule, validatorDstAddressItem)
 	}
 
-	logs, sub, err := _IStaking.contract.WatchLogs(opts, "Redelegate", senderRule)
+	logs, sub, err := _IStaking.contract.WatchLogs(opts, "Redelegate", delegatorAddressRule, validatorSrcAddressRule, validatorDstAddressRule)
 	if err != nil {
 		return nil, err
 	}
@@ -630,9 +776,9 @@ func (_IStaking *IStakingFilterer) WatchRedelegate(opts *bind.WatchOpts, sink ch
 	}), nil
 }
 
-// ParseRedelegate is a log parse operation binding the contract event 0x14e0e9558f524ca41364e4e284ebe7aabee65559c8ea32a6fca4d812e0a1d9e6.
+// ParseRedelegate is a log parse operation binding the contract event 0x82b07f2421474f1e3f1e0b34738cb5ffb925273f408e7591d9c803dcae8da657.
 //
-// Solidity: event Redelegate(address indexed sender, string valSrc, string valDst, uint256 shares, uint256 amount, uint256 completionTime)
+// Solidity: event Redelegate(address indexed delegatorAddress, address indexed validatorSrcAddress, address indexed validatorDstAddress, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) ParseRedelegate(log types.Log) (*IStakingRedelegate, error) {
 	event := new(IStakingRedelegate)
 	if err := _IStaking.contract.UnpackLog(event, "Redelegate", log); err != nil {
@@ -711,42 +857,49 @@ func (it *IStakingUndelegateIterator) Close() error {
 
 // IStakingUndelegate represents a Undelegate event raised by the IStaking contract.
 type IStakingUndelegate struct {
-	Sender         common.Address
-	Validator      string
-	Shares         *big.Int
-	Amount         *big.Int
-	CompletionTime *big.Int
-	Raw            types.Log // Blockchain specific contextual infos
+	DelegatorAddress common.Address
+	ValidatorAddress common.Address
+	Amount           *big.Int
+	CompletionTime   *big.Int
+	Raw              types.Log // Blockchain specific contextual infos
 }
 
-// FilterUndelegate is a free log retrieval operation binding the contract event 0xadff14cd34035a6bbb90fbe80979f36398f244f1885f7612e6e33a05a0b90d0f.
+// FilterUndelegate is a free log retrieval operation binding the contract event 0x54feacf7d18f42300ff65ba8829f17724df4915a8b1984c5fee2cc42d4027f07.
 //
-// Solidity: event Undelegate(address indexed sender, string validator, uint256 shares, uint256 amount, uint256 completionTime)
-func (_IStaking *IStakingFilterer) FilterUndelegate(opts *bind.FilterOpts, sender []common.Address) (*IStakingUndelegateIterator, error) {
+// Solidity: event Undelegate(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 completionTime)
+func (_IStaking *IStakingFilterer) FilterUndelegate(opts *bind.FilterOpts, delegatorAddress []common.Address, validatorAddress []common.Address) (*IStakingUndelegateIterator, error) {
 
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
+	var delegatorAddressRule []interface{}
+	for _, delegatorAddressItem := range delegatorAddress {
+		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
+	}
+	var validatorAddressRule []interface{}
+	for _, validatorAddressItem := range validatorAddress {
+		validatorAddressRule = append(validatorAddressRule, validatorAddressItem)
 	}
 
-	logs, sub, err := _IStaking.contract.FilterLogs(opts, "Undelegate", senderRule)
+	logs, sub, err := _IStaking.contract.FilterLogs(opts, "Undelegate", delegatorAddressRule, validatorAddressRule)
 	if err != nil {
 		return nil, err
 	}
 	return &IStakingUndelegateIterator{contract: _IStaking.contract, event: "Undelegate", logs: logs, sub: sub}, nil
 }
 
-// WatchUndelegate is a free log subscription operation binding the contract event 0xadff14cd34035a6bbb90fbe80979f36398f244f1885f7612e6e33a05a0b90d0f.
+// WatchUndelegate is a free log subscription operation binding the contract event 0x54feacf7d18f42300ff65ba8829f17724df4915a8b1984c5fee2cc42d4027f07.
 //
-// Solidity: event Undelegate(address indexed sender, string validator, uint256 shares, uint256 amount, uint256 completionTime)
-func (_IStaking *IStakingFilterer) WatchUndelegate(opts *bind.WatchOpts, sink chan<- *IStakingUndelegate, sender []common.Address) (event.Subscription, error) {
+// Solidity: event Undelegate(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 completionTime)
+func (_IStaking *IStakingFilterer) WatchUndelegate(opts *bind.WatchOpts, sink chan<- *IStakingUndelegate, delegatorAddress []common.Address, validatorAddress []common.Address) (event.Subscription, error) {
 
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
+	var delegatorAddressRule []interface{}
+	for _, delegatorAddressItem := range delegatorAddress {
+		delegatorAddressRule = append(delegatorAddressRule, delegatorAddressItem)
+	}
+	var validatorAddressRule []interface{}
+	for _, validatorAddressItem := range validatorAddress {
+		validatorAddressRule = append(validatorAddressRule, validatorAddressItem)
 	}
 
-	logs, sub, err := _IStaking.contract.WatchLogs(opts, "Undelegate", senderRule)
+	logs, sub, err := _IStaking.contract.WatchLogs(opts, "Undelegate", delegatorAddressRule, validatorAddressRule)
 	if err != nil {
 		return nil, err
 	}
@@ -778,158 +931,12 @@ func (_IStaking *IStakingFilterer) WatchUndelegate(opts *bind.WatchOpts, sink ch
 	}), nil
 }
 
-// ParseUndelegate is a log parse operation binding the contract event 0xadff14cd34035a6bbb90fbe80979f36398f244f1885f7612e6e33a05a0b90d0f.
+// ParseUndelegate is a log parse operation binding the contract event 0x54feacf7d18f42300ff65ba8829f17724df4915a8b1984c5fee2cc42d4027f07.
 //
-// Solidity: event Undelegate(address indexed sender, string validator, uint256 shares, uint256 amount, uint256 completionTime)
+// Solidity: event Undelegate(address indexed delegatorAddress, address indexed validatorAddress, uint256 amount, uint256 completionTime)
 func (_IStaking *IStakingFilterer) ParseUndelegate(log types.Log) (*IStakingUndelegate, error) {
 	event := new(IStakingUndelegate)
 	if err := _IStaking.contract.UnpackLog(event, "Undelegate", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// IStakingWithdrawIterator is returned from FilterWithdraw and is used to iterate over the raw logs and unpacked data for Withdraw events raised by the IStaking contract.
-type IStakingWithdrawIterator struct {
-	Event *IStakingWithdraw // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *IStakingWithdrawIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(IStakingWithdraw)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(IStakingWithdraw)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *IStakingWithdrawIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *IStakingWithdrawIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// IStakingWithdraw represents a Withdraw event raised by the IStaking contract.
-type IStakingWithdraw struct {
-	Sender    common.Address
-	Validator string
-	Reward    *big.Int
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterWithdraw is a free log retrieval operation binding the contract event 0x901c03da5d88eb3d62ab4617e7b7d17d86db16356823a7971127d5181a842fef.
-//
-// Solidity: event Withdraw(address indexed sender, string validator, uint256 reward)
-func (_IStaking *IStakingFilterer) FilterWithdraw(opts *bind.FilterOpts, sender []common.Address) (*IStakingWithdrawIterator, error) {
-
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _IStaking.contract.FilterLogs(opts, "Withdraw", senderRule)
-	if err != nil {
-		return nil, err
-	}
-	return &IStakingWithdrawIterator{contract: _IStaking.contract, event: "Withdraw", logs: logs, sub: sub}, nil
-}
-
-// WatchWithdraw is a free log subscription operation binding the contract event 0x901c03da5d88eb3d62ab4617e7b7d17d86db16356823a7971127d5181a842fef.
-//
-// Solidity: event Withdraw(address indexed sender, string validator, uint256 reward)
-func (_IStaking *IStakingFilterer) WatchWithdraw(opts *bind.WatchOpts, sink chan<- *IStakingWithdraw, sender []common.Address) (event.Subscription, error) {
-
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _IStaking.contract.WatchLogs(opts, "Withdraw", senderRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(IStakingWithdraw)
-				if err := _IStaking.contract.UnpackLog(event, "Withdraw", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseWithdraw is a log parse operation binding the contract event 0x901c03da5d88eb3d62ab4617e7b7d17d86db16356823a7971127d5181a842fef.
-//
-// Solidity: event Withdraw(address indexed sender, string validator, uint256 reward)
-func (_IStaking *IStakingFilterer) ParseWithdraw(log types.Log) (*IStakingWithdraw, error) {
-	event := new(IStakingWithdraw)
-	if err := _IStaking.contract.UnpackLog(event, "Withdraw", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

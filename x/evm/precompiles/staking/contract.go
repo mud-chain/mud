@@ -1,8 +1,6 @@
 package staking
 
 import (
-	"errors"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -16,25 +14,13 @@ import (
 
 type Contract struct {
 	ctx           sdk.Context
-	bankKeeper    BankKeeper
-	distrKeeper   DistrKeeper
 	stakingKeeper stakingkeeper.Keeper
-	evmKeeper     EvmKeeper
 }
 
-func NewPrecompiledContract(
-	ctx sdk.Context,
-	bankKeeper BankKeeper,
-	stakingKeeper stakingkeeper.Keeper,
-	distrKeeper DistrKeeper,
-	evmKeeper EvmKeeper,
-) *Contract {
+func NewPrecompiledContract(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper) *Contract {
 	return &Contract{
 		ctx:           ctx,
-		bankKeeper:    bankKeeper,
 		stakingKeeper: stakingKeeper,
-		distrKeeper:   distrKeeper,
-		evmKeeper:     evmKeeper,
 	}
 }
 
@@ -47,22 +33,22 @@ func (c *Contract) IsStateful() bool {
 }
 
 func (c *Contract) RequiredGas(input []byte) uint64 {
-	if len(input) <= 4 {
+	method, err := GetMethodByID(input)
+	if err != nil {
 		return 0
 	}
-	switch string(input[:4]) {
-	case string(DelegateMethod.ID):
+
+	switch method.Name {
+	case DelegateMethodName:
 		return DelegateGas
-	case string(UndelegateMethod.ID):
+	case UndelegateMethodName:
 		return UndelegateGas
-	case string(RedelegateMethod.ID):
+	case RedelegateMethodName:
 		return RedelegateGas
-	case string(WithdrawMethod.ID):
-		return WithdrawGas
-	case string(DelegationMethod.ID):
+	case CancelUnbondingDelegationMethodName:
+		return CancelUnbondingDelegationGas
+	case DelegationMethodName:
 		return DelegationGas
-	case string(DelegationRewardsMethod.ID):
-		return DelegationRewardsGas
 	default:
 		return 0
 	}
@@ -76,28 +62,25 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 	cacheCtx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
 
-	// parse input
-	switch string(contract.Input[:4]) {
-	case string(DelegateMethod.ID):
-		ret, err = c.Delegate(cacheCtx, evm, contract, readonly)
-	case string(UndelegateMethod.ID):
-		ret, err = c.Undelegate(cacheCtx, evm, contract, readonly)
-	case string(RedelegateMethod.ID):
-		ret, err = c.Redelegation(cacheCtx, evm, contract, readonly)
-	case string(WithdrawMethod.ID):
-		ret, err = c.Withdraw(cacheCtx, evm, contract, readonly)
-	case string(DelegationMethod.ID):
-		ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
-	case string(DelegationRewardsMethod.ID):
-		ret, err = c.DelegationRewards(cacheCtx, evm, contract, readonly)
-	default:
-		err = errors.New("unknown method")
-	}
-
+	method, err := GetMethodByID(contract.Input)
 	if err != nil {
 		// revert evm state
 		evm.StateDB.RevertToSnapshot(snapshot)
 		return types.PackRetError(err.Error())
+	}
+
+	// parse input
+	switch method.Name {
+	case DelegateMethodName:
+		ret, err = c.Delegate(cacheCtx, evm, contract, readonly)
+	case UndelegateMethodName:
+		ret, err = c.Undelegate(cacheCtx, evm, contract, readonly)
+	case RedelegateMethodName:
+		ret, err = c.Redelegatge(cacheCtx, evm, contract, readonly)
+	case CancelUnbondingDelegationMethodName:
+		ret, err = c.CancelUnbondingDelegation(cacheCtx, evm, contract, readonly)
+	case DelegationMethodName:
+		ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
 	}
 
 	// commit and append events

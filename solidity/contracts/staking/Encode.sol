@@ -7,62 +7,62 @@ library Encode {
         address validatorAddress,
         uint256 amount
     ) internal pure returns (bytes memory) {
-        return abi.encodeWithSignature("delegate(address,uint256)", validatorAddress, amount);
+        return abi.encodeWithSignature(
+            "delegate(address,uint256)",
+            validatorAddress,
+            amount
+        );
     }
 
     function undelegate(
-        string memory _validator,
-        uint256 _shares
+        address validatorAddress,
+        uint256 amount
     ) internal pure returns (bytes memory) {
         return
             abi.encodeWithSignature(
-            "undelegate(string,uint256)",
-            _validator,
-            _shares
+            "undelegate(address,uint256)",
+            validatorAddress,
+            amount
         );
     }
 
     function redelegate(
-        string memory _valSrc,
-        string memory _valDst,
-        uint256 _shares
+        address validatorSrcAddress,
+        address validatorDstAddress,
+        uint256 amount
     ) internal pure returns (bytes memory) {
         return
             abi.encodeWithSignature(
-            "redelegate(string,string,uint256)",
-            _valSrc,
-            _valDst,
-            _shares
+            "redelegate(address,address,uint256)",
+            validatorSrcAddress,
+            validatorDstAddress,
+            amount
         );
     }
 
-    function withdraw(
-        string memory _validator
+    function cancelUnbondingDelegation(
+        address validatorAddress,
+        uint256 amount,
+        uint256 creationHeight
     ) internal pure returns (bytes memory) {
-        return abi.encodeWithSignature("withdraw(string)", _validator);
+        return
+            abi.encodeWithSignature(
+            "cancelUnbondingDelegation(address,uint256,uint256)",
+            validatorAddress,
+            amount,
+            creationHeight
+        );
     }
 
     function delegation(
-        string memory _validator,
-        address _delegate
+        address delegatorAddress,
+        address validatorAddress
     ) internal pure returns (bytes memory) {
         return
             abi.encodeWithSignature(
-            "delegation(string,address)",
-            _validator,
-            _delegate
-        );
-    }
-
-    function delegationRewards(
-        string memory _validator,
-        address _delegate
-    ) internal pure returns (bytes memory) {
-        return
-            abi.encodeWithSignature(
-            "delegationRewards(string,address)",
-            _validator,
-            _delegate
+            "delegation(address,address)",
+            delegatorAddress,
+            validatorAddress
         );
     }
 }

@@ -12,65 +12,62 @@ library StakingCall {
     address public constant STAKING_ADDRESS =
     address(0x0000000000000000000000000000000000001003);
 
-    function delegate(address validatorAddress, uint256 amount) internal returns (bool) {
-        (bool result, bytes memory data) = STAKING_ADDRESS.call(Encode.delegate(validatorAddress, amount));
+    function delegate(
+        address validatorAddress,
+        uint256 amount
+    ) internal returns (bool) {
+        (bool result, bytes memory data) = STAKING_ADDRESS.call(
+            Encode.delegate(validatorAddress, amount)
+        );
         Decode.ok(result, data, "delegate failed");
         return Decode.delegate(data);
     }
 
     function undelegate(
-        string memory _val,
-        uint256 _shares
-    ) internal returns (uint256, uint256, uint256) {
-        // solhint-disable-next-line avoid-low-level-calls
+        address validatorAddress,
+        uint256 amount
+    ) internal returns (uint256) {
         (bool result, bytes memory data) = STAKING_ADDRESS.call(
-            Encode.undelegate(_val, _shares)
+            Encode.undelegate(validatorAddress, amount)
         );
         Decode.ok(result, data, "undelegate failed");
         return Decode.undelegate(data);
     }
 
     function redelegate(
-        string memory _valSrc,
-        string memory _valDst,
-        uint256 _shares
-    ) internal returns (uint256, uint256, uint256) {
+        address validatorSrcAddress,
+        address validatorDstAddress,
+        uint256 amount
+    ) internal returns (uint256) {
         // solhint-disable-next-line avoid-low-level-calls
         (bool result, bytes memory data) = STAKING_ADDRESS.call(
-            Encode.redelegate(_valSrc, _valDst, _shares)
+            Encode.redelegate(validatorSrcAddress, validatorDstAddress, amount)
         );
         Decode.ok(result, data, "redelegate failed");
         return Decode.redelegate(data);
     }
 
-    function withdraw(string memory _val) internal returns (uint256) {
+    function cancelUnbondingDelegation(
+        address validatorAddress,
+        uint256 amount,
+        uint256 creationHeight
+    ) internal returns (bool) {
         // solhint-disable-next-line avoid-low-level-calls
         (bool result, bytes memory data) = STAKING_ADDRESS.call(
-            Encode.withdraw(_val)
+            Encode.cancelUnbondingDelegation(validatorAddress, amount, creationHeight)
         );
-        Decode.ok(result, data, "withdraw failed");
-        return Decode.withdraw(data);
+        Decode.ok(result, data, "cancelUnbondingDelegation failed");
+        return Decode.cancelUnbondingDelegation(data);
     }
 
     function delegation(
-        string memory _val,
-        address _del
-    ) internal view returns (uint256, uint256) {
+        address delegatorAddress,
+        address validatorAddress
+    ) internal view returns (uint256, types.Coin memory) {
         (bool result, bytes memory data) = STAKING_ADDRESS.staticcall(
-            Encode.delegation(_val, _del)
+            Encode.delegation(delegatorAddress, validatorAddress)
         );
         Decode.ok(result, data, "delegation failed");
         return Decode.delegation(data);
-    }
-
-    function delegationRewards(
-        string memory _val,
-        address _del
-    ) internal view returns (uint256) {
-        (bool result, bytes memory data) = STAKING_ADDRESS.staticcall(
-            Encode.delegationRewards(_val, _del)
-        );
-        Decode.ok(result, data, "delegationRewards failed");
-        return Decode.delegationRewards(data);
     }
 }

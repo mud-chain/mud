@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+import "../common/Types.sol" as types;
+
 library Decode {
     function delegate(
         bytes memory data
@@ -12,44 +14,30 @@ library Decode {
 
     function undelegate(
         bytes memory data
-    ) internal pure returns (uint256, uint256, uint256) {
-        (uint256 amount, uint256 reward, uint256 completionTime) = abi.decode(
-            data,
-            (uint256, uint256, uint256)
-        );
-        return (amount, reward, completionTime);
+    ) internal pure returns (uint256) {
+        uint256 completionTime = abi.decode(data, (uint256));
+        return completionTime;
     }
 
     function redelegate(
         bytes memory data
-    ) internal pure returns (uint256, uint256, uint256) {
-        (uint256 amount, uint256 reward, uint256 completionTime) = abi.decode(
-            data,
-            (uint256, uint256, uint256)
-        );
-        return (amount, reward, completionTime);
+    ) internal pure returns (uint256) {
+        uint256 completionTime = abi.decode(data, (uint256));
+        return completionTime;
     }
 
-    function withdraw(bytes memory data) internal pure returns (uint256) {
-        uint256 reward = abi.decode(data, (uint256));
-        return reward;
+    function cancelUnbondingDelegation(
+        bytes memory data
+    ) internal pure returns (bool) {
+        (bool success) = abi.decode(data, (bool));
+        return success;
     }
 
     function delegation(
         bytes memory data
-    ) internal pure returns (uint256, uint256) {
-        (uint256 delegateAmount, uint256 shares) = abi.decode(
-            data,
-            (uint256, uint256)
-        );
-        return (delegateAmount, shares);
-    }
-
-    function delegationRewards(
-        bytes memory data
-    ) internal pure returns (uint256) {
-        uint256 delegateRewardsAmount = abi.decode(data, (uint256));
-        return delegateRewardsAmount;
+    ) internal pure returns (uint256, types.Coin memory) {
+        (uint256 shares, types.Coin memory balance) = abi.decode(data, (uint256, types.Coin));
+        return (shares, balance);
     }
 
     function ok(
