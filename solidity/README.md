@@ -1,11 +1,11 @@
-# fxCore contracts
+# ethos contracts
 
-[![NPM Package](https://img.shields.io/npm/v/@functionx_io/contracts.svg)](https://www.npmjs.org/package/@functionx_io/contracts)
+[![NPM Package](https://img.shields.io/npm/v/@ethos/contracts.svg)](https://www.npmjs.org/package/@ethos/contracts)
 
 ## Overview
 
 ### Installation
 
 ```
-$ yarn add @functionx_io/contracts
+$ yarn add @ethos/contracts
 ```
