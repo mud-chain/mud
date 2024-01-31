@@ -2,7 +2,26 @@
 
 pragma solidity ^0.8.0;
 
+import "../common/Types.sol";
+
 library Encode {
+    function createValidator(
+        Description calldata description,
+        CommissionRates calldata commission,
+        uint256 minSelfDelegation,
+        string memory pubkey,
+        uint256 value
+    ) internal pure returns (bytes memory) {
+        return abi.encodeWithSignature(
+            "createValidator(Description,CommissionRates,uint256,uint256)",
+            description,
+            commission,
+            minSelfDelegation,
+            pubkey,
+            value
+        );
+    }
+
     function delegate(
         address validatorAddress,
         uint256 amount

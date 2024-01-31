@@ -2,10 +2,15 @@ package staking
 
 import (
 	"bytes"
+	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"math/big"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -65,6 +70,50 @@ func MustEvent(name string) abi.Event {
 		panic(err)
 	}
 	return event
+}
+
+type DescriptionJson = Description
+type CommissionRatesJson = CommissionRates
+
+type CreateValidatorArgs struct {
+	Description       DescriptionJson     `abi:"description"`
+	Commission        CommissionRatesJson `abi:"commission"`
+	MinSelfDelegation *big.Int            `abi:"minSelfDelegation"`
+	Pubkey            string              `abi:"pubkey"`
+	Value             *big.Int            `abi:"value"`
+}
+
+// Validate validates the args
+func (args *CreateValidatorArgs) Validate() error {
+	pubkeyBytes, err := base64.StdEncoding.DecodeString(args.Pubkey)
+	if err != nil {
+		return err
+	}
+
+	if len(pubkeyBytes) != ed25519.PubKeySize {
+		return fmt.Errorf("pubkey %s is invalid, len is: %d, expected len: %d", hex.EncodeToString(pubkeyBytes), len(pubkeyBytes), ed25519.PubKeySize)
+	}
+
+	if args.Value == nil || args.Value.Sign() <= 0 {
+		return errors.New("invalid value")
+	}
+	return nil
+}
+
+// GetPubkey returns the validator pubkey
+func (args *CreateValidatorArgs) GetPubkey() *codectypes.Any {
+	pubkeyBytes, err := base64.StdEncoding.DecodeString(args.Pubkey)
+	if err != nil {
+		return nil
+	}
+
+	var ed25519pk cryptotypes.PubKey = &ed25519.PubKey{Key: pubkeyBytes}
+	pubkey, err := codectypes.NewAnyWithValue(ed25519pk)
+	if err != nil {
+		return nil
+	}
+
+	return pubkey
 }
 
 type DelegateArgs struct {

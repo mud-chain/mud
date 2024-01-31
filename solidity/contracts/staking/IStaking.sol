@@ -5,6 +5,15 @@ pragma solidity ^0.8.0;
 import "../common/Types.sol";
 
 interface IStaking {
+
+    function createValidator(
+        Description calldata description,
+        CommissionRates calldata commission,
+        uint256 minSelfDelegation,
+        string memory pubkey,
+        uint256 value
+    ) external returns (bool success);
+
     function delegate(
         address validatorAddress,
         uint256 amount
@@ -31,6 +40,11 @@ interface IStaking {
         address delegatorAddress,
         address validatorAddress
     ) external view returns (uint256 shares, Coin memory balance);
+
+    event CreateValidator(
+        address indexed validator,
+        uint256 value
+    );
 
     event Delegate(
         address indexed delegator,

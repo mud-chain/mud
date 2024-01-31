@@ -39,6 +39,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	}
 
 	switch method.Name {
+	case CreateValidatorMethodName:
+		return CreateValidatorGas
 	case DelegateMethodName:
 		return DelegateGas
 	case UndelegateMethodName:
@@ -66,6 +68,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 	if err == nil {
 		// parse input
 		switch method.Name {
+		case CreateValidatorMethodName:
+			ret, err = c.CreateValidator(cacheCtx, evm, contract, readonly)
 		case DelegateMethodName:
 			ret, err = c.Delegate(cacheCtx, evm, contract, readonly)
 		case UndelegateMethodName:
