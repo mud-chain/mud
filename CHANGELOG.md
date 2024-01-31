@@ -49,6 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (app) [#32](https://github.com/luchenqun/ethos/pull/32) Remove EVM only supports Evmos chain identifiers (9000 or 9001).
 - (app) [#33](https://github.com/luchenqun/ethos/pull/33) Rename evmosd to ethosd.
 - (precompile-staking) [#35](https://github.com/luchenqun/ethos/pull/35) Implement staking precompile contract.
+- (precompile-staking) [#37](https://github.com/luchenqun/ethos/pull/37) Implement the CreateValidator tx for staking precompiled contract.
 
 ### API Breaking
 
