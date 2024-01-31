@@ -15,21 +15,79 @@ import (
 )
 
 const (
+	CreateValidatorGas           = 60_000
 	DelegateGas                  = 40_000 // 98000 - 160000 // 165000
 	UndelegateGas                = 45_000 // 94000 - 163000 // 172000
 	RedelegateGas                = 60_000 // undelegate_gas+delegate_gas+withdraw_gas*2
 	CancelUnbondingDelegationGas = 30_000 // 98000
 
+	CreateValidatorMethodName           = "createValidator"
 	DelegateMethodName                  = "delegate"
 	UndelegateMethodName                = "undelegate"
 	RedelegateMethodName                = "redelegate"
 	CancelUnbondingDelegationMethodName = "cancelUnbondingDelegation"
 
+	CreateValidatorEventName           = "CreateValidator"
 	DelegateEventName                  = "Delegate"
 	UndelegateEventName                = "Undelegate"
 	RedelegateEventName                = "Redelegate"
 	CancelUnbondingDelegationEventName = "CancelUnbondingDelegation"
 )
+
+func (c *Contract) CreateValidator(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("createValidator method not readonly")
+	}
+
+	method := MustMethod(CreateValidatorMethodName)
+
+	// parse args
+	var args CreateValidatorArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &stakingtypes.MsgCreateValidator{
+		Description: stakingtypes.Description(args.Description),
+		Commission: stakingtypes.CommissionRates{
+			Rate:          sdk.NewDecFromBigIntWithPrec(args.Commission.Rate, sdk.Precision),
+			MaxRate:       sdk.NewDecFromBigIntWithPrec(args.Commission.MaxRate, sdk.Precision),
+			MaxChangeRate: sdk.NewDecFromBigIntWithPrec(args.Commission.MaxChangeRate, sdk.Precision),
+		},
+		MinSelfDelegation: math.NewIntFromBigInt(args.MinSelfDelegation),
+		DelegatorAddress:  sdk.AccAddress(contract.Caller().Bytes()).String(),
+		ValidatorAddress:  sdk.ValAddress(contract.Caller().Bytes()).String(),
+		Pubkey:            args.GetPubkey(),
+		Value: sdk.Coin{
+			Denom:  c.stakingKeeper.GetParams(ctx).BondDenom,
+			Amount: math.NewIntFromBigInt(args.Value),
+		},
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := stakingkeeper.NewMsgServerImpl(c.stakingKeeper)
+
+	_, err = server.CreateValidator(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add delegate log
+	if err := c.AddLog(
+		evm,
+		MustEvent(CreateValidatorEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+		args.Value,
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
 
 func (c *Contract) Delegate(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {

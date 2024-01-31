@@ -11,6 +11,26 @@ import "./Decode.sol";
 library StakingCall {
     address public constant STAKING_ADDRESS = address(0x0000000000000000000000000000000000001003);
 
+    function createValidator(
+        Description calldata description,
+        CommissionRates calldata commission,
+        uint256 minSelfDelegation,
+        string memory pubkey,
+        uint256 value
+    ) internal returns (bool) {
+        (bool result, bytes memory data) = STAKING_ADDRESS.call(
+            Encode.createValidator(
+                description,
+                commission,
+                minSelfDelegation,
+                pubkey,
+                value
+            )
+        );
+        Decode.ok(result, data, "createValidator failed");
+        return Decode.createValidator(data);
+    }
+
     function delegate(
         address validatorAddress,
         uint256 amount

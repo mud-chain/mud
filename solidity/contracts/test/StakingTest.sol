@@ -11,6 +11,23 @@ import "../staking/StakingCall.sol";
 contract StakingTest is IStaking {
     mapping(string => uint256) public validatorShares;
 
+    function createValidator(
+        Description calldata description,
+        CommissionRates calldata commissionRates,
+        uint256 minSelfDelegation,
+        string memory pubkey,
+        uint256 value
+    ) external override returns (bool) {
+        bool success = StakingCall.createValidator(
+            description,
+            commissionRates,
+            minSelfDelegation,
+            pubkey,
+            value
+        );
+        return success;
+    }
+
     function delegate(
         address validatorAddress,
         uint256 amount

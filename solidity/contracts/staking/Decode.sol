@@ -5,6 +5,13 @@ pragma solidity ^0.8.0;
 import "../common/Types.sol" as types;
 
 library Decode {
+    function createValidator(
+        bytes memory data
+    ) internal pure returns (bool) {
+        (bool success) = abi.decode(data, (bool));
+        return success;
+    }
+
     function delegate(
         bytes memory data
     ) internal pure returns (bool) {
