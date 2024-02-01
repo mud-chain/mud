@@ -7,6 +7,12 @@ struct Coin {
     uint256 amount;
 }
 
+struct DecCoin {
+    string denom;
+    uint256 amount;
+    uint8 precision;
+}
+
 struct Description {
     string moniker;
     string identity;

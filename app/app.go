@@ -130,6 +130,7 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
 	evmkeeper "github.com/evmos/evmos/v12/x/evm/keeper"
+	precompilesdistribution "github.com/evmos/evmos/v12/x/evm/precompiles/distribution"
 	precompilesstaking "github.com/evmos/evmos/v12/x/evm/precompiles/staking"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	"github.com/evmos/evmos/v12/x/feemarket"
@@ -1072,6 +1073,11 @@ func (app *Evmos) EvmPrecompiled() {
 	// staking precompile
 	precompiled[precompilesstaking.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesstaking.NewPrecompiledContract(ctx, app.StakingKeeper)
+	}
+
+	// distribution precompile
+	precompiled[precompilesdistribution.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesdistribution.NewPrecompiledContract(ctx, app.DistrKeeper)
 	}
 
 	// set precompiled contracts

@@ -1,0 +1,105 @@
+package distribution
+
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/core/vm"
+
+	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+
+	"github.com/evmos/evmos/v12/x/evm/types"
+)
+
+type Contract struct {
+	ctx                sdk.Context
+	distributionKeeper distributionkeeper.Keeper
+}
+
+func NewPrecompiledContract(ctx sdk.Context, distributionKeeper distributionkeeper.Keeper) *Contract {
+	return &Contract{
+		ctx:                ctx,
+		distributionKeeper: distributionKeeper,
+	}
+}
+
+func (c *Contract) Address() common.Address {
+	return distributionAddress
+}
+
+func (c *Contract) IsStateful() bool {
+	return true
+}
+
+func (c *Contract) RequiredGas(input []byte) uint64 {
+	method, err := GetMethodByID(input)
+	if err != nil {
+		return 0
+	}
+
+	switch method.Name {
+	case SetWithdrawAddressMethodName:
+		return SetWithdrawAddressGas
+	case DelegationRewardsMethodName:
+		return DelegationRewardsGas
+	case WithdrawDelegatorRewardMethodName:
+		return WithdrawDelegatorRewardGas
+	case WithdrawValidatorCommissionMethodName:
+		return WithdrawValidatorCommissionGas
+	case FundCommunityPoolMethodName:
+		return FundCommunityPoolGas
+	default:
+		return 0
+	}
+}
+
+func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret []byte, err error) {
+	if len(contract.Input) < 4 {
+		return types.PackRetError("invalid input")
+	}
+
+	cacheCtx, commit := c.ctx.CacheContext()
+	snapshot := evm.StateDB.Snapshot()
+
+	method, err := GetMethodByID(contract.Input)
+	if err == nil {
+		// parse input
+		switch method.Name {
+		case SetWithdrawAddressMethodName:
+			ret, err = c.SetWithdrawAddress(cacheCtx, evm, contract, readonly)
+		case DelegationRewardsMethodName:
+			ret, err = c.DelegationRewards(cacheCtx, evm, contract, readonly)
+		case WithdrawDelegatorRewardMethodName:
+			ret, err = c.WithdrawDelegatorReward(cacheCtx, evm, contract, readonly)
+		case WithdrawValidatorCommissionMethodName:
+			ret, err = c.WithdrawValidatorCommission(cacheCtx, evm, contract, readonly)
+		case FundCommunityPoolMethodName:
+			ret, err = c.FundCommunityPool(cacheCtx, evm, contract, readonly)
+		}
+	}
+
+	if err != nil {
+		// revert evm state
+		evm.StateDB.RevertToSnapshot(snapshot)
+		return types.PackRetError(err.Error())
+	}
+
+	// commit and append events
+	commit()
+	return ret, nil
+}
+
+func (c *Contract) AddLog(evm *vm.EVM, event abi.Event, topics []common.Hash, args ...interface{}) error {
+	data, newTopic, err := types.PackTopicData(event, topics, args...)
+	if err != nil {
+		return err
+	}
+	evm.StateDB.AddLog(&ethtypes.Log{
+		Address:     c.Address(),
+		Topics:      newTopic,
+		Data:        data,
+		BlockNumber: evm.Context.BlockNumber.Uint64(),
+	})
+	return nil
+}
