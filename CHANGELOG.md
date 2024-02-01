@@ -50,6 +50,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (app) [#33](https://github.com/luchenqun/ethos/pull/33) Rename evmosd to ethosd.
 - (precompile-staking) [#35](https://github.com/luchenqun/ethos/pull/35) Implement staking precompile contract.
 - (precompile-staking) [#37](https://github.com/luchenqun/ethos/pull/37) Implement the CreateValidator tx for staking precompiled contract.
+- (precompile-distribution) [#39](https://github.com/luchenqun/ethos/pull/39) Implement distribution precompile contract.
 
 ### API Breaking
 
