@@ -2,6 +2,7 @@ package gov
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -64,13 +65,42 @@ func MustEvent(name string) abi.Event {
 type CoinJson = Coin
 
 type LegacySubmitProposalArgs struct {
-	Title          string   `abi:"title"`
-	Description    string   `abi:"description"`
-	InitialDeposit CoinJson `abi:"initialDeposit"`
+	Title          string     `abi:"title"`
+	Description    string     `abi:"description"`
+	InitialDeposit []CoinJson `abi:"initialDeposit"`
 }
 
-// Validate LegacySubmitProposal the args
+// Validate LegacySubmitProposal args
 func (args *LegacySubmitProposalArgs) Validate() error {
+	for _, deposit := range args.InitialDeposit {
+		if deposit.Amount.Sign() < 0 {
+			return fmt.Errorf("deposit %s amount is negative %s", deposit.Denom, deposit.Amount.String())
+		}
+	}
+
+	return nil
+}
+
+// Proposal defines the new Msg-based proposal.
+type Proposal struct {
+	// Msgs defines an array of sdk.Msgs proto-JSON-encoded as Anys.
+	Messages []json.RawMessage `json:"messages,omitempty"`
+}
+
+type SubmitProposalArgs struct {
+	Messages       string     `abi:"messages"`
+	InitialDeposit []CoinJson `abi:"initialDeposit"`
+	Metadata       string     `abi:"metadata"`
+}
+
+// Validate SubmitProposal args
+func (args *SubmitProposalArgs) Validate() error {
+	for _, deposit := range args.InitialDeposit {
+		if deposit.Amount.Sign() < 0 {
+			return fmt.Errorf("deposit %s amount is negative %s", deposit.Denom, deposit.Amount.String())
+		}
+	}
+
 	return nil
 }
 
@@ -80,11 +110,45 @@ type VoteArgs struct {
 	Metadata   string `abi:"metadata"`
 }
 
-// Validate Vote the args
+// Validate Vote args
 func (args *VoteArgs) Validate() error {
 	if args.ProposalId == 0 {
 		return fmt.Errorf("proposal id must greater than 0")
 	}
 
+	return nil
+}
+
+type WeightedVoteOptionJson = WeightedVoteOption
+type VoteWeightedArgs struct {
+	ProposalId uint64                   `abi:"proposalId"`
+	Options    []WeightedVoteOptionJson `abi:"options"`
+	Metadata   string                   `abi:"metadata"`
+}
+
+// Validate VoteWeighted args
+func (args *VoteWeightedArgs) Validate() error {
+	if args.ProposalId == 0 {
+		return fmt.Errorf("proposal id must greater than 0")
+	}
+
+	return nil
+}
+
+type DepositArgs struct {
+	ProposalId uint64     `abi:"proposalId"`
+	Amount     []CoinJson `abi:"amount"`
+}
+
+// Validate VoteWeighted args
+func (args *DepositArgs) Validate() error {
+	if args.ProposalId == 0 {
+		return fmt.Errorf("proposal id must greater than 0")
+	}
+	for _, deposit := range args.Amount {
+		if deposit.Amount.Sign() <= 0 {
+			return fmt.Errorf("deposit %s amount is %s, need to greater than 0", deposit.Denom, deposit.Amount.String())
+		}
+	}
 	return nil
 }

@@ -35,9 +35,15 @@ type Coin struct {
 	Amount *big.Int
 }
 
+// WeightedVoteOption is an auto generated low-level Go binding around an user-defined struct.
+type WeightedVoteOption struct {
+	Option int32
+	Weight string
+}
+
 // IGovMetaData contains all meta data concerning the IGov contract.
 var IGovMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"LegacySubmitProposal\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"int32\",\"name\":\"option\",\"type\":\"int32\"}],\"name\":\"Vote\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"title\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"initialDeposit\",\"type\":\"tuple\"}],\"name\":\"legacySubmitProposal\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"int32\",\"name\":\"option\",\"type\":\"int32\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"vote\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"LegacySubmitProposal\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"SubmitProposal\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"int32\",\"name\":\"option\",\"type\":\"int32\"}],\"name\":\"Vote\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"VoteWeighted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"title\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"initialDeposit\",\"type\":\"tuple[]\"}],\"name\":\"legacySubmitProposal\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"messages\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"initialDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"submitProposal\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"int32\",\"name\":\"option\",\"type\":\"int32\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"vote\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"int32\",\"name\":\"option\",\"type\":\"int32\"},{\"internalType\":\"string\",\"name\":\"weight\",\"type\":\"string\"}],\"internalType\":\"structWeightedVoteOption[]\",\"name\":\"options\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"voteWeighted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IGovABI is the input ABI used to generate the binding from.
@@ -186,25 +192,67 @@ func (_IGov *IGovTransactorRaw) Transact(opts *bind.TransactOpts, method string,
 	return _IGov.Contract.contract.Transact(opts, method, params...)
 }
 
-// LegacySubmitProposal is a paid mutator transaction binding the contract method 0xbc4b9c1f.
+// Deposit is a paid mutator transaction binding the contract method 0xf0514275.
 //
-// Solidity: function legacySubmitProposal(string title, string description, (string,uint256) initialDeposit) returns(uint64 proposalId)
-func (_IGov *IGovTransactor) LegacySubmitProposal(opts *bind.TransactOpts, title string, description string, initialDeposit Coin) (*types.Transaction, error) {
+// Solidity: function deposit(uint64 proposalId, (string,uint256)[] amount) returns(bool success)
+func (_IGov *IGovTransactor) Deposit(opts *bind.TransactOpts, proposalId uint64, amount []Coin) (*types.Transaction, error) {
+	return _IGov.contract.Transact(opts, "deposit", proposalId, amount)
+}
+
+// Deposit is a paid mutator transaction binding the contract method 0xf0514275.
+//
+// Solidity: function deposit(uint64 proposalId, (string,uint256)[] amount) returns(bool success)
+func (_IGov *IGovSession) Deposit(proposalId uint64, amount []Coin) (*types.Transaction, error) {
+	return _IGov.Contract.Deposit(&_IGov.TransactOpts, proposalId, amount)
+}
+
+// Deposit is a paid mutator transaction binding the contract method 0xf0514275.
+//
+// Solidity: function deposit(uint64 proposalId, (string,uint256)[] amount) returns(bool success)
+func (_IGov *IGovTransactorSession) Deposit(proposalId uint64, amount []Coin) (*types.Transaction, error) {
+	return _IGov.Contract.Deposit(&_IGov.TransactOpts, proposalId, amount)
+}
+
+// LegacySubmitProposal is a paid mutator transaction binding the contract method 0xad5aa33d.
+//
+// Solidity: function legacySubmitProposal(string title, string description, (string,uint256)[] initialDeposit) returns(uint64 proposalId)
+func (_IGov *IGovTransactor) LegacySubmitProposal(opts *bind.TransactOpts, title string, description string, initialDeposit []Coin) (*types.Transaction, error) {
 	return _IGov.contract.Transact(opts, "legacySubmitProposal", title, description, initialDeposit)
 }
 
-// LegacySubmitProposal is a paid mutator transaction binding the contract method 0xbc4b9c1f.
+// LegacySubmitProposal is a paid mutator transaction binding the contract method 0xad5aa33d.
 //
-// Solidity: function legacySubmitProposal(string title, string description, (string,uint256) initialDeposit) returns(uint64 proposalId)
-func (_IGov *IGovSession) LegacySubmitProposal(title string, description string, initialDeposit Coin) (*types.Transaction, error) {
+// Solidity: function legacySubmitProposal(string title, string description, (string,uint256)[] initialDeposit) returns(uint64 proposalId)
+func (_IGov *IGovSession) LegacySubmitProposal(title string, description string, initialDeposit []Coin) (*types.Transaction, error) {
 	return _IGov.Contract.LegacySubmitProposal(&_IGov.TransactOpts, title, description, initialDeposit)
 }
 
-// LegacySubmitProposal is a paid mutator transaction binding the contract method 0xbc4b9c1f.
+// LegacySubmitProposal is a paid mutator transaction binding the contract method 0xad5aa33d.
 //
-// Solidity: function legacySubmitProposal(string title, string description, (string,uint256) initialDeposit) returns(uint64 proposalId)
-func (_IGov *IGovTransactorSession) LegacySubmitProposal(title string, description string, initialDeposit Coin) (*types.Transaction, error) {
+// Solidity: function legacySubmitProposal(string title, string description, (string,uint256)[] initialDeposit) returns(uint64 proposalId)
+func (_IGov *IGovTransactorSession) LegacySubmitProposal(title string, description string, initialDeposit []Coin) (*types.Transaction, error) {
 	return _IGov.Contract.LegacySubmitProposal(&_IGov.TransactOpts, title, description, initialDeposit)
+}
+
+// SubmitProposal is a paid mutator transaction binding the contract method 0x6e1368a3.
+//
+// Solidity: function submitProposal(string messages, (string,uint256)[] initialDeposit, string metadata) returns(uint64 proposalId)
+func (_IGov *IGovTransactor) SubmitProposal(opts *bind.TransactOpts, messages string, initialDeposit []Coin, metadata string) (*types.Transaction, error) {
+	return _IGov.contract.Transact(opts, "submitProposal", messages, initialDeposit, metadata)
+}
+
+// SubmitProposal is a paid mutator transaction binding the contract method 0x6e1368a3.
+//
+// Solidity: function submitProposal(string messages, (string,uint256)[] initialDeposit, string metadata) returns(uint64 proposalId)
+func (_IGov *IGovSession) SubmitProposal(messages string, initialDeposit []Coin, metadata string) (*types.Transaction, error) {
+	return _IGov.Contract.SubmitProposal(&_IGov.TransactOpts, messages, initialDeposit, metadata)
+}
+
+// SubmitProposal is a paid mutator transaction binding the contract method 0x6e1368a3.
+//
+// Solidity: function submitProposal(string messages, (string,uint256)[] initialDeposit, string metadata) returns(uint64 proposalId)
+func (_IGov *IGovTransactorSession) SubmitProposal(messages string, initialDeposit []Coin, metadata string) (*types.Transaction, error) {
+	return _IGov.Contract.SubmitProposal(&_IGov.TransactOpts, messages, initialDeposit, metadata)
 }
 
 // Vote is a paid mutator transaction binding the contract method 0x19f7a0fb.
@@ -226,6 +274,172 @@ func (_IGov *IGovSession) Vote(proposalId uint64, option int32, metadata string)
 // Solidity: function vote(uint64 proposalId, int32 option, string metadata) returns(bool success)
 func (_IGov *IGovTransactorSession) Vote(proposalId uint64, option int32, metadata string) (*types.Transaction, error) {
 	return _IGov.Contract.Vote(&_IGov.TransactOpts, proposalId, option, metadata)
+}
+
+// VoteWeighted is a paid mutator transaction binding the contract method 0xf028295e.
+//
+// Solidity: function voteWeighted(uint64 proposalId, (int32,string)[] options, string metadata) returns(bool success)
+func (_IGov *IGovTransactor) VoteWeighted(opts *bind.TransactOpts, proposalId uint64, options []WeightedVoteOption, metadata string) (*types.Transaction, error) {
+	return _IGov.contract.Transact(opts, "voteWeighted", proposalId, options, metadata)
+}
+
+// VoteWeighted is a paid mutator transaction binding the contract method 0xf028295e.
+//
+// Solidity: function voteWeighted(uint64 proposalId, (int32,string)[] options, string metadata) returns(bool success)
+func (_IGov *IGovSession) VoteWeighted(proposalId uint64, options []WeightedVoteOption, metadata string) (*types.Transaction, error) {
+	return _IGov.Contract.VoteWeighted(&_IGov.TransactOpts, proposalId, options, metadata)
+}
+
+// VoteWeighted is a paid mutator transaction binding the contract method 0xf028295e.
+//
+// Solidity: function voteWeighted(uint64 proposalId, (int32,string)[] options, string metadata) returns(bool success)
+func (_IGov *IGovTransactorSession) VoteWeighted(proposalId uint64, options []WeightedVoteOption, metadata string) (*types.Transaction, error) {
+	return _IGov.Contract.VoteWeighted(&_IGov.TransactOpts, proposalId, options, metadata)
+}
+
+// IGovDepositIterator is returned from FilterDeposit and is used to iterate over the raw logs and unpacked data for Deposit events raised by the IGov contract.
+type IGovDepositIterator struct {
+	Event *IGovDeposit // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IGovDepositIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IGovDeposit)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IGovDeposit)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IGovDepositIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IGovDepositIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IGovDeposit represents a Deposit event raised by the IGov contract.
+type IGovDeposit struct {
+	Depositor  common.Address
+	ProposalId uint64
+	Raw        types.Log // Blockchain specific contextual infos
+}
+
+// FilterDeposit is a free log retrieval operation binding the contract event 0x0ee94a97c7c69ce2eb8cfb09bacc78d63a73b5e0fbed0d13a079190ff876ae3a.
+//
+// Solidity: event Deposit(address indexed depositor, uint64 proposalId)
+func (_IGov *IGovFilterer) FilterDeposit(opts *bind.FilterOpts, depositor []common.Address) (*IGovDepositIterator, error) {
+
+	var depositorRule []interface{}
+	for _, depositorItem := range depositor {
+		depositorRule = append(depositorRule, depositorItem)
+	}
+
+	logs, sub, err := _IGov.contract.FilterLogs(opts, "Deposit", depositorRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IGovDepositIterator{contract: _IGov.contract, event: "Deposit", logs: logs, sub: sub}, nil
+}
+
+// WatchDeposit is a free log subscription operation binding the contract event 0x0ee94a97c7c69ce2eb8cfb09bacc78d63a73b5e0fbed0d13a079190ff876ae3a.
+//
+// Solidity: event Deposit(address indexed depositor, uint64 proposalId)
+func (_IGov *IGovFilterer) WatchDeposit(opts *bind.WatchOpts, sink chan<- *IGovDeposit, depositor []common.Address) (event.Subscription, error) {
+
+	var depositorRule []interface{}
+	for _, depositorItem := range depositor {
+		depositorRule = append(depositorRule, depositorItem)
+	}
+
+	logs, sub, err := _IGov.contract.WatchLogs(opts, "Deposit", depositorRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IGovDeposit)
+				if err := _IGov.contract.UnpackLog(event, "Deposit", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseDeposit is a log parse operation binding the contract event 0x0ee94a97c7c69ce2eb8cfb09bacc78d63a73b5e0fbed0d13a079190ff876ae3a.
+//
+// Solidity: event Deposit(address indexed depositor, uint64 proposalId)
+func (_IGov *IGovFilterer) ParseDeposit(log types.Log) (*IGovDeposit, error) {
+	event := new(IGovDeposit)
+	if err := _IGov.contract.UnpackLog(event, "Deposit", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // IGovLegacySubmitProposalIterator is returned from FilterLegacySubmitProposal and is used to iterate over the raw logs and unpacked data for LegacySubmitProposal events raised by the IGov contract.
@@ -373,6 +587,151 @@ func (_IGov *IGovFilterer) ParseLegacySubmitProposal(log types.Log) (*IGovLegacy
 	return event, nil
 }
 
+// IGovSubmitProposalIterator is returned from FilterSubmitProposal and is used to iterate over the raw logs and unpacked data for SubmitProposal events raised by the IGov contract.
+type IGovSubmitProposalIterator struct {
+	Event *IGovSubmitProposal // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IGovSubmitProposalIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IGovSubmitProposal)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IGovSubmitProposal)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IGovSubmitProposalIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IGovSubmitProposalIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IGovSubmitProposal represents a SubmitProposal event raised by the IGov contract.
+type IGovSubmitProposal struct {
+	Proposer   common.Address
+	ProposalId uint64
+	Raw        types.Log // Blockchain specific contextual infos
+}
+
+// FilterSubmitProposal is a free log retrieval operation binding the contract event 0xf49a3a8232aff8553333cfd734e3a7ef1ab4764cd0494eb145216773b64bf349.
+//
+// Solidity: event SubmitProposal(address indexed proposer, uint64 proposalId)
+func (_IGov *IGovFilterer) FilterSubmitProposal(opts *bind.FilterOpts, proposer []common.Address) (*IGovSubmitProposalIterator, error) {
+
+	var proposerRule []interface{}
+	for _, proposerItem := range proposer {
+		proposerRule = append(proposerRule, proposerItem)
+	}
+
+	logs, sub, err := _IGov.contract.FilterLogs(opts, "SubmitProposal", proposerRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IGovSubmitProposalIterator{contract: _IGov.contract, event: "SubmitProposal", logs: logs, sub: sub}, nil
+}
+
+// WatchSubmitProposal is a free log subscription operation binding the contract event 0xf49a3a8232aff8553333cfd734e3a7ef1ab4764cd0494eb145216773b64bf349.
+//
+// Solidity: event SubmitProposal(address indexed proposer, uint64 proposalId)
+func (_IGov *IGovFilterer) WatchSubmitProposal(opts *bind.WatchOpts, sink chan<- *IGovSubmitProposal, proposer []common.Address) (event.Subscription, error) {
+
+	var proposerRule []interface{}
+	for _, proposerItem := range proposer {
+		proposerRule = append(proposerRule, proposerItem)
+	}
+
+	logs, sub, err := _IGov.contract.WatchLogs(opts, "SubmitProposal", proposerRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IGovSubmitProposal)
+				if err := _IGov.contract.UnpackLog(event, "SubmitProposal", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSubmitProposal is a log parse operation binding the contract event 0xf49a3a8232aff8553333cfd734e3a7ef1ab4764cd0494eb145216773b64bf349.
+//
+// Solidity: event SubmitProposal(address indexed proposer, uint64 proposalId)
+func (_IGov *IGovFilterer) ParseSubmitProposal(log types.Log) (*IGovSubmitProposal, error) {
+	event := new(IGovSubmitProposal)
+	if err := _IGov.contract.UnpackLog(event, "SubmitProposal", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
 // IGovVoteIterator is returned from FilterVote and is used to iterate over the raw logs and unpacked data for Vote events raised by the IGov contract.
 type IGovVoteIterator struct {
 	Event *IGovVote // Event containing the contract specifics and raw log
@@ -513,6 +872,151 @@ func (_IGov *IGovFilterer) WatchVote(opts *bind.WatchOpts, sink chan<- *IGovVote
 func (_IGov *IGovFilterer) ParseVote(log types.Log) (*IGovVote, error) {
 	event := new(IGovVote)
 	if err := _IGov.contract.UnpackLog(event, "Vote", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// IGovVoteWeightedIterator is returned from FilterVoteWeighted and is used to iterate over the raw logs and unpacked data for VoteWeighted events raised by the IGov contract.
+type IGovVoteWeightedIterator struct {
+	Event *IGovVoteWeighted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IGovVoteWeightedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IGovVoteWeighted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IGovVoteWeighted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IGovVoteWeightedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IGovVoteWeightedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IGovVoteWeighted represents a VoteWeighted event raised by the IGov contract.
+type IGovVoteWeighted struct {
+	Voter      common.Address
+	ProposalId uint64
+	Raw        types.Log // Blockchain specific contextual infos
+}
+
+// FilterVoteWeighted is a free log retrieval operation binding the contract event 0xba05d71c5068c3a8723b434cd80b62655c4cb23452233f495ad020e2a0bcabf3.
+//
+// Solidity: event VoteWeighted(address indexed voter, uint64 proposalId)
+func (_IGov *IGovFilterer) FilterVoteWeighted(opts *bind.FilterOpts, voter []common.Address) (*IGovVoteWeightedIterator, error) {
+
+	var voterRule []interface{}
+	for _, voterItem := range voter {
+		voterRule = append(voterRule, voterItem)
+	}
+
+	logs, sub, err := _IGov.contract.FilterLogs(opts, "VoteWeighted", voterRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IGovVoteWeightedIterator{contract: _IGov.contract, event: "VoteWeighted", logs: logs, sub: sub}, nil
+}
+
+// WatchVoteWeighted is a free log subscription operation binding the contract event 0xba05d71c5068c3a8723b434cd80b62655c4cb23452233f495ad020e2a0bcabf3.
+//
+// Solidity: event VoteWeighted(address indexed voter, uint64 proposalId)
+func (_IGov *IGovFilterer) WatchVoteWeighted(opts *bind.WatchOpts, sink chan<- *IGovVoteWeighted, voter []common.Address) (event.Subscription, error) {
+
+	var voterRule []interface{}
+	for _, voterItem := range voter {
+		voterRule = append(voterRule, voterItem)
+	}
+
+	logs, sub, err := _IGov.contract.WatchLogs(opts, "VoteWeighted", voterRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IGovVoteWeighted)
+				if err := _IGov.contract.UnpackLog(event, "VoteWeighted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseVoteWeighted is a log parse operation binding the contract event 0xba05d71c5068c3a8723b434cd80b62655c4cb23452233f495ad020e2a0bcabf3.
+//
+// Solidity: event VoteWeighted(address indexed voter, uint64 proposalId)
+func (_IGov *IGovFilterer) ParseVoteWeighted(log types.Log) (*IGovVoteWeighted, error) {
+	event := new(IGovVoteWeighted)
+	if err := _IGov.contract.UnpackLog(event, "VoteWeighted", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

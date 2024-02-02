@@ -44,8 +44,14 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case LegacySubmitProposalMethodName:
 		return LegacySubmitProposalGas
+	case SubmitProposalMethodName:
+		return SubmitProposalGas
 	case VoteMethodName:
 		return VoteGas
+	case VoteWeightedMethodName:
+		return VoteWeightedGas
+	case DepositMethodName:
+		return DepositGas
 	default:
 		return 0
 	}
@@ -65,8 +71,14 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case LegacySubmitProposalMethodName:
 			ret, err = c.LegacySubmitProposal(cacheCtx, evm, contract, readonly)
+		case SubmitProposalMethodName:
+			ret, err = c.SubmitProposal(cacheCtx, evm, contract, readonly)
 		case VoteMethodName:
 			ret, err = c.Vote(cacheCtx, evm, contract, readonly)
+		case VoteWeightedMethodName:
+			ret, err = c.VoteWeighted(cacheCtx, evm, contract, readonly)
+		case DepositMethodName:
+			ret, err = c.Deposit(cacheCtx, evm, contract, readonly)
 		}
 	}
 
