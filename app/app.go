@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
 	"io"
 	"net/http"
 	"os"
@@ -1078,6 +1079,11 @@ func (app *Evmos) EvmPrecompiled() {
 	// distribution precompile
 	precompiled[precompilesdistribution.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesdistribution.NewPrecompiledContract(ctx, app.DistrKeeper)
+	}
+
+	// gov precompile
+	precompiled[precompilesgov.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesgov.NewPrecompiledContract(ctx, app.GovKeeper, app.AccountKeeper)
 	}
 
 	// set precompiled contracts

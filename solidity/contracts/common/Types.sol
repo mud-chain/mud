@@ -26,3 +26,8 @@ struct CommissionRates {
     uint256 maxRate;
     uint256 maxChangeRate;
 }
+
+struct WeightedVoteOption {
+    int32 option;
+    string weight;
+}
