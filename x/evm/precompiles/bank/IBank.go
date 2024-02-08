@@ -37,7 +37,7 @@ type Coin struct {
 
 // IBankMetaData contains all meta data concerning the IBank contract.
 var IBankMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"toAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"Send\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"toAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"name\":\"send\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"toAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"Send\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"accountAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"}],\"name\":\"balance\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"balance\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"toAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"name\":\"send\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IBankABI is the input ABI used to generate the binding from.
@@ -184,6 +184,37 @@ func (_IBank *IBankTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Tran
 // Transact invokes the (paid) contract method with params as input values.
 func (_IBank *IBankTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	return _IBank.Contract.contract.Transact(opts, method, params...)
+}
+
+// Balance is a free data retrieval call binding the contract method 0x16cadeab.
+//
+// Solidity: function balance(address accountAddress, string denom) view returns((string,uint256) balance)
+func (_IBank *IBankCaller) Balance(opts *bind.CallOpts, accountAddress common.Address, denom string) (Coin, error) {
+	var out []interface{}
+	err := _IBank.contract.Call(opts, &out, "balance", accountAddress, denom)
+
+	if err != nil {
+		return *new(Coin), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(Coin)).(*Coin)
+
+	return out0, err
+
+}
+
+// Balance is a free data retrieval call binding the contract method 0x16cadeab.
+//
+// Solidity: function balance(address accountAddress, string denom) view returns((string,uint256) balance)
+func (_IBank *IBankSession) Balance(accountAddress common.Address, denom string) (Coin, error) {
+	return _IBank.Contract.Balance(&_IBank.CallOpts, accountAddress, denom)
+}
+
+// Balance is a free data retrieval call binding the contract method 0x16cadeab.
+//
+// Solidity: function balance(address accountAddress, string denom) view returns((string,uint256) balance)
+func (_IBank *IBankCallerSession) Balance(accountAddress common.Address, denom string) (Coin, error) {
+	return _IBank.Contract.Balance(&_IBank.CallOpts, accountAddress, denom)
 }
 
 // Send is a paid mutator transaction binding the contract method 0x8f7f2b20.

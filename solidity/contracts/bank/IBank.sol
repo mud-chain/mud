@@ -10,6 +10,11 @@ interface IBank {
         Coin[] memory amount
     ) external returns (bool success);
 
+    function balance(
+        address accountAddress,
+        string memory denom
+    ) external view returns (Coin memory balance);
+
     event Send(
         address indexed fromAddress,
         address indexed toAddress,

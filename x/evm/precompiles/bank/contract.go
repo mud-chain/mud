@@ -40,6 +40,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case SendMethodName:
 		return SendGas
+	case BalanceMethodName:
+		return BalanceGas
 	default:
 		return 0
 	}
@@ -59,6 +61,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case SendMethodName:
 			ret, err = c.Send(cacheCtx, evm, contract, readonly)
+		case BalanceMethodName:
+			ret, err = c.Balance(cacheCtx, evm, contract, readonly)
 		}
 	}
 

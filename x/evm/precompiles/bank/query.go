@@ -2,40 +2,36 @@ package bank
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/evmos/evmos/v12/x/evm/types"
 )
 
 const (
-	ProposalGas = 30_000
+	BalanceGas = 30_000
 
-	ProposalMethodName = "proposal"
+	BalanceMethodName = "balance"
 )
 
-func (c *Contract) Proposal(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
-	method := MustMethod(ProposalMethodName)
+func (c *Contract) Balance(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(BalanceMethodName)
 
-	//var args DelegationRewardsArgs
-	//if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
-	//	return nil, err
-	//}
-	//msg := &banktypes.QueryDelegationRewardsRequest{
-	//	DelegatorAddress: args.GetDelegator().String(),
-	//	ValidatorAddress: args.GetValidator().String(),
-	//}
-	//
-	//resp, err := c.bankKeeper.DelegationRewards(ctx, msg)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//var rewards []DecCoin
-	//for _, reward := range resp.Rewards {
-	//	rewards = append(rewards, DecCoin{
-	//		Denom:     reward.Denom,
-	//		Amount:    reward.Amount.BigInt(),
-	//		Precision: uint8(sdk.Precision),
-	//	})
-	//}
+	var args BalanceArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	msg := &banktypes.QueryBalanceRequest{
+		Address: sdk.AccAddress(args.AccountAddress.Bytes()).String(),
+		Denom:   args.Denom,
+	}
 
-	return method.Outputs.Pack(true)
+	res, err := c.bankKeeper.Balance(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(Coin{
+		Denom:  res.Balance.Denom,
+		Amount: res.Balance.Amount.BigInt(),
+	})
 }

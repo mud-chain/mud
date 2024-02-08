@@ -78,3 +78,19 @@ func (args *SendArgs) Validate() error {
 	}
 	return nil
 }
+
+type BalanceArgs struct {
+	AccountAddress common.Address `abi:"accountAddress"`
+	Denom          string         `abi:"denom"`
+}
+
+// Validate Balance args
+func (args *BalanceArgs) Validate() error {
+	if args.AccountAddress == (common.Address{}) {
+		return fmt.Errorf("invalid account address: %s", args.AccountAddress)
+	}
+	if args.Denom == "" {
+		return fmt.Errorf("denom is empty")
+	}
+	return nil
+}
