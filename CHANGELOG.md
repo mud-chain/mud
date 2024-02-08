@@ -52,6 +52,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (precompile-staking) [#37](https://github.com/luchenqun/ethos/pull/37) Implement the CreateValidator tx for staking precompiled contract.
 - (precompile-distribution) [#38](https://github.com/luchenqun/ethos/pull/38) Implement distribution precompile contract.
 - (precompile-gov) [#39](https://github.com/luchenqun/ethos/pull/39) Implement gov precompile contract.
+- (precompile-bank) [#40](https://github.com/luchenqun/ethos/pull/40) Implement bank precompile contract.
 
 ### API Breaking
 
