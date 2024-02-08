@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
@@ -119,12 +120,14 @@ func (args *VoteArgs) Validate() error {
 	return nil
 }
 
-type WeightedVoteOptionJson = WeightedVoteOption
-type VoteWeightedArgs struct {
-	ProposalId uint64                   `abi:"proposalId"`
-	Options    []WeightedVoteOptionJson `abi:"options"`
-	Metadata   string                   `abi:"metadata"`
-}
+type (
+	WeightedVoteOptionJson = WeightedVoteOption
+	VoteWeightedArgs       struct {
+		ProposalId uint64                   `abi:"proposalId"`
+		Options    []WeightedVoteOptionJson `abi:"options"`
+		Metadata   string                   `abi:"metadata"`
+	}
+)
 
 // Validate VoteWeighted args
 func (args *VoteWeightedArgs) Validate() error {

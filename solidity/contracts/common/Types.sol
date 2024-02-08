@@ -13,6 +13,19 @@ struct DecCoin {
     uint8 precision;
 }
 
+struct PageRequest {
+    bytes key;
+    uint64 offset;
+    uint64 limit;
+    bool countTotal;
+    bool reverse;
+}
+
+struct PageResponse {
+    bytes nextKey;
+    uint64 total;
+}
+
 struct Description {
     string moniker;
     string identity;

@@ -72,8 +72,10 @@ func MustEvent(name string) abi.Event {
 	return event
 }
 
-type DescriptionJson = Description
-type CommissionRatesJson = CommissionRates
+type (
+	DescriptionJson     = Description
+	CommissionRatesJson = CommissionRates
+)
 
 type CreateValidatorArgs struct {
 	Description       DescriptionJson     `abi:"description"`

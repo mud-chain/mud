@@ -20,7 +20,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
 	"io"
 	"net/http"
 	"os"
@@ -131,7 +130,9 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
 	evmkeeper "github.com/evmos/evmos/v12/x/evm/keeper"
+	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
 	precompilesdistribution "github.com/evmos/evmos/v12/x/evm/precompiles/distribution"
+	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
 	precompilesstaking "github.com/evmos/evmos/v12/x/evm/precompiles/staking"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	"github.com/evmos/evmos/v12/x/feemarket"
@@ -1070,6 +1071,11 @@ func initParamsKeeper(
 // EvmPrecompiled  set evm precompiled contracts
 func (app *Evmos) EvmPrecompiled() {
 	precompiled := evmkeeper.BerlinPrecompiled()
+
+	// bank precompile
+	precompiled[precompilesbank.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesbank.NewPrecompiledContract(ctx, app.BankKeeper)
+	}
 
 	// staking precompile
 	precompiled[precompilesstaking.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
