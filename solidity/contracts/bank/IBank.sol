@@ -15,6 +15,11 @@ interface IBank {
         string memory denom
     ) external view returns (Coin memory balance);
 
+    function allBalances(
+        address accountAddress,
+        PageRequest memory pageRequest
+    ) external view returns (Coin[] memory balances, PageResponse memory pageResponse);
+
     event Send(
         address indexed fromAddress,
         address indexed toAddress,

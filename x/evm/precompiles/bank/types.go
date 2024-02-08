@@ -94,3 +94,18 @@ func (args *BalanceArgs) Validate() error {
 	}
 	return nil
 }
+
+type PageRequestJson = PageRequest
+
+type AllBalancesArgs struct {
+	AccountAddress common.Address  `abi:"accountAddress"`
+	PageRequest    PageRequestJson `abi:"pageRequest"`
+}
+
+// Validate AllBalances args
+func (args *AllBalancesArgs) Validate() error {
+	if args.AccountAddress == (common.Address{}) {
+		return fmt.Errorf("invalid account address: %s", args.AccountAddress)
+	}
+	return nil
+}
