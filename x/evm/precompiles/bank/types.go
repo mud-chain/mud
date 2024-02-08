@@ -3,6 +3,7 @@ package bank
 import (
 	"bytes"
 	"fmt"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"

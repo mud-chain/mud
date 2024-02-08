@@ -2,6 +2,7 @@ package bank
 
 import (
 	"errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -38,7 +39,6 @@ func (c *Contract) Send(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 			Denom:  coin.Denom,
 			Amount: sdk.NewIntFromBigInt(coin.Amount),
 		})
-
 	}
 
 	msg := &banktypes.MsgSend{
