@@ -260,8 +260,8 @@ func (args *CancelUnbondingDelegationArgs) GetCreationHeight() int64 {
 }
 
 type ValidatorsArgs struct {
-	Status      uint8           `abi:"status"`
-	PageRequest PageRequestJson `abi:"pageRequest"`
+	Status     uint8           `abi:"status"`
+	Pagination PageRequestJson `abi:"pagination"`
 }
 
 // Validate validates the args

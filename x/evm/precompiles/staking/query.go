@@ -61,18 +61,18 @@ func (c *Contract) Validators(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
-	if bytes.Equal(args.PageRequest.Key, []byte{0}) {
-		args.PageRequest.Key = nil
+	if bytes.Equal(args.Pagination.Key, []byte{0}) {
+		args.Pagination.Key = nil
 	}
 
 	msg := &stakingtypes.QueryValidatorsRequest{
 		Status: args.GetStatus(),
 		Pagination: &query.PageRequest{
-			Key:        args.PageRequest.Key,
-			Offset:     args.PageRequest.Offset,
-			Limit:      args.PageRequest.Limit,
-			CountTotal: args.PageRequest.CountTotal,
-			Reverse:    args.PageRequest.Reverse,
+			Key:        args.Pagination.Key,
+			Offset:     args.Pagination.Offset,
+			Limit:      args.Pagination.Limit,
+			CountTotal: args.Pagination.CountTotal,
+			Reverse:    args.Pagination.Reverse,
 		},
 	}
 

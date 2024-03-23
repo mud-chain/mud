@@ -84,11 +84,16 @@ interface IStaking {
 
     function validators(
         BondStatus status,
-        PageRequest memory pageRequest
+        PageRequest memory pagination
     ) external view returns (Validator[] memory validators, PageResponse memory pageResponse);
 
     function validator(
         address validatorAddr
+    ) external view returns (Validator memory validator);
+
+    function validatorDelegations(
+        address validatorAddr,
+        PageRequest memory pagination
     ) external view returns (Validator memory validator);
 
     // events
