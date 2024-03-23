@@ -53,6 +53,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return DelegationGas
 	case ValidatorMethodName:
 		return ValidatorGas
+	case ValidatorsMethodName:
+		return ValidatorsGas
 	default:
 		return 0
 	}
@@ -84,6 +86,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
 		case ValidatorMethodName:
 			ret, err = c.Validator(cacheCtx, evm, contract, readonly)
+		case ValidatorsMethodName:
+			ret, err = c.Validators(cacheCtx, evm, contract, readonly)
 		}
 	}
 

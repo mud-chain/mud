@@ -31,7 +31,7 @@ enum BondStatus {
 }
 
 struct Validator {
-    string operatorAddress;
+    address operatorAddress;
     string consensusPubkey;
     bool jailed;
     BondStatus status;
@@ -81,6 +81,11 @@ interface IStaking {
         address delegatorAddress,
         address validatorAddress
     ) external view returns (uint256 shares, Coin memory balance);
+
+    function validators(
+        BondStatus status,
+        PageRequest memory pageRequest
+    ) external view returns (Validator[] memory validators, PageResponse memory pageResponse);
 
     function validator(
         address validatorAddr

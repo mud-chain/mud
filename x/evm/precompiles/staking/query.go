@@ -1,12 +1,15 @@
 package staking
 
 import (
+	"bytes"
 	"encoding/base64"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
@@ -14,9 +17,11 @@ import (
 const (
 	DelegationGas = 30_000 // 98000
 	ValidatorGas  = 30_000
+	ValidatorsGas = 60_000
 
 	DelegationMethodName = "delegation"
 	ValidatorMethodName  = "validator"
+	ValidatorsMethodName = "validators"
 )
 
 func (c *Contract) Delegation(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
@@ -48,6 +53,48 @@ func (c *Contract) Delegation(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	return method.Outputs.Pack(shares, balance)
 }
 
+func (c *Contract) Validators(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(ValidatorsMethodName)
+
+	// parse args
+	var args ValidatorsArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	if bytes.Equal(args.PageRequest.Key, []byte{0}) {
+		args.PageRequest.Key = nil
+	}
+
+	msg := &stakingtypes.QueryValidatorsRequest{
+		Status: args.GetStatus(),
+		Pagination: &query.PageRequest{
+			Key:        args.PageRequest.Key,
+			Offset:     args.PageRequest.Offset,
+			Limit:      args.PageRequest.Limit,
+			CountTotal: args.PageRequest.CountTotal,
+			Reverse:    args.PageRequest.Reverse,
+		},
+	}
+
+	querier := stakingkeeper.Querier{Keeper: c.stakingKeeper}
+
+	res, err := querier.Validators(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var validators []Validator
+	for _, validator := range res.Validators {
+		validators = append(validators, OutputsValidator(validator))
+	}
+
+	var pageResponse PageResponse
+	pageResponse.NextKey = res.Pagination.NextKey
+	pageResponse.Total = res.Pagination.Total
+
+	return method.Outputs.Pack(validators, pageResponse)
+}
+
 func (c *Contract) Validator(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
 	method := MustMethod(ValidatorMethodName)
 
@@ -67,29 +114,35 @@ func (c *Contract) Validator(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, 
 		return nil, err
 	}
 
-	return method.Outputs.Pack(OutputsValidator(res))
+	return method.Outputs.Pack(OutputsValidator(res.Validator))
 }
 
-func OutputsValidator(res *stakingtypes.QueryValidatorResponse) Validator {
+func OutputsValidator(validator stakingtypes.Validator) Validator {
+	operatorValAddress, err := sdk.ValAddressFromBech32(validator.OperatorAddress)
+	var operatorHexAddress common.Address
+	if err == nil {
+		operatorHexAddress = common.BytesToAddress(operatorValAddress)
+	}
+
 	return Validator{
-		OperatorAddress: res.Validator.OperatorAddress,
-		ConsensusPubkey: FormatConsensusPubkey(res.Validator.ConsensusPubkey),
-		Jailed:          res.Validator.Jailed,
-		Status:          uint8(res.Validator.Status),
-		Tokens:          res.Validator.Tokens.BigInt(),
-		DelegatorShares: res.Validator.DelegatorShares.BigInt(),
-		Description:     Description(res.Validator.Description),
-		UnbondingHeight: res.Validator.UnbondingHeight,
-		UnbondingTime:   res.Validator.UnbondingTime.Unix(),
+		OperatorAddress: operatorHexAddress,
+		ConsensusPubkey: FormatConsensusPubkey(validator.ConsensusPubkey),
+		Jailed:          validator.Jailed,
+		Status:          uint8(validator.Status),
+		Tokens:          validator.Tokens.BigInt(),
+		DelegatorShares: validator.DelegatorShares.BigInt(),
+		Description:     Description(validator.Description),
+		UnbondingHeight: validator.UnbondingHeight,
+		UnbondingTime:   validator.UnbondingTime.Unix(),
 		Commission: Commission{
 			CommissionRates: CommissionRates{
-				Rate:          res.Validator.Commission.Rate.BigInt(),
-				MaxRate:       res.Validator.Commission.MaxRate.BigInt(),
-				MaxChangeRate: res.Validator.Commission.MaxChangeRate.BigInt(),
+				Rate:          validator.Commission.Rate.BigInt(),
+				MaxRate:       validator.Commission.MaxRate.BigInt(),
+				MaxChangeRate: validator.Commission.MaxChangeRate.BigInt(),
 			},
-			UpdateTime: res.Validator.Commission.UpdateTime.Unix(),
+			UpdateTime: validator.Commission.UpdateTime.Unix(),
 		},
-		MinSelfDelegation: res.Validator.MinSelfDelegation.BigInt(),
+		MinSelfDelegation: validator.MinSelfDelegation.BigInt(),
 	}
 }
 

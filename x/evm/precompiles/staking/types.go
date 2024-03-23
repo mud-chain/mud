@@ -16,6 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/evmos/evmos/v12/types"
 )
 
@@ -75,6 +76,7 @@ func MustEvent(name string) abi.Event {
 type (
 	DescriptionJson     = Description
 	CommissionRatesJson = CommissionRates
+	PageRequestJson     = PageRequest
 )
 
 type CreateValidatorArgs struct {
@@ -255,6 +257,37 @@ func (args *CancelUnbondingDelegationArgs) GetValidator() sdk.ValAddress {
 // GetCreationHeight returns the creation height
 func (args *CancelUnbondingDelegationArgs) GetCreationHeight() int64 {
 	return args.CreationHeight.Int64()
+}
+
+type ValidatorsArgs struct {
+	Status      uint8           `abi:"status"`
+	PageRequest PageRequestJson `abi:"pageRequest"`
+}
+
+// Validate validates the args
+func (args *ValidatorsArgs) Validate() error {
+	if args.Status > uint8(stakingtypes.Bonded) {
+		return fmt.Errorf("invalid status: %d", args.Status)
+	}
+
+	return nil
+}
+
+// GetStatus returns the validator status string
+func (args *ValidatorsArgs) GetStatus() string {
+	switch args.Status {
+	case 0:
+		return ""
+	case 1:
+		return stakingtypes.Unbonded.String()
+	case 2:
+		return stakingtypes.Unbonding.String()
+	case 3:
+		return stakingtypes.Bonded.String()
+	default:
+		return ""
+	}
+	return ""
 }
 
 type ValidatorArgs struct {
