@@ -16,18 +16,21 @@ import (
 
 const (
 	CreateValidatorGas           = 60_000
+	EditValidatorGas             = 30_000
 	DelegateGas                  = 40_000 // 98000 - 160000 // 165000
 	UndelegateGas                = 45_000 // 94000 - 163000 // 172000
 	RedelegateGas                = 60_000 // undelegate_gas+delegate_gas+withdraw_gas*2
 	CancelUnbondingDelegationGas = 30_000 // 98000
 
 	CreateValidatorMethodName           = "createValidator"
+	EditValidatorMethodName             = "editValidator"
 	DelegateMethodName                  = "delegate"
 	UndelegateMethodName                = "undelegate"
 	RedelegateMethodName                = "redelegate"
 	CancelUnbondingDelegationMethodName = "cancelUnbondingDelegation"
 
 	CreateValidatorEventName           = "CreateValidator"
+	EditValidatorEventName             = "EditValidator"
 	DelegateEventName                  = "Delegate"
 	UndelegateEventName                = "Undelegate"
 	RedelegateEventName                = "Redelegate"
@@ -82,6 +85,51 @@ func (c *Contract) CreateValidator(ctx sdk.Context, evm *vm.EVM, contract *vm.Co
 		MustEvent(CreateValidatorEventName),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
 		args.Value,
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) EditValidator(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("editValidator method not readonly")
+	}
+
+	method := MustMethod(EditValidatorMethodName)
+
+	// parse args
+	var args EditValidatorArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &stakingtypes.MsgEditValidator{
+		Description:       stakingtypes.Description(args.Description),
+		ValidatorAddress:  sdk.ValAddress(contract.Caller().Bytes()).String(),
+		CommissionRate:    args.GetCommissionRate(),
+		MinSelfDelegation: args.GetMinSelfDelegation(),
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := stakingkeeper.NewMsgServerImpl(c.stakingKeeper)
+
+	_, err = server.EditValidator(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := c.AddLog(
+		evm,
+		MustEvent(EditValidatorEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+		args.CommissionRate,
+		args.MinSelfDelegation,
 	); err != nil {
 		return nil, err
 	}

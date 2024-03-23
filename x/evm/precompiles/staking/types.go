@@ -120,6 +120,42 @@ func (args *CreateValidatorArgs) GetPubkey() *codectypes.Any {
 	return pubkey
 }
 
+type EditValidatorArgs struct {
+	Description       DescriptionJson `abi:"description"`
+	CommissionRate    *big.Int        `abi:"commissionRate"`
+	MinSelfDelegation *big.Int        `abi:"minSelfDelegation"`
+}
+
+// Validate validates the args
+func (args *EditValidatorArgs) Validate() error {
+
+	return nil
+}
+
+// GetCommissionRate returns the dec commission rate
+func (args *EditValidatorArgs) GetCommissionRate() *sdk.Dec {
+	var commissionRate *sdk.Dec
+	// if is less than 0, represents the user's unwillingness to modify this value
+	if args.CommissionRate.Cmp(big.NewInt(-1)) > 0 {
+		tmp := sdk.NewDecFromBigIntWithPrec(args.CommissionRate, sdk.Precision)
+		commissionRate = &tmp
+	}
+
+	return commissionRate
+}
+
+// GetMinSelfDelegation returns the sdk.Int minSelfDelegation
+func (args *EditValidatorArgs) GetMinSelfDelegation() *sdk.Int {
+	var minSelfDelegation *sdk.Int
+	// if is less than 0, represents the user's unwillingness to modify this value
+	if args.MinSelfDelegation.Cmp(big.NewInt(-1)) > 0 {
+		tmp := sdk.NewIntFromBigInt(args.MinSelfDelegation)
+		minSelfDelegation = &tmp
+	}
+
+	return minSelfDelegation
+}
+
 type DelegateArgs struct {
 	ValidatorAddress common.Address `abi:"validatorAddress"`
 	Amount           *big.Int       `abi:"amount"`

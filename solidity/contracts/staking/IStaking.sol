@@ -54,6 +54,12 @@ interface IStaking {
         uint256 value
     ) external returns (bool success);
 
+    function editValidator(
+        Description calldata description,
+        int256 commissionRate,
+        int256 minSelfDelegation
+    ) external returns (bool success);
+
     function delegate(
         address validatorAddress,
         uint256 amount
@@ -100,6 +106,12 @@ interface IStaking {
     event CreateValidator(
         address indexed validator,
         uint256 value
+    );
+
+    event EditValidator(
+        address indexed validator,
+        int256 commissionRate,
+        int256 minSelfDelegation
     );
 
     event Delegate(
