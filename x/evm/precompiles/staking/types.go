@@ -256,3 +256,22 @@ func (args *CancelUnbondingDelegationArgs) GetValidator() sdk.ValAddress {
 func (args *CancelUnbondingDelegationArgs) GetCreationHeight() int64 {
 	return args.CreationHeight.Int64()
 }
+
+type ValidatorArgs struct {
+	ValidatorAddr common.Address `abi:"validatorAddr"`
+}
+
+// Validate validates the args
+func (args *ValidatorArgs) Validate() error {
+	if args.ValidatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddr)
+	}
+
+	return nil
+}
+
+// GetValidator returns the validator address, caller must ensure the validator address is valid
+func (args *ValidatorArgs) GetValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
+	return valAddr
+}

@@ -4,8 +4,48 @@ pragma solidity ^0.8.0;
 
 import "../common/Types.sol";
 
-interface IStaking {
+struct Description {
+    string moniker;
+    string identity;
+    string website;
+    string securityContact;
+    string details;
+}
 
+struct CommissionRates {
+    uint256 rate;
+    uint256 maxRate;
+    uint256 maxChangeRate;
+}
+
+struct Commission {
+    CommissionRates commissionRates;
+    int64 updateTime;
+}
+
+enum BondStatus {
+    Unspecified,
+    Unbonded,
+    Unbonding,
+    Bonded
+}
+
+struct Validator {
+    string operatorAddress;
+    string consensusPubkey;
+    bool jailed;
+    BondStatus status;
+    uint256 tokens;
+    uint256 delegatorShares;
+    Description description;
+    int64 unbondingHeight;
+    int64 unbondingTime;
+    Commission commission;
+    uint256 minSelfDelegation;
+}
+
+interface IStaking {
+    // tx
     function createValidator(
         Description calldata description,
         CommissionRates calldata commission,
@@ -36,11 +76,17 @@ interface IStaking {
         uint256 creationHeight
     ) external returns (bool success);
 
+    // query
     function delegation(
         address delegatorAddress,
         address validatorAddress
     ) external view returns (uint256 shares, Coin memory balance);
 
+    function validator(
+        address validatorAddr
+    ) external view returns (Validator memory validator);
+
+    // events
     event CreateValidator(
         address indexed validator,
         uint256 value
