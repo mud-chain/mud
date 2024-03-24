@@ -50,7 +50,7 @@ interface IStaking {
         Description calldata description,
         CommissionRates calldata commission,
         uint256 minSelfDelegation,
-        string memory pubkey,
+        string calldata pubkey,
         uint256 value
     ) external returns (bool success);
 
@@ -86,21 +86,21 @@ interface IStaking {
     function delegation(
         address delegatorAddress,
         address validatorAddress
-    ) external view returns (uint256 shares, Coin memory balance);
+    ) external view returns (uint256 shares, Coin calldata balance);
 
     function validators(
         BondStatus status,
-        PageRequest memory pagination
-    ) external view returns (Validator[] memory validators, PageResponse memory pageResponse);
+        PageRequest calldata pagination
+    ) external view returns (Validator[] calldata validators, PageResponse calldata pageResponse);
 
     function validator(
         address validatorAddr
-    ) external view returns (Validator memory validator);
+    ) external view returns (Validator calldata validator);
 
     function validatorDelegations(
         address validatorAddr,
-        PageRequest memory pagination
-    ) external view returns (Validator memory validator);
+        PageRequest calldata pagination
+    ) external view returns (Validator calldata validator);
 
     // events
     event CreateValidator(
