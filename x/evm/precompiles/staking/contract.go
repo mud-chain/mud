@@ -1,6 +1,7 @@
 package staking
 
 import (
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -41,6 +42,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case CreateValidatorMethodName:
 		return CreateValidatorGas
+	case EditValidatorMethodName:
+		return EditValidatorGas
 	case DelegateMethodName:
 		return DelegateGas
 	case UndelegateMethodName:
@@ -51,6 +54,10 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return CancelUnbondingDelegationGas
 	case DelegationMethodName:
 		return DelegationGas
+	case ValidatorMethodName:
+		return ValidatorGas
+	case ValidatorsMethodName:
+		return ValidatorsGas
 	default:
 		return 0
 	}
@@ -70,6 +77,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case CreateValidatorMethodName:
 			ret, err = c.CreateValidator(cacheCtx, evm, contract, readonly)
+		case EditValidatorMethodName:
+			ret, err = c.EditValidator(cacheCtx, evm, contract, readonly)
 		case DelegateMethodName:
 			ret, err = c.Delegate(cacheCtx, evm, contract, readonly)
 		case UndelegateMethodName:
@@ -80,6 +89,12 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.CancelUnbondingDelegation(cacheCtx, evm, contract, readonly)
 		case DelegationMethodName:
 			ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
+		case ValidatorMethodName:
+			ret, err = c.Validator(cacheCtx, evm, contract, readonly)
+		case ValidatorsMethodName:
+			ret, err = c.Validators(cacheCtx, evm, contract, readonly)
+		default:
+			err = fmt.Errorf("method %s is not handle", method.Name)
 		}
 	}
 

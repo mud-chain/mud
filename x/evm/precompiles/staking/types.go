@@ -16,6 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/evmos/evmos/v12/types"
 )
 
@@ -75,6 +76,7 @@ func MustEvent(name string) abi.Event {
 type (
 	DescriptionJson     = Description
 	CommissionRatesJson = CommissionRates
+	PageRequestJson     = PageRequest
 )
 
 type CreateValidatorArgs struct {
@@ -116,6 +118,42 @@ func (args *CreateValidatorArgs) GetPubkey() *codectypes.Any {
 	}
 
 	return pubkey
+}
+
+type EditValidatorArgs struct {
+	Description       DescriptionJson `abi:"description"`
+	CommissionRate    *big.Int        `abi:"commissionRate"`
+	MinSelfDelegation *big.Int        `abi:"minSelfDelegation"`
+}
+
+// Validate validates the args
+func (args *EditValidatorArgs) Validate() error {
+
+	return nil
+}
+
+// GetCommissionRate returns the dec commission rate
+func (args *EditValidatorArgs) GetCommissionRate() *sdk.Dec {
+	var commissionRate *sdk.Dec
+	// if is less than 0, represents the user's unwillingness to modify this value
+	if args.CommissionRate.Cmp(big.NewInt(-1)) > 0 {
+		tmp := sdk.NewDecFromBigIntWithPrec(args.CommissionRate, sdk.Precision)
+		commissionRate = &tmp
+	}
+
+	return commissionRate
+}
+
+// GetMinSelfDelegation returns the sdk.Int minSelfDelegation
+func (args *EditValidatorArgs) GetMinSelfDelegation() *sdk.Int {
+	var minSelfDelegation *sdk.Int
+	// if is less than 0, represents the user's unwillingness to modify this value
+	if args.MinSelfDelegation.Cmp(big.NewInt(-1)) > 0 {
+		tmp := sdk.NewIntFromBigInt(args.MinSelfDelegation)
+		minSelfDelegation = &tmp
+	}
+
+	return minSelfDelegation
 }
 
 type DelegateArgs struct {
@@ -255,4 +293,54 @@ func (args *CancelUnbondingDelegationArgs) GetValidator() sdk.ValAddress {
 // GetCreationHeight returns the creation height
 func (args *CancelUnbondingDelegationArgs) GetCreationHeight() int64 {
 	return args.CreationHeight.Int64()
+}
+
+type ValidatorsArgs struct {
+	Status     uint8           `abi:"status"`
+	Pagination PageRequestJson `abi:"pagination"`
+}
+
+// Validate validates the args
+func (args *ValidatorsArgs) Validate() error {
+	if args.Status > uint8(stakingtypes.Bonded) {
+		return fmt.Errorf("invalid status: %d", args.Status)
+	}
+
+	return nil
+}
+
+// GetStatus returns the validator status string
+func (args *ValidatorsArgs) GetStatus() string {
+	switch args.Status {
+	case 0:
+		return ""
+	case 1:
+		return stakingtypes.Unbonded.String()
+	case 2:
+		return stakingtypes.Unbonding.String()
+	case 3:
+		return stakingtypes.Bonded.String()
+	default:
+		return ""
+	}
+	return ""
+}
+
+type ValidatorArgs struct {
+	ValidatorAddr common.Address `abi:"validatorAddr"`
+}
+
+// Validate validates the args
+func (args *ValidatorArgs) Validate() error {
+	if args.ValidatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddr)
+	}
+
+	return nil
+}
+
+// GetValidator returns the validator address, caller must ensure the validator address is valid
+func (args *ValidatorArgs) GetValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
+	return valAddr
 }

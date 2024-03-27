@@ -33,6 +33,10 @@ func ClaimStakingRewardsIfNecessary(
 	addr sdk.AccAddress,
 	amount sdk.Coins,
 ) error {
+	// may be the gasPrice is set to 0
+	if amount.Empty() {
+		return nil
+	}
 	stakingDenom := stakingKeeper.BondDenom(ctx)
 	found, amountInStakingDenom := amount.Find(stakingDenom)
 	if !found {

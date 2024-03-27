@@ -13,6 +13,11 @@ struct DecCoin {
     uint8 precision;
 }
 
+struct Dec {
+    uint256 amount;
+    uint8 precision;
+}
+
 struct PageRequest {
     bytes key;
     uint64 offset;
@@ -24,20 +29,6 @@ struct PageRequest {
 struct PageResponse {
     bytes nextKey;
     uint64 total;
-}
-
-struct Description {
-    string moniker;
-    string identity;
-    string website;
-    string securityContact;
-    string details;
-}
-
-struct CommissionRates {
-    uint256 rate;
-    uint256 maxRate;
-    uint256 maxChangeRate;
 }
 
 struct WeightedVoteOption {
