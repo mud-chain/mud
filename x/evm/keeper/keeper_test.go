@@ -7,6 +7,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	evmostypes "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/x/evm/keeper"
 	"github.com/evmos/evmos/v12/x/evm/statedb"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 
@@ -14,6 +15,52 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 )
+
+func (suite *KeeperTestSuite) TestWithChainID() {
+	testCases := []struct {
+		name       string
+		chainID    string
+		expChainID int64
+		expPanic   bool
+	}{
+		{
+			"fail - chainID is empty",
+			"",
+			0,
+			true,
+		},
+		{
+			"success - Evmos mainnet chain ID",
+			"ethos_100000001-2",
+			100000001,
+			false,
+		},
+		{
+			"success - Evmos testnet chain ID",
+			"ethos_100000000-4",
+			100000000,
+			false,
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			keeper := keeper.Keeper{}
+			ctx := suite.ctx.WithChainID(tc.chainID)
+
+			if tc.expPanic {
+				suite.Require().Panics(func() {
+					keeper.WithChainID(ctx)
+				})
+			} else {
+				suite.Require().NotPanics(func() {
+					keeper.WithChainID(ctx)
+					suite.Require().Equal(tc.expChainID, keeper.ChainID().Int64())
+				})
+			}
+		})
+	}
+}
 
 func (suite *KeeperTestSuite) TestBaseFee() {
 	testCases := []struct {

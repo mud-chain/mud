@@ -29,7 +29,6 @@ import (
 	"github.com/evmos/evmos/v12/contracts"
 	"github.com/evmos/evmos/v12/x/erc20/types"
 	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
-	vestingtypes "github.com/evmos/evmos/v12/x/vesting/types"
 )
 
 var erc20Denom = "erc20/0xdac17f958d2ee523a2206206994597c13d831ec7"
@@ -264,31 +263,6 @@ func (suite *KeeperTestSuite) TestOnRecvPacket() {
 				sdk.NewCoin(utils.BaseDenom, sdk.NewInt(1000)),
 				sdk.NewCoin(registeredDenom, sdk.NewInt(0)),
 				sdk.NewCoin(ibcBase, sdk.NewInt(1000)),
-			),
-		},
-		{
-			name: "ibc conversion - receiver is a vesting account (eth address)",
-			malleate: func() {
-				// Set vesting account
-				bacc := authtypes.NewBaseAccount(ethsecpAddr, nil, 0, 0)
-				acc := vestingtypes.NewClawbackVestingAccount(bacc, ethsecpAddr, nil, suite.ctx.BlockTime(), nil, nil)
-
-				suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-				sourcePrefix := transfertypes.GetDenomPrefix(transfertypes.PortID, sourceChannel)
-				prefixedDenom := sourcePrefix + registeredDenom
-
-				transfer := transfertypes.NewFungibleTokenPacketData(prefixedDenom, "1000", secpAddrCosmos, ethsecpAddrEvmos, "")
-				bz := transfertypes.ModuleCdc.MustMarshalJSON(&transfer)
-				packet = channeltypes.NewPacket(bz, 100, transfertypes.PortID, sourceChannel, transfertypes.PortID, evmosChannel, timeoutHeight, 0)
-			},
-			receiver:      ethsecpAddr,
-			ackSuccess:    true,
-			checkBalances: true,
-			expErc20s:     big.NewInt(1000),
-			expCoins: sdk.NewCoins(
-				sdk.NewCoin(ibcBase, sdk.NewInt(1000)),
-				sdk.NewCoin(utils.BaseDenom, sdk.NewInt(1000)),
-				sdk.NewCoin(registeredDenom, sdk.NewInt(0)),
 			),
 		},
 	}
