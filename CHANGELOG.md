@@ -54,7 +54,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (precompile-gov) [#39](https://github.com/luchenqun/ethos/pull/39) Implement gov precompile contract.
 - (precompile-bank) [#40](https://github.com/luchenqun/ethos/pull/40) Implement bank precompile contract.
 - (revenue) [#48](https://github.com/luchenqun/ethos/pull/48) Remove revenue module.
-
+- (vesting) [#49](https://github.com/luchenqun/ethos/pull/49) Remove vesting module.
 
 ### API Breaking
 
