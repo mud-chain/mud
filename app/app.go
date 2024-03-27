@@ -153,10 +153,6 @@ import (
 	"github.com/evmos/evmos/v12/x/inflation"
 	inflationkeeper "github.com/evmos/evmos/v12/x/inflation/keeper"
 	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
-	"github.com/evmos/evmos/v12/x/vesting"
-	vestingkeeper "github.com/evmos/evmos/v12/x/vesting/keeper"
-	vestingtypes "github.com/evmos/evmos/v12/x/vesting/types"
-
 	// NOTE: override ICS20 keeper to support IBC transfers of ERC20 tokens
 	"github.com/evmos/evmos/v12/x/ibc/transfer"
 	transferkeeper "github.com/evmos/evmos/v12/x/ibc/transfer/keeper"
@@ -219,7 +215,6 @@ var (
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{AppModuleBasic: &ibctransfer.AppModuleBasic{}},
-		vesting.AppModuleBasic{},
 		evm.AppModuleBasic{},
 		feemarket.AppModuleBasic{},
 		inflation.AppModuleBasic{},
@@ -295,7 +290,6 @@ type Evmos struct {
 	InflationKeeper inflationkeeper.Keeper
 	Erc20Keeper     erc20keeper.Keeper
 	EpochsKeeper    epochskeeper.Keeper
-	VestingKeeper   vestingkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -352,7 +346,7 @@ func NewEvmos(
 		evmtypes.StoreKey, feemarkettypes.StoreKey,
 		// evmos keys
 		inflationtypes.StoreKey, erc20types.StoreKey,
-		epochstypes.StoreKey, vestingtypes.StoreKey,
+		epochstypes.StoreKey,
 	)
 
 	// Add the EVM transient store key
@@ -472,11 +466,6 @@ func NewEvmos(
 			app.DistrKeeper.Hooks(),
 			app.SlashingKeeper.Hooks(),
 		),
-	)
-
-	app.VestingKeeper = vestingkeeper.NewKeeper(
-		keys[vestingtypes.StoreKey], appCodec,
-		app.AccountKeeper, app.BankKeeper, app.StakingKeeper,
 	)
 
 	app.Erc20Keeper = erc20keeper.NewKeeper(
@@ -608,7 +597,6 @@ func NewEvmos(
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper,
 			app.GetSubspace(erc20types.ModuleName)),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
-		vesting.NewAppModule(app.VestingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -640,7 +628,6 @@ func NewEvmos(
 		authz.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
-		vestingtypes.ModuleName,
 		inflationtypes.ModuleName,
 		erc20types.ModuleName,
 	)
@@ -670,7 +657,6 @@ func NewEvmos(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		// Evmos modules
-		vestingtypes.ModuleName,
 		inflationtypes.ModuleName,
 		erc20types.ModuleName,
 	)
@@ -705,7 +691,6 @@ func NewEvmos(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		// Evmos modules
-		vestingtypes.ModuleName,
 		inflationtypes.ModuleName,
 		erc20types.ModuleName,
 		epochstypes.ModuleName,
@@ -768,7 +753,6 @@ func (app *Evmos) setAnteHandler(txConfig client.TxConfig, maxGasWanted uint64) 
 		BankKeeper:             app.BankKeeper,
 		ExtensionOptionChecker: evmostypes.HasDynamicFeeExtensionOption,
 		EvmKeeper:              app.EvmKeeper,
-		StakingKeeper:          app.StakingKeeper,
 		FeegrantKeeper:         app.FeeGrantKeeper,
 		DistributionKeeper:     app.DistrKeeper,
 		IBCKeeper:              app.IBCKeeper,
