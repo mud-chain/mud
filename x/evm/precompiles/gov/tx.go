@@ -22,7 +22,6 @@ import (
 	"github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
 	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
-	revenuetypes "github.com/evmos/evmos/v12/x/revenue/v1/types"
 )
 
 const (
@@ -125,7 +124,6 @@ func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 	types.RegisterInterfaces(interfaceRegistry)
 	erc20types.RegisterInterfaces(interfaceRegistry)
 	inflationtypes.RegisterInterfaces(interfaceRegistry)
-	revenuetypes.RegisterInterfaces(interfaceRegistry)
 	ethosCodec := codec.NewProtoCodec(interfaceRegistry)
 
 	msgs := make([]sdk.Msg, len(messages))
