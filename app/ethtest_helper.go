@@ -19,6 +19,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/evmos/evmos/v12/utils"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -64,6 +66,7 @@ func EthSetup(isCheckTx bool, patchGenesis func(*Evmos, simapp.GenesisState) sim
 
 // EthSetupWithDB initializes a new EvmosApp. A Nop logger is set in EvmosApp.
 func EthSetupWithDB(isCheckTx bool, patchGenesis func(*Evmos, simapp.GenesisState) simapp.GenesisState, db dbm.DB) *Evmos {
+	chainID := utils.TestnetChainID + "-1"
 	app := NewEvmos(log.NewNopLogger(),
 		db,
 		nil,
@@ -88,7 +91,7 @@ func EthSetupWithDB(isCheckTx bool, patchGenesis func(*Evmos, simapp.GenesisStat
 		// Initialize the chain
 		app.InitChain(
 			abci.RequestInitChain{
-				ChainId:         "evmos_9000-1",
+				ChainId:         chainID,
 				Validators:      []abci.ValidatorUpdate{},
 				ConsensusParams: DefaultConsensusParams,
 				AppStateBytes:   stateBytes,

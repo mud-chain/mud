@@ -60,6 +60,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Improvements
 
+- (test) [#50](https://github.com/luchenqun/ethos/pull/50) Fix unit test after remove revenue/vesting module.
+
 ### Bug Fixes
 
 
