@@ -3,6 +3,7 @@ package staking
 import (
 	"bytes"
 	"encoding/base64"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"

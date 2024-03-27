@@ -128,7 +128,6 @@ type EditValidatorArgs struct {
 
 // Validate validates the args
 func (args *EditValidatorArgs) Validate() error {
-
 	return nil
 }
 
