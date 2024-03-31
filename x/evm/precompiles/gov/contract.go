@@ -31,10 +31,6 @@ func (c *Contract) Address() common.Address {
 	return govAddress
 }
 
-func (c *Contract) IsStateful() bool {
-	return true
-}
-
 func (c *Contract) RequiredGas(input []byte) uint64 {
 	method, err := GetMethodByID(input)
 	if err != nil {
