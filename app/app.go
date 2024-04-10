@@ -133,6 +133,7 @@ import (
 	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
 	precompilesdistribution "github.com/evmos/evmos/v12/x/evm/precompiles/distribution"
 	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
+	precompilesslashing "github.com/evmos/evmos/v12/x/evm/precompiles/slashing"
 	precompilesstaking "github.com/evmos/evmos/v12/x/evm/precompiles/staking"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	"github.com/evmos/evmos/v12/x/feemarket"
@@ -1054,6 +1055,11 @@ func (app *Evmos) EvmPrecompiled() {
 	// gov precompile
 	precompiled[precompilesgov.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesgov.NewPrecompiledContract(ctx, app.GovKeeper, app.AccountKeeper)
+	}
+
+	// staking precompile
+	precompiled[precompilesslashing.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesslashing.NewPrecompiledContract(ctx, app.SlashingKeeper)
 	}
 
 	// set precompiled contracts

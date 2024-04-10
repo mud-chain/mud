@@ -57,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (vesting) [#49](https://github.com/luchenqun/ethos/pull/49) Remove vesting module.
 - (evm) [#52](https://github.com/luchenqun/ethos/pull/52) Enable EIP 3855 for solidity push0 instruction.
 - (precompile-staking) [#56](https://github.com/luchenqun/ethos/pull/56) Implement some query rpc staking precompile contract.
+- (precompile-slashing) [#57](https://github.com/luchenqun/ethos/pull/57) Implement slashing precompile contract unjail transaction.
 
 ### API Breaking
 
