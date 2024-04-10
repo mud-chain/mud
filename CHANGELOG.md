@@ -58,6 +58,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (evm) [#52](https://github.com/luchenqun/ethos/pull/52) Enable EIP 3855 for solidity push0 instruction.
 - (precompile-staking) [#56](https://github.com/luchenqun/ethos/pull/56) Implement some query rpc staking precompile contract.
 - (precompile-slashing) [#57](https://github.com/luchenqun/ethos/pull/57) Implement slashing precompile contract unjail transaction.
+- (precompile-distribution) [#58](https://github.com/luchenqun/ethos/pull/58) Implement distribution precompile contract four query.
 
 ### API Breaking
 

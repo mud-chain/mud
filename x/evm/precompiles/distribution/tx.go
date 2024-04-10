@@ -76,7 +76,7 @@ func (c *Contract) WithdrawDelegatorReward(ctx sdk.Context, evm *vm.EVM, contrac
 
 	method := MustMethod(WithdrawDelegatorRewardMethodName)
 
-	var args WithdrawDelegatorRewardArgs
+	var args ValidatorAddressArgs
 	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
 	if err != nil {
 		return nil, err

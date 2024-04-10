@@ -103,12 +103,12 @@ func (args *DelegationRewardsArgs) GetDelegator() sdk.AccAddress {
 	return accAddr
 }
 
-type WithdrawDelegatorRewardArgs struct {
+type ValidatorAddressArgs struct {
 	ValidatorAddress common.Address `abi:"validatorAddress"`
 }
 
 // Validate WithdrawDelegatorRewardArgs the args
-func (args *WithdrawDelegatorRewardArgs) Validate() error {
+func (args *ValidatorAddressArgs) Validate() error {
 	if args.ValidatorAddress == (common.Address{}) {
 		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddress)
 	}
@@ -116,8 +116,26 @@ func (args *WithdrawDelegatorRewardArgs) Validate() error {
 }
 
 // GetValidator returns the validator address, caller must ensure the validator address is valid
-func (args *WithdrawDelegatorRewardArgs) GetValidator() sdk.ValAddress {
+func (args *ValidatorAddressArgs) GetValidator() sdk.ValAddress {
 	valAddr := sdk.ValAddress(args.ValidatorAddress.Bytes())
+	return valAddr
+}
+
+type DelegatorAddressArgs struct {
+	DelegatorAddress common.Address `abi:"delegatorAddress"`
+}
+
+// Validate WithdrawDelegatorRewardArgs the args
+func (args *DelegatorAddressArgs) Validate() error {
+	if args.DelegatorAddress == (common.Address{}) {
+		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddress)
+	}
+	return nil
+}
+
+// GetDelegator returns the delegator address, caller must ensure the delegator address is valid
+func (args *DelegatorAddressArgs) GetDelegator() sdk.AccAddress {
+	valAddr := sdk.AccAddress(args.DelegatorAddress.Bytes())
 	return valAddr
 }
 

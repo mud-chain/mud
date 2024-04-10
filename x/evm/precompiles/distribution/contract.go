@@ -37,14 +37,22 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case SetWithdrawAddressMethodName:
 		return SetWithdrawAddressGas
-	case DelegationRewardsMethodName:
-		return DelegationRewardsGas
 	case WithdrawDelegatorRewardMethodName:
 		return WithdrawDelegatorRewardGas
 	case WithdrawValidatorCommissionMethodName:
 		return WithdrawValidatorCommissionGas
 	case FundCommunityPoolMethodName:
 		return FundCommunityPoolGas
+	case ValidatorDistributionInfoMethodName:
+		return ValidatorDistributionInfoGas
+	case ValidatorOutstandingRewardsMethodName:
+		return ValidatorOutstandingRewardsGas
+	case ValidatorCommissionMethodName:
+		return ValidatorCommissionGas
+	case DelegationRewardsMethodName:
+		return DelegationRewardsGas
+	case DelegationTotalRewardsMethodName:
+		return DelegationTotalRewardsGas
 	default:
 		return 0
 	}
@@ -64,14 +72,22 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case SetWithdrawAddressMethodName:
 			ret, err = c.SetWithdrawAddress(cacheCtx, evm, contract, readonly)
-		case DelegationRewardsMethodName:
-			ret, err = c.DelegationRewards(cacheCtx, evm, contract, readonly)
 		case WithdrawDelegatorRewardMethodName:
 			ret, err = c.WithdrawDelegatorReward(cacheCtx, evm, contract, readonly)
 		case WithdrawValidatorCommissionMethodName:
 			ret, err = c.WithdrawValidatorCommission(cacheCtx, evm, contract, readonly)
 		case FundCommunityPoolMethodName:
 			ret, err = c.FundCommunityPool(cacheCtx, evm, contract, readonly)
+		case ValidatorDistributionInfoMethodName:
+			ret, err = c.ValidatorDistributionInfo(cacheCtx, evm, contract, readonly)
+		case ValidatorOutstandingRewardsMethodName:
+			ret, err = c.ValidatorOutstandingRewards(cacheCtx, evm, contract, readonly)
+		case ValidatorCommissionMethodName:
+			ret, err = c.ValidatorCommission(cacheCtx, evm, contract, readonly)
+		case DelegationRewardsMethodName:
+			ret, err = c.DelegationRewards(cacheCtx, evm, contract, readonly)
+		case DelegationTotalRewardsMethodName:
+			ret, err = c.DelegationTotalRewards(cacheCtx, evm, contract, readonly)
 		}
 	}
 
