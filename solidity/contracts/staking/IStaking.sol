@@ -44,6 +44,38 @@ struct Validator {
     uint256 minSelfDelegation;
 }
 
+// Delegation represents the bond with tokens held by an account. It is
+// owned by one delegator, and is associated with the voting power of one
+// validator.
+struct Delegation {
+    address delegatorAddress;
+    address validatorAddress;
+    Dec shares;
+}
+
+// DelegationResponse is equivalent to Delegation except that it contains a
+// balance in addition to shares which is more suitable for client responses.
+struct DelegationResponse {
+    Delegation delegation;
+    Coin balance;
+}
+
+// UnbondingDelegationEntry defines an unbonding object with relevant metadata.
+struct UnbondingDelegationEntry {
+    int64 creationHeight;
+    int64 completionTime;
+    uint256 initialBalance;
+    uint256 balance;
+}
+
+// UnbondingDelegation stores all of a single delegator's unbonding bonds
+// for a single validator in an time-ordered list.
+struct UnbondingDelegation {
+    address delegatorAddress;
+    address validatorAddress;
+    UnbondingDelegationEntry[] entries;
+}
+
 interface IStaking {
     // tx
     function createValidator(
@@ -83,11 +115,6 @@ interface IStaking {
     ) external returns (bool success);
 
     // query
-    function delegation(
-        address delegatorAddress,
-        address validatorAddress
-    ) external view returns (uint256 shares, Coin calldata balance);
-
     function validators(
         BondStatus status,
         PageRequest calldata pagination
@@ -97,9 +124,52 @@ interface IStaking {
         address validatorAddr
     ) external view returns (Validator calldata validator);
 
+    // validatorDelegations queries delegate info for given validator.
     function validatorDelegations(
         address validatorAddr,
         PageRequest calldata pagination
+    ) external view returns (DelegationResponse[] calldata response, PageResponse calldata pageResponse);
+
+    // validatorUnbondingDelegations queries unbonding delegations of a validator.
+    function validatorUnbondingDelegations(
+        address validatorAddr,
+        PageRequest calldata pagination
+    ) external view returns (UnbondingDelegation[] calldata response, PageResponse calldata pageResponse);
+
+    // delegation queries delegate info for given validator delegator pair.
+    function delegation(
+        address delegatorAddr,
+        address validatorAddr
+    ) external view returns (DelegationResponse calldata response);
+
+    // unbondingDelegation queries unbonding info for given validator delegator pair.
+    function unbondingDelegation(
+        address delegatorAddr,
+        address validatorAddr
+    ) external view returns (UnbondingDelegation calldata response);
+
+    // delegatorDelegations queries all delegations of a given delegator address.
+    function delegatorDelegations(
+        address delegatorAddr,
+        PageRequest calldata pagination
+    ) external view returns (DelegationResponse[] calldata response, PageResponse calldata pageResponse);
+
+    // delegatorUnbondingDelegations queries all unbonding delegations of a given delegator address.
+    function delegatorUnbondingDelegations(
+        address delegatorAddr,
+        PageRequest calldata pagination
+    ) external view returns (UnbondingDelegation[] calldata response, PageResponse calldata pageResponse);
+
+    // delegatorValidators queries all validators info for given delegator address.
+    function delegatorValidators(
+        address delegatorAddr,
+        PageRequest calldata pagination
+    ) external view returns (Validator[] calldata validators, PageResponse calldata pageResponse);
+
+    // delegatorValidator queries validator info for given delegator validator pair.
+    function delegatorValidator(
+        address delegatorAddr,
+        address validatorAddr
     ) external view returns (Validator calldata validator);
 
     // events

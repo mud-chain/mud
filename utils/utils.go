@@ -17,6 +17,7 @@
 package utils
 
 import (
+	"github.com/ethereum/go-ethereum/common"
 	"strings"
 
 	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
@@ -97,4 +98,40 @@ func GetEvmosAddressFromBech32(address string) (sdk.AccAddress, error) {
 	}
 
 	return sdk.AccAddress(addressBz), nil
+}
+
+func ValAddressToHexAddress(valStrAddress string) (common.Address, error) {
+	ValAddress, err := sdk.ValAddressFromBech32(valStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress, nil
+}
+
+func ValAddressMustToHexAddress(valStrAddress string) common.Address {
+	ValAddress, err := sdk.ValAddressFromBech32(valStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress
+}
+
+func AccAddressToHexAddress(accStrAddress string) (common.Address, error) {
+	ValAddress, err := sdk.AccAddressFromBech32(accStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress, nil
+}
+
+func AccAddressMustToHexAddress(accStrAddress string) common.Address {
+	ValAddress, err := sdk.AccAddressFromBech32(accStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress
 }

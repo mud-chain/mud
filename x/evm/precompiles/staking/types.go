@@ -178,17 +178,17 @@ func (args *DelegateArgs) GetValidator() sdk.ValAddress {
 }
 
 type DelegationArgs struct {
-	DelegatorAddress common.Address `abi:"delegatorAddress"`
-	ValidatorAddress common.Address `abi:"validatorAddress"`
+	DelegatorAddr common.Address `abi:"delegatorAddr"`
+	ValidatorAddr common.Address `abi:"validatorAddr"`
 }
 
 // Validate validates the args
 func (args *DelegationArgs) Validate() error {
-	if args.DelegatorAddress == (common.Address{}) {
-		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddress)
+	if args.DelegatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddr)
 	}
-	if args.ValidatorAddress == (common.Address{}) {
-		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddress)
+	if args.ValidatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddr)
 	}
 
 	return nil
@@ -196,13 +196,42 @@ func (args *DelegationArgs) Validate() error {
 
 // GetValidator returns the validator address, caller must ensure the validator address is valid
 func (args *DelegationArgs) GetValidator() sdk.ValAddress {
-	valAddr := sdk.ValAddress(args.ValidatorAddress.Bytes())
+	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
 	return valAddr
 }
 
 // GetDelegator returns the Delegator address, caller must ensure the delegator address is valid
 func (args *DelegationArgs) GetDelegator() sdk.AccAddress {
-	accAddr := sdk.AccAddress(args.DelegatorAddress.Bytes())
+	accAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
+	return accAddr
+}
+
+type UnbondingDelegationArgs struct {
+	DelegatorAddr common.Address `abi:"delegatorAddr"`
+	ValidatorAddr common.Address `abi:"validatorAddr"`
+}
+
+// Validate validates the args
+func (args *UnbondingDelegationArgs) Validate() error {
+	if args.DelegatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddr)
+	}
+	if args.ValidatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddr)
+	}
+
+	return nil
+}
+
+// GetValidator returns the validator address, caller must ensure the validator address is valid
+func (args *UnbondingDelegationArgs) GetValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
+	return valAddr
+}
+
+// GetDelegator returns the Delegator address, caller must ensure the delegator address is valid
+func (args *UnbondingDelegationArgs) GetDelegator() sdk.AccAddress {
+	accAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
 	return accAddr
 }
 
@@ -341,5 +370,85 @@ func (args *ValidatorArgs) Validate() error {
 // GetValidator returns the validator address, caller must ensure the validator address is valid
 func (args *ValidatorArgs) GetValidator() sdk.ValAddress {
 	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
+	return valAddr
+}
+
+type ValidatorDelegationsArgs struct {
+	ValidatorAddr common.Address  `abi:"validatorAddr"`
+	Pagination    PageRequestJson `abi:"pagination"`
+}
+
+// Validate validates the args
+func (args *ValidatorDelegationsArgs) Validate() error {
+	if args.ValidatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddr)
+	}
+
+	return nil
+}
+
+// GetValidator returns the validator address, caller must ensure the validator address is valid
+func (args *ValidatorDelegationsArgs) GetValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
+	return valAddr
+}
+
+type ValidatorUnbondingDelegationsArgs struct {
+	ValidatorAddr common.Address  `abi:"validatorAddr"`
+	Pagination    PageRequestJson `abi:"pagination"`
+}
+
+// Validate validates the args
+func (args *ValidatorUnbondingDelegationsArgs) Validate() error {
+	if args.ValidatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddr)
+	}
+
+	return nil
+}
+
+// GetValidator returns the validator address, caller must ensure the validator address is valid
+func (args *ValidatorUnbondingDelegationsArgs) GetValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
+	return valAddr
+}
+
+type DelegatorDelegationsArgs struct {
+	DelegatorAddr common.Address  `abi:"delegatorAddr"`
+	Pagination    PageRequestJson `abi:"pagination"`
+}
+
+// Validate validates the args
+func (args *DelegatorDelegationsArgs) Validate() error {
+	if args.DelegatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddr)
+	}
+
+	return nil
+}
+
+// GetDelegator returns the delegator address, caller must ensure the delegator address is valid
+func (args *DelegatorDelegationsArgs) GetDelegator() sdk.AccAddress {
+	valAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
+	return valAddr
+}
+
+type DelegatorUnbondingDelegationsArgs struct {
+	DelegatorAddr common.Address  `abi:"delegatorAddr"`
+	Pagination    PageRequestJson `abi:"pagination"`
+}
+
+// Validate validates the args
+func (args *DelegatorUnbondingDelegationsArgs) Validate() error {
+	if args.DelegatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddr)
+	}
+
+	return nil
+}
+
+// GetDelegator returns the delegator address, caller must ensure the delegator address is valid
+func (args *DelegatorUnbondingDelegationsArgs) GetDelegator() sdk.AccAddress {
+	valAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
 	return valAddr
 }

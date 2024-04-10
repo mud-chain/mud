@@ -56,6 +56,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (revenue) [#48](https://github.com/luchenqun/ethos/pull/48) Remove revenue module.
 - (vesting) [#49](https://github.com/luchenqun/ethos/pull/49) Remove vesting module.
 - (evm) [#52](https://github.com/luchenqun/ethos/pull/52) Enable EIP 3855 for solidity push0 instruction.
+- (precompile-staking) [#56](https://github.com/luchenqun/ethos/pull/56) Implement some query rpc staking precompile contract.
 
 ### API Breaking
 

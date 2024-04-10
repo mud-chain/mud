@@ -51,10 +51,20 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return CancelUnbondingDelegationGas
 	case DelegationMethodName:
 		return DelegationGas
+	case UnbondingDelegationMethodName:
+		return UnbondingDelegationGas
 	case ValidatorMethodName:
 		return ValidatorGas
 	case ValidatorsMethodName:
 		return ValidatorsGas
+	case ValidatorDelegationsName:
+		return ValidatorDelegationsGas
+	case ValidatorUnbondingDelegationsName:
+		return ValidatorUnbondingDelegationsGas
+	case DelegatorDelegationsName:
+		return DelegatorDelegationsGas
+	case DelegatorUnbondingDelegationsName:
+		return DelegatorUnbondingDelegationsGas
 	default:
 		return 0
 	}
@@ -86,10 +96,20 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.CancelUnbondingDelegation(cacheCtx, evm, contract, readonly)
 		case DelegationMethodName:
 			ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
+		case UnbondingDelegationMethodName:
+			ret, err = c.UnbondingDelegation(cacheCtx, evm, contract, readonly)
 		case ValidatorMethodName:
 			ret, err = c.Validator(cacheCtx, evm, contract, readonly)
 		case ValidatorsMethodName:
 			ret, err = c.Validators(cacheCtx, evm, contract, readonly)
+		case ValidatorDelegationsName:
+			ret, err = c.ValidatorDelegations(cacheCtx, evm, contract, readonly)
+		case ValidatorUnbondingDelegationsName:
+			ret, err = c.ValidatorUnbondingDelegations(cacheCtx, evm, contract, readonly)
+		case DelegatorDelegationsName:
+			ret, err = c.DelegatorDelegations(cacheCtx, evm, contract, readonly)
+		case DelegatorUnbondingDelegationsName:
+			ret, err = c.DelegatorUnbondingDelegations(cacheCtx, evm, contract, readonly)
 		default:
 			err = fmt.Errorf("method %s is not handle", method.Name)
 		}
