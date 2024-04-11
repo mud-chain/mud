@@ -30,8 +30,3 @@ struct PageResponse {
     bytes nextKey;
     uint64 total;
 }
-
-struct WeightedVoteOption {
-    int32 option;
-    string weight;
-}

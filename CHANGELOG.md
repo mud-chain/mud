@@ -59,6 +59,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (precompile-staking) [#56](https://github.com/luchenqun/ethos/pull/56) Implement some query rpc staking precompile contract.
 - (precompile-slashing) [#57](https://github.com/luchenqun/ethos/pull/57) Implement slashing precompile contract unjail transaction.
 - (precompile-distribution) [#58](https://github.com/luchenqun/ethos/pull/58) Implement distribution precompile contract four query.
+- (precompile-gov) [#59](https://github.com/luchenqun/ethos/pull/59) Implement gov precompile contract query.
 
 ### API Breaking
 

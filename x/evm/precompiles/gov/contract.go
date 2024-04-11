@@ -48,6 +48,21 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return VoteWeightedGas
 	case DepositMethodName:
 		return DepositGas
+	case ProposalMethodName:
+		return ProposalGas
+	case ProposalsMethodName:
+		return ProposalsGas
+	case VoteQueryMethodName:
+		return VoteQueryGas
+	case VotesMethodName:
+		return VotesGas
+	case DepositQueryMethodName:
+		return DepositQueryGas
+	case DepositsMethodName:
+		return DepositsGas
+	case TallyResultMethodName:
+		return TallyResultGas
+
 	default:
 		return 0
 	}
@@ -75,6 +90,20 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.VoteWeighted(cacheCtx, evm, contract, readonly)
 		case DepositMethodName:
 			ret, err = c.Deposit(cacheCtx, evm, contract, readonly)
+		case ProposalMethodName:
+			ret, err = c.Proposal(cacheCtx, evm, contract, readonly)
+		case ProposalsMethodName:
+			ret, err = c.Proposals(cacheCtx, evm, contract, readonly)
+		case VoteQueryMethodName:
+			ret, err = c.VoteQuery(cacheCtx, evm, contract, readonly)
+		case VotesMethodName:
+			ret, err = c.Votes(cacheCtx, evm, contract, readonly)
+		case DepositQueryMethodName:
+			ret, err = c.DepositQuery(cacheCtx, evm, contract, readonly)
+		case DepositsMethodName:
+			ret, err = c.Deposits(cacheCtx, evm, contract, readonly)
+		case TallyResultMethodName:
+			ret, err = c.TallyResult(cacheCtx, evm, contract, readonly)
 		}
 	}
 

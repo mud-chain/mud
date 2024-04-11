@@ -4,7 +4,63 @@ pragma solidity ^0.8.0;
 
 import "../common/Types.sol";
 
+enum ProposalStatus {
+    Unspecified,
+    DepositPeriod,
+    VotingPeriod,
+    Passed,
+    Rejected,
+    Failed
+}
+
+enum VoteOption {
+    Unspecified,
+    Yes,
+    Abstain,
+    No,
+    NoWithWeto
+}
+
+struct TallyResult {
+    string yesCount;
+    string abstainCount;
+    string noCount;
+    string noWithVetoCount;
+}
+
+struct Proposal {
+    uint64 id;
+    string[] messages;
+    ProposalStatus status;
+    TallyResult finalTallyResult;
+    int64 submitTime;
+    int64 depositEndTime;
+    Coin[] totalDeposit;
+    int64 votingStartTime;
+    int64 votingEndTime;
+    string metadata;
+}
+
+struct WeightedVoteOption {
+    VoteOption option;
+    string weight;
+}
+
+struct VoteData {
+    uint64 proposalId;
+    address voter;
+    WeightedVoteOption[] options;
+    string metadata;
+}
+
+struct DepositData {
+    uint64 proposalId;
+    address depositor;
+    Coin[] amount;
+}
+
 interface IGov {
+    // tx
     function legacySubmitProposal(
         string memory title,
         string memory description,
@@ -34,6 +90,51 @@ interface IGov {
         Coin[] memory amount
     ) external returns (bool success);
 
+    // query
+
+    // proposal queries proposal details based on ProposalID.
+    function proposal(
+        uint64 proposalId
+    ) external view returns (Proposal calldata proposal);
+
+    // proposals queries all proposals based on given status.
+    function proposals(
+        ProposalStatus status,
+        address voter,
+        address depositor,
+        PageRequest calldata pagination
+    ) external view returns (Proposal[] calldata proposals, PageResponse calldata pageResponse);
+
+    // vote queries voted information based on proposalID, voterAddr.
+    function vote(
+        uint64 proposalId,
+        address voter
+    ) external view returns (VoteData calldata vote);
+
+    // votes queries votes of a given proposal.
+    function votes(
+        uint64 proposalId,
+        PageRequest calldata pagination
+    ) external view returns (VoteData[] calldata votes, PageResponse calldata pageResponse);
+
+    // deposit queries single deposit information based proposalID, depositAddr.
+    function depositQuery(
+        uint64 proposalId,
+        address depositor
+    ) external view returns (DepositData calldata deposit);
+
+    // deposits queries all deposits of a single proposal.
+    function deposits(
+        uint64 proposalId,
+        PageRequest calldata pagination
+    ) external view returns (DepositData[] calldata deposits, PageResponse calldata pageResponse);
+
+    // tallyResult queries the tally of a proposal vote.
+    function tallyResult(
+        uint64 proposalId
+    ) external view returns (TallyResult calldata tallyResult);
+
+    // event
     event LegacySubmitProposal(
         address indexed proposer,
         uint64 proposalId
