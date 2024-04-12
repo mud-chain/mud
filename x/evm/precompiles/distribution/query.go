@@ -14,12 +14,14 @@ const (
 	ValidatorCommissionGas         = 30_000
 	DelegationRewardsGas           = 30_000
 	DelegationTotalRewardsGas      = 30_000
+	CommunityPoolGas               = 30_000
 
 	ValidatorDistributionInfoMethodName   = "validatorDistributionInfo"
 	ValidatorOutstandingRewardsMethodName = "validatorOutstandingRewards"
 	ValidatorCommissionMethodName         = "validatorCommission"
 	DelegationRewardsMethodName           = "delegationRewards"
 	DelegationTotalRewardsMethodName      = "delegationTotalRewards"
+	CommunityPoolMethodName               = "communityPool"
 )
 
 // ValidatorDistributionInfo queries validator commision and self-delegation rewards for validator
@@ -199,4 +201,27 @@ func (c *Contract) DelegationTotalRewards(ctx sdk.Context, _ *vm.EVM, contract *
 	}
 
 	return method.Outputs.Pack(delegationDelegatorReward, total)
+}
+
+// CommunityPool queries the community pool coins.
+func (c *Contract) CommunityPool(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(CommunityPoolMethodName)
+
+	msg := &distributiontypes.QueryCommunityPoolRequest{}
+
+	res, err := c.distributionKeeper.CommunityPool(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var rewards []DecCoin
+	for _, reward := range res.Pool {
+		rewards = append(rewards, DecCoin{
+			Denom:     reward.Denom,
+			Amount:    reward.Amount.BigInt(),
+			Precision: uint8(sdk.Precision),
+		})
+	}
+
+	return method.Outputs.Pack(rewards)
 }

@@ -20,6 +20,9 @@ interface IBank {
         PageRequest memory pageRequest
     ) external view returns (Coin[] memory balances, PageResponse memory pageResponse);
 
+    // totalSupply queries the total supply of all coins.
+    function totalSupply() external view returns (Coin[] memory supply);
+
     event Send(
         address indexed fromAddress,
         address indexed toAddress,

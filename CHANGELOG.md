@@ -60,6 +60,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (precompile-slashing) [#57](https://github.com/luchenqun/ethos/pull/57) Implement slashing precompile contract unjail transaction.
 - (precompile-distribution) [#58](https://github.com/luchenqun/ethos/pull/58) Implement distribution precompile contract four query.
 - (precompile-gov) [#59](https://github.com/luchenqun/ethos/pull/59) Implement gov precompile contract query.
+- (precompile) [#60](https://github.com/luchenqun/ethos/pull/60) Add query totalSupply for bank module and communityPool for distribution.
 
 ### API Breaking
 

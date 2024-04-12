@@ -52,6 +52,9 @@ interface IDistribution {
         address delegatorAddress
     ) external view returns (DelegationDelegatorReward[] memory rewards, DecCoin[] memory total);
 
+    // communityPool queries the community pool coins.
+    function communityPool() external view returns (DecCoin[] memory pool);
+
 
     // events
     event SetWithdrawAddress(

@@ -13,9 +13,11 @@ import (
 const (
 	BalanceGas     = 30_000
 	AllBalancesGas = 50_000
+	TotalSupplyGas = 50_000
 
 	BalanceMethodName     = "balance"
 	AllBalancesMethodName = "allBalances"
+	TotalSupplyMethodName = "totalSupply"
 )
 
 func (c *Contract) Balance(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
@@ -81,4 +83,26 @@ func (c *Contract) AllBalances(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	pageResponse.Total = res.Pagination.Total
 
 	return method.Outputs.Pack(balances, pageResponse)
+}
+
+// TotalSupply queries the total supply of all coins.
+func (c *Contract) TotalSupply(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(TotalSupplyMethodName)
+
+	msg := &banktypes.QueryTotalSupplyRequest{}
+
+	res, err := c.bankKeeper.TotalSupply(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var balances []Coin
+	for _, balance := range res.Supply {
+		balances = append(balances, Coin{
+			Denom:  balance.Denom,
+			Amount: balance.Amount.BigInt(),
+		})
+	}
+
+	return method.Outputs.Pack(balances)
 }

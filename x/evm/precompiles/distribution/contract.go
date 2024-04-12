@@ -53,6 +53,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return DelegationRewardsGas
 	case DelegationTotalRewardsMethodName:
 		return DelegationTotalRewardsGas
+	case CommunityPoolMethodName:
+		return CommunityPoolGas
 	default:
 		return 0
 	}
@@ -88,6 +90,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.DelegationRewards(cacheCtx, evm, contract, readonly)
 		case DelegationTotalRewardsMethodName:
 			ret, err = c.DelegationTotalRewards(cacheCtx, evm, contract, readonly)
+		case CommunityPoolMethodName:
+			ret, err = c.CommunityPool(cacheCtx, evm, contract, readonly)
 		}
 	}
 
