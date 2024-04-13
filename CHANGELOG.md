@@ -68,6 +68,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 - (test) [#50](https://github.com/luchenqun/ethos/pull/50) Fix unit test after remove revenue/vesting module.
 - (dev) [#55](https://github.com/luchenqun/ethos/pull/55) Add dev.js script for development and testing.
+- (precompile) [#61](https://github.com/luchenqun/ethos/pull/61) Add comment for precompile solidity files.
 
 ### Bug Fixes
 
