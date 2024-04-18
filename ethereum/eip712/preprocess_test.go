@@ -31,7 +31,7 @@ var (
 		encoding.MakeConfig(app.ModuleBasics).TxConfig,
 	)
 )
-var feePayerAddress = "ethos17xpfvakm2amg962yls6f84z3kell8c5l5u0eft"
+var feePayerAddress = "mud17xpfvakm2amg962yls6f84z3kell8c5lk296qz"
 
 type TestCaseStruct struct {
 	txBuilder              client.TxBuilder
@@ -68,7 +68,7 @@ func TestLedgerPreprocessing(t *testing.T) {
 		require.True(t, len(hasExtOptsTx.GetExtensionOptions()) == 1)
 
 		expectedExt := types.ExtensionOptionsWeb3Tx{
-			TypedDataChainID: 100000000,
+			TypedDataChainID: 168167,
 			FeePayer:         feePayerAddress,
 			FeePayerSig:      tc.expectedSignatureBytes,
 		}
@@ -203,7 +203,7 @@ func createPopulatedTestCase(t *testing.T) TestCaseStruct {
 
 	msgSend := banktypes.MsgSend{
 		FromAddress: feePayerAddress,
-		ToAddress:   "ethos1qqqqhe5pnaq5qq39wqkn957aydnrm45sth6rl0",
+		ToAddress:   "mud1qqqqhe5pnaq5qq39wqkn957aydnrm45sfpsqkx",
 		Amount: sdk.NewCoins(
 			sdk.NewCoin(
 				utils.BaseDenom,

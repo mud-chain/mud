@@ -31,14 +31,14 @@ func (suite *KeeperTestSuite) TestWithChainID() {
 		},
 		{
 			"success - Evmos mainnet chain ID",
-			"ethos_100000001-2",
-			100000001,
+			"mud_168168-2",
+			168168,
 			false,
 		},
 		{
 			"success - Evmos testnet chain ID",
-			"ethos_100000000-4",
-			100000000,
+			"mud_168167-4",
+			168167,
 			false,
 		},
 	}

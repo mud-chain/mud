@@ -1,10 +1,10 @@
 {
   "app": {
-    "prefix": "ethos",
-    "chain_name": "ethos",
-    "chain_id": "ethos_100000000-1",
+    "prefix": "mud",
+    "chain_name": "mud",
+    "chain_id": "mud_168167-1",
     "denoms": [
-      "aethos"
+      "amud"
     ],
     "port": {
       "api.address": 1317,
@@ -16,12 +16,12 @@
       "json-rpc.metrics-address": 6065
     },
     "cfg": {
-      "minimum-gas-prices": "\"0aethos\"",
+      "minimum-gas-prices": "\"0amud\"",
       "pruning": "\"nothing\"",
       "api.swagger": "true",
       "api.enabled-unsafe-cors": "true",
       "rosetta.enable": "false",
-      "rosetta.denom-to-suggest": "\"0aethos\"",
+      "rosetta.denom-to-suggest": "\"0amud\"",
       "grpc.enable": "true",
       "grpc-web.enable": "true",
       "grpc-web.enable-unsafe-cors": "true",
@@ -45,8 +45,8 @@
     }
   },
   "preMineAccounts": [
-    "ethos1qqqqhe5pnaq5qq39wqkn957aydnrm45sth6rl0",
-    "ethos1zyg3qtwny9stqe8j55fvmmm5hldk48ukj2ak40"
+    "mud1qqqqhe5pnaq5qq39wqkn957aydnrm45sfpsqkx",
+    "mud1zyg3qtwny9stqe8j55fvmmm5hldk48uksuh4ux"
   ],
   "privateKeys": [
     {

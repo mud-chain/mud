@@ -133,7 +133,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_BuildTx() {
 func (suite *MsgsTestSuite) TestMsgEthereumTx_ValidateBasic() {
 	var (
 		hundredInt   = big.NewInt(100)
-		validChainID = big.NewInt(100000000)
+		validChainID = big.NewInt(168167)
 		zeroInt      = big.NewInt(0)
 		minusOneInt  = big.NewInt(-1)
 		//nolint:all
