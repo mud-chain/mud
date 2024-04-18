@@ -1,5 +1,5 @@
 package types
 
 const (
-	DefaultDenom = "aethos"
+	DefaultDenom = "amud"
 )
