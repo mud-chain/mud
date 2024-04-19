@@ -291,12 +291,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		p := "october pride genuine harvest reunion sight become tuna kingdom punch girl lizard cat crater fee emotion seat test output safe volume caught design soft"
-		if i > 0 {
-			p = ""
-		}
-
-		addr, secret, err := testutil.GenerateSaveCoinKey(kb, nodeDirName, p, true, algo)
+		addr, secret, err := testutil.GenerateSaveCoinKey(kb, nodeDirName, "", true, algo)
 		if err != nil {
 			_ = os.RemoveAll(args.outputDir)
 			return err
