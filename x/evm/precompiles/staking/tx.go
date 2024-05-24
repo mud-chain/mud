@@ -159,6 +159,9 @@ func (c *Contract) Delegate(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract,
 			Amount: math.NewIntFromBigInt(args.Amount),
 		},
 	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 
 	server := stakingkeeper.NewMsgServerImpl(c.stakingKeeper)
 
@@ -200,6 +203,9 @@ func (c *Contract) Undelegate(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 			Denom:  c.stakingKeeper.GetParams(ctx).BondDenom,
 			Amount: math.NewIntFromBigInt(args.Amount),
 		},
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
 	}
 
 	server := stakingkeeper.NewMsgServerImpl(c.stakingKeeper)
@@ -246,6 +252,9 @@ func (c *Contract) Redelegatge(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 			Amount: math.NewIntFromBigInt(args.Amount),
 		},
 	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 
 	server := stakingkeeper.NewMsgServerImpl(c.stakingKeeper)
 
@@ -291,6 +300,9 @@ func (c *Contract) CancelUnbondingDelegation(ctx sdk.Context, evm *vm.EVM, contr
 			Amount: math.NewIntFromBigInt(args.Amount),
 		},
 		CreationHeight: args.GetCreationHeight(),
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
 	}
 
 	server := stakingkeeper.NewMsgServerImpl(c.stakingKeeper)
