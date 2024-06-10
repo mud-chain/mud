@@ -24,6 +24,9 @@ func (c *Contract) Send(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 	if readonly {
 		return nil, errors.New("send method readonly")
 	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
+	}
 
 	method := MustMethod(SendMethodName)
 

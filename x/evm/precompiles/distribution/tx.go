@@ -32,7 +32,10 @@ const (
 
 func (c *Contract) SetWithdrawAddress(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("setWithdrawAddress method not readonly")
+		return nil, errors.New("setWithdrawAddress method are readonly")
+	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
 	}
 
 	method := MustMethod(SetWithdrawAddressMethodName)
@@ -71,7 +74,10 @@ func (c *Contract) SetWithdrawAddress(ctx sdk.Context, evm *vm.EVM, contract *vm
 
 func (c *Contract) WithdrawDelegatorReward(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("withdrawDelegatorReward method not readonly")
+		return nil, errors.New("withdrawDelegatorReward method are readonly")
+	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
 	}
 
 	method := MustMethod(WithdrawDelegatorRewardMethodName)
@@ -119,7 +125,10 @@ func (c *Contract) WithdrawDelegatorReward(ctx sdk.Context, evm *vm.EVM, contrac
 
 func (c *Contract) WithdrawValidatorCommission(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("withdrawValidatorCommission method not readonly")
+		return nil, errors.New("withdrawValidatorCommission method are readonly")
+	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
 	}
 
 	method := MustMethod(WithdrawValidatorCommissionMethodName)
@@ -160,7 +169,10 @@ func (c *Contract) WithdrawValidatorCommission(ctx sdk.Context, evm *vm.EVM, con
 
 func (c *Contract) FundCommunityPool(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("fundCommunityPool method not readonly")
+		return nil, errors.New("fundCommunityPool method are readonly")
+	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
 	}
 
 	method := MustMethod(FundCommunityPoolMethodName)

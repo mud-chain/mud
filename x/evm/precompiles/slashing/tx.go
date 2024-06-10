@@ -21,6 +21,9 @@ func (c *Contract) Unjail(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, r
 	if readonly {
 		return nil, errors.New("unjail method have write protection")
 	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
+	}
 
 	method := MustMethod(UnjailMethodName)
 

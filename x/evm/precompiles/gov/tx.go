@@ -48,6 +48,9 @@ func (c *Contract) LegacySubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *
 	if readonly {
 		return nil, errors.New("legacySubmitProposal method readonly")
 	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
+	}
 
 	method := MustMethod(LegacySubmitProposalMethodName)
 
@@ -99,6 +102,9 @@ func (c *Contract) LegacySubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *
 func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
 		return nil, errors.New("submitProposal method readonly")
+	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
 	}
 
 	method := MustMethod(SubmitProposalMethodName)
@@ -178,6 +184,9 @@ func (c *Contract) Vote(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 	if readonly {
 		return nil, errors.New("vote method readonly")
 	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
+	}
 
 	method := MustMethod(VoteMethodName)
 
@@ -219,6 +228,9 @@ func (c *Contract) Vote(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 func (c *Contract) VoteWeighted(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
 		return nil, errors.New("voteWeighted method readonly")
+	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
 	}
 
 	method := MustMethod(VoteWeightedMethodName)
@@ -268,6 +280,9 @@ func (c *Contract) VoteWeighted(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 func (c *Contract) Deposit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
 		return nil, errors.New("deposit method readonly")
+	}
+	if evm.Origin != contract.Caller() {
+		return nil, errors.New("only allow EOA contract call this method")
 	}
 
 	method := MustMethod(DepositMethodName)
