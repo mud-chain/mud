@@ -38,7 +38,7 @@ func GetMethod(name string) (abi.Method, error) {
 }
 
 func GetMethodByID(input []byte) (abi.Method, error) {
-	if len(input) <= 4 {
+	if len(input) < 4 {
 		return abi.Method{}, fmt.Errorf("input length %d is too short", len(input))
 	}
 	for _, method := range stakingABI.Methods {
@@ -451,4 +451,102 @@ func (args *DelegatorUnbondingDelegationsArgs) Validate() error {
 func (args *DelegatorUnbondingDelegationsArgs) GetDelegator() sdk.AccAddress {
 	valAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
 	return valAddr
+}
+
+type Redelegations struct {
+	DelegatorAddr    common.Address  `abi:"delegatorAddr"`
+	SrcValidatorAddr common.Address  `abi:"srcValidatorAddr"`
+	DstValidatorAddr common.Address  `abi:"dstValidatorAddr"`
+	Pagination       PageRequestJson `abi:"pagination"`
+}
+
+// Validate validates the args
+func (args *Redelegations) Validate() error {
+	return nil
+}
+
+// GetDelegator returns the delegator address, caller must ensure the delegator address is valid
+func (args *Redelegations) GetDelegator() sdk.AccAddress {
+	delAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
+	return delAddr
+}
+
+// GetSrcValidator returns the src validator address, caller must ensure the validator address is valid
+func (args *Redelegations) GetSrcValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.SrcValidatorAddr.Bytes())
+	return valAddr
+}
+
+// GetDstValidator returns the dst validator address, caller must ensure the validator address is valid
+func (args *Redelegations) GetDstValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.DstValidatorAddr.Bytes())
+	return valAddr
+}
+
+type DelegatorValidators struct {
+	DelegatorAddr common.Address  `abi:"delegatorAddr"`
+	Pagination    PageRequestJson `abi:"pagination"`
+}
+
+// Validate validates the args
+func (args *DelegatorValidators) Validate() error {
+	if args.DelegatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddr)
+	}
+
+	return nil
+}
+
+// GetDelegator returns the delegator address, caller must ensure the delegator address is valid
+func (args *DelegatorValidators) GetDelegator() sdk.AccAddress {
+	delAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
+	return delAddr
+}
+
+type DelegatorValidator struct {
+	DelegatorAddr common.Address `abi:"delegatorAddr"`
+	ValidatorAddr common.Address `abi:"validatorAddr"`
+}
+
+// Validate validates the args
+func (args *DelegatorValidator) Validate() error {
+	if args.DelegatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid delegator address: %s", args.DelegatorAddr)
+	}
+
+	if args.ValidatorAddr == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddr)
+	}
+
+	return nil
+}
+
+// GetDelegator returns the delegator address, caller must ensure the delegator address is valid
+func (args *DelegatorValidator) GetDelegator() sdk.AccAddress {
+	delAddr := sdk.AccAddress(args.DelegatorAddr.Bytes())
+	return delAddr
+}
+
+// GetValidator returns the validator address, caller must ensure the validator address is valid
+func (args *DelegatorValidator) GetValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.ValidatorAddr.Bytes())
+	return valAddr
+}
+
+type HistoricalInfoRequest struct {
+	Height int64 `abi:"height"`
+}
+
+// Validate validates the args
+func (args *HistoricalInfoRequest) Validate() error {
+	if args.Height < 0 {
+		return fmt.Errorf("invalid height: %v", args.Height)
+	}
+
+	return nil
+}
+
+// GetHeight returns the block height, caller must ensure the block height is valid
+func (args *HistoricalInfoRequest) GetHeight() int64 {
+	return args.Height
 }

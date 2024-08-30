@@ -2,12 +2,22 @@ package gov
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v6/modules/apps/transfer/types"
+	"github.com/evmos/evmos/v12/utils"
+	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
+	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -18,10 +28,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
 
-	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
 	"github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
-	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
 )
 
 const (
@@ -35,7 +43,7 @@ const (
 	SubmitProposalMethodName       = "submitProposal"
 	VoteMethodName                 = "vote"
 	VoteWeightedMethodName         = "voteWeighted"
-	DepositMethodName              = "deposit"
+	DepositMethodName              = "deposit0"
 
 	LegacySubmitProposalEventName = "LegacySubmitProposal"
 	SubmitProposalEventName       = "SubmitProposal"
@@ -46,10 +54,11 @@ const (
 
 func (c *Contract) LegacySubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("legacySubmitProposal method readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(LegacySubmitProposalMethodName)
@@ -101,10 +110,11 @@ func (c *Contract) LegacySubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *
 
 func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("submitProposal method readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(SubmitProposalMethodName)
@@ -122,14 +132,23 @@ func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 	}
 
 	interfaceRegistry := codectypes.NewInterfaceRegistry()
-	feemarkettypes.RegisterInterfaces(interfaceRegistry)
-	proposal.RegisterInterfaces(interfaceRegistry)
-	upgradetypes.RegisterInterfaces(interfaceRegistry)
-	govv1.RegisterInterfaces(interfaceRegistry)
+
+	authtypes.RegisterInterfaces(interfaceRegistry)
+	banktypes.RegisterInterfaces(interfaceRegistry)
+	stakingtypes.RegisterInterfaces(interfaceRegistry)
+	distrtypes.RegisterInterfaces(interfaceRegistry)
+	slashingtypes.RegisterInterfaces(interfaceRegistry)
 	govv1beta1.RegisterInterfaces(interfaceRegistry)
+	govv1.RegisterInterfaces(interfaceRegistry)
+	crisistypes.RegisterInterfaces(interfaceRegistry)
+	ibctransfertypes.RegisterInterfaces(interfaceRegistry)
 	types.RegisterInterfaces(interfaceRegistry)
-	erc20types.RegisterInterfaces(interfaceRegistry)
+	feemarkettypes.RegisterInterfaces(interfaceRegistry)
 	inflationtypes.RegisterInterfaces(interfaceRegistry)
+	erc20types.RegisterInterfaces(interfaceRegistry)
+	upgradetypes.RegisterInterfaces(interfaceRegistry)
+	proposal.RegisterInterfaces(interfaceRegistry)
+
 	ethosCodec := codec.NewProtoCodec(interfaceRegistry)
 
 	msgs := make([]sdk.Msg, len(messages))
@@ -182,10 +201,11 @@ func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 
 func (c *Contract) Vote(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("vote method readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(VoteMethodName)
@@ -227,10 +247,11 @@ func (c *Contract) Vote(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 
 func (c *Contract) VoteWeighted(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("voteWeighted method readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(VoteWeightedMethodName)
@@ -279,10 +300,11 @@ func (c *Contract) VoteWeighted(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 func (c *Contract) Deposit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("deposit method readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(DepositMethodName)
@@ -294,14 +316,10 @@ func (c *Contract) Deposit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, 
 	}
 
 	var amount sdk.Coins
-	for _, deposit := range args.Amount {
-		if deposit.Amount.Sign() > 0 {
-			amount = amount.Add(sdk.Coin{
-				Denom:  deposit.Denom,
-				Amount: sdk.NewIntFromBigInt(deposit.Amount),
-			})
-		}
-	}
+	amount = amount.Add(sdk.Coin{
+		Denom:  utils.BaseDenom,
+		Amount: sdk.NewIntFromBigInt(args.Amount),
+	})
 
 	msg := &govv1.MsgDeposit{
 		ProposalId: args.ProposalId,

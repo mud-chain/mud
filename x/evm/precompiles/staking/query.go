@@ -3,7 +3,6 @@ package staking
 import (
 	"bytes"
 	"encoding/base64"
-	"github.com/evmos/evmos/v12/utils"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -11,9 +10,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/evmos/evmos/v12/utils"
+	tenderminttypes "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
@@ -27,15 +28,27 @@ const (
 	ValidatorUnbondingDelegationsGas = 90_000
 	DelegatorDelegationsGas          = 90_000
 	DelegatorUnbondingDelegationsGas = 90_000
+	RedelegationsGas                 = 90_000
+	DelegatorValidatorsGas           = 60_000
+	DelegatorValidatorGas            = 60_000
+	HistoricalInfoGas                = 60_000
+	PoolGas                          = 30_000
+	ParamsGas                        = 30_000
 
-	DelegationMethodName              = "delegation"
-	UnbondingDelegationMethodName     = "unbondingDelegation"
-	ValidatorMethodName               = "validator"
-	ValidatorsMethodName              = "validators"
-	ValidatorDelegationsName          = "validatorDelegations"
-	ValidatorUnbondingDelegationsName = "validatorUnbondingDelegations"
-	DelegatorDelegationsName          = "delegatorDelegations"
-	DelegatorUnbondingDelegationsName = "delegatorUnbondingDelegations"
+	DelegationMethodName                    = "delegation"
+	UnbondingDelegationMethodName           = "unbondingDelegation"
+	ValidatorMethodName                     = "validator"
+	ValidatorsMethodName                    = "validators"
+	ValidatorDelegationsMethodName          = "validatorDelegations"
+	ValidatorUnbondingDelegationsMethodName = "validatorUnbondingDelegations"
+	DelegatorDelegationsMethodName          = "delegatorDelegations"
+	DelegatorUnbondingDelegationsMethodName = "delegatorUnbondingDelegations"
+	RedelegationsMethodName                 = "redelegations"
+	DelegatorValidatorsMethodName           = "delegatorValidators"
+	DelegatorValidatorMethodName            = "delegatorValidator"
+	HistoricalInfoMethodName                = "historicalInfo"
+	PoolMethodName                          = "pool"
+	ParamsMethodName                        = "params"
 )
 
 func (c *Contract) Delegation(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
@@ -150,7 +163,7 @@ func (c *Contract) Validator(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, 
 
 // ValidatorDelegations queries delegate info for given validator.
 func (c *Contract) ValidatorDelegations(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
-	method := MustMethod(ValidatorDelegationsName)
+	method := MustMethod(ValidatorDelegationsMethodName)
 
 	// parse args
 	var args ValidatorDelegationsArgs
@@ -192,7 +205,7 @@ func (c *Contract) ValidatorDelegations(ctx sdk.Context, _ *vm.EVM, contract *vm
 
 // ValidatorUnbondingDelegations queries unbonding delegations of a validator.
 func (c *Contract) ValidatorUnbondingDelegations(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
-	method := MustMethod(ValidatorUnbondingDelegationsName)
+	method := MustMethod(ValidatorUnbondingDelegationsMethodName)
 
 	// parse args
 	var args ValidatorDelegationsArgs
@@ -234,7 +247,7 @@ func (c *Contract) ValidatorUnbondingDelegations(ctx sdk.Context, _ *vm.EVM, con
 
 // DelegatorDelegations queries all delegations of a given delegator address.
 func (c *Contract) DelegatorDelegations(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
-	method := MustMethod(DelegatorDelegationsName)
+	method := MustMethod(DelegatorDelegationsMethodName)
 
 	// parse args
 	var args DelegatorDelegationsArgs
@@ -277,7 +290,7 @@ func (c *Contract) DelegatorDelegations(ctx sdk.Context, _ *vm.EVM, contract *vm
 // DelegatorUnbondingDelegations queries all unbonding delegations of a given
 // delegator address.
 func (c *Contract) DelegatorUnbondingDelegations(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
-	method := MustMethod(DelegatorUnbondingDelegationsName)
+	method := MustMethod(DelegatorUnbondingDelegationsMethodName)
 
 	// parse args
 	var args DelegatorDelegationsArgs
@@ -315,6 +328,213 @@ func (c *Contract) DelegatorUnbondingDelegations(ctx sdk.Context, _ *vm.EVM, con
 	pageResponse.Total = res.Pagination.Total
 
 	return method.Outputs.Pack(unbondingDelegations, pageResponse)
+}
+
+// Redelegations queries redelegations of given address.
+func (c *Contract) Redelegations(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(RedelegationsMethodName)
+
+	// parse args
+	var args Redelegations
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	if bytes.Equal(args.Pagination.Key, []byte{0}) {
+		args.Pagination.Key = nil
+	}
+	msg := &stakingtypes.QueryRedelegationsRequest{
+		Pagination: &query.PageRequest{
+			Key:        args.Pagination.Key,
+			Offset:     args.Pagination.Offset,
+			Limit:      args.Pagination.Limit,
+			CountTotal: args.Pagination.CountTotal,
+			Reverse:    args.Pagination.Reverse,
+		},
+	}
+
+	if args.DelegatorAddr == (common.Address{}) {
+		msg.DelegatorAddr = ""
+	} else {
+		msg.DelegatorAddr = args.GetDelegator().String()
+	}
+	if args.SrcValidatorAddr == (common.Address{}) {
+		msg.SrcValidatorAddr = ""
+	} else {
+		msg.SrcValidatorAddr = args.GetSrcValidator().String()
+	}
+
+	if args.DstValidatorAddr == (common.Address{}) {
+		msg.DstValidatorAddr = ""
+	} else {
+		msg.DstValidatorAddr = args.GetDstValidator().String()
+	}
+
+	querier := stakingkeeper.Querier{Keeper: c.stakingKeeper}
+
+	res, err := querier.Redelegations(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var redelegationResponses []RedelegationResponse
+	for _, redelegationResponse := range res.RedelegationResponses {
+		redelegationResponses = append(redelegationResponses, OutputsRedelegation(redelegationResponse))
+	}
+
+	var pageResponse PageResponse
+	if res.Pagination != nil {
+		pageResponse.NextKey = res.Pagination.NextKey
+		pageResponse.Total = res.Pagination.Total
+	}
+
+	return method.Outputs.Pack(redelegationResponses, pageResponse)
+}
+
+// DelegatorValidators queries all validators info for given delegator address
+func (c *Contract) DelegatorValidators(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(DelegatorValidatorsMethodName)
+
+	// parse args
+	var args DelegatorValidators
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	if bytes.Equal(args.Pagination.Key, []byte{0}) {
+		args.Pagination.Key = nil
+	}
+	msg := &stakingtypes.QueryDelegatorValidatorsRequest{
+		DelegatorAddr: args.GetDelegator().String(),
+		Pagination: &query.PageRequest{
+			Key:        args.Pagination.Key,
+			Offset:     args.Pagination.Offset,
+			Limit:      args.Pagination.Limit,
+			CountTotal: args.Pagination.CountTotal,
+			Reverse:    args.Pagination.Reverse,
+		},
+	}
+
+	querier := stakingkeeper.Querier{Keeper: c.stakingKeeper}
+
+	res, err := querier.DelegatorValidators(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var validators []Validator
+	for _, validator := range res.Validators {
+		validators = append(validators, OutputsValidator(validator))
+	}
+
+	var pageResponse PageResponse
+	pageResponse.NextKey = res.Pagination.NextKey
+	pageResponse.Total = res.Pagination.Total
+
+	return method.Outputs.Pack(validators, pageResponse)
+}
+
+// DelegatorValidator queries validator info for given delegator validator pair
+func (c *Contract) DelegatorValidator(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(DelegatorValidatorMethodName)
+
+	// parse args
+	var args DelegatorValidator
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &stakingtypes.QueryDelegatorValidatorRequest{
+		DelegatorAddr: args.GetDelegator().String(),
+		ValidatorAddr: args.GetValidator().String(),
+	}
+
+	querier := stakingkeeper.Querier{Keeper: c.stakingKeeper}
+
+	res, err := querier.DelegatorValidator(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	validator := OutputsValidator(res.Validator)
+
+	return method.Outputs.Pack(validator)
+}
+
+// HistoricalInfo queries the historical info for given height
+func (c *Contract) HistoricalInfo(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(HistoricalInfoMethodName)
+
+	// parse args
+	var args HistoricalInfoRequest
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &stakingtypes.QueryHistoricalInfoRequest{Height: args.GetHeight()}
+
+	querier := stakingkeeper.Querier{Keeper: c.stakingKeeper}
+
+	res, err := querier.HistoricalInfo(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var valsets []Validator
+	for _, validator := range res.Hist.Valset {
+		valsets = append(valsets, OutputsValidator(validator))
+	}
+	header := OutputsHeader(res.Hist.Header)
+	historicalInfo := HistoricalInfo{
+		Header: header,
+		Valset: valsets,
+	}
+
+	return method.Outputs.Pack(historicalInfo)
+}
+
+// Pool queries the pool info
+func (c *Contract) Pool(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(PoolMethodName)
+
+	msg := &stakingtypes.QueryPoolRequest{}
+
+	querier := stakingkeeper.Querier{Keeper: c.stakingKeeper}
+
+	res, err := querier.Pool(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	pool := Pool{
+		NotBondedTokens: res.Pool.NotBondedTokens.BigInt(),
+		BondedTokens:    res.Pool.BondedTokens.BigInt(),
+	}
+
+	return method.Outputs.Pack(pool)
+}
+
+// Params queries the staking parameters
+func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(ParamsMethodName)
+
+	msg := &stakingtypes.QueryParamsRequest{}
+
+	querier := stakingkeeper.Querier{Keeper: c.stakingKeeper}
+
+	res, err := querier.Params(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	params := Params{
+		UnbondingTime:     int64(res.Params.UnbondingTime),
+		MaxValidators:     res.Params.MaxValidators,
+		MaxEntries:        res.Params.MaxEntries,
+		HistoricalEntries: res.Params.HistoricalEntries,
+		BondDenom:         res.Params.BondDenom,
+		MinCommissionRate: res.Params.MinCommissionRate.BigInt(),
+	}
+
+	return method.Outputs.Pack(params)
 }
 
 func OutputsValidator(validator stakingtypes.Validator) Validator {
@@ -381,6 +601,68 @@ func OutputsUnbondingDelegation(unbondingDelegation stakingtypes.UnbondingDelega
 		DelegatorAddress: utils.AccAddressMustToHexAddress(unbondingDelegation.DelegatorAddress),
 		ValidatorAddress: utils.ValAddressMustToHexAddress(unbondingDelegation.ValidatorAddress),
 		Entries:          entries,
+	}
+}
+
+func OutputsRedelegation(redelegationResponse stakingtypes.RedelegationResponse) RedelegationResponse {
+	var entries []RedelegationEntryResponse
+	for _, entry := range redelegationResponse.Entries {
+		entries = append(entries, RedelegationEntryResponse{
+			RedelegationEntry: RedelegationEntry{
+				CreationHeight: entry.RedelegationEntry.CreationHeight,
+				CompletionTime: entry.RedelegationEntry.CompletionTime.Unix(),
+				InitialBalance: entry.RedelegationEntry.InitialBalance.BigInt(),
+				ShareDst:       entry.RedelegationEntry.SharesDst.BigInt(),
+			},
+			Balance: entry.Balance.BigInt(),
+		})
+	}
+
+	var redelegationEntries []RedelegationEntry
+	for _, entry := range redelegationResponse.Redelegation.Entries {
+		redelegationEntries = append(redelegationEntries, RedelegationEntry{
+			CreationHeight: entry.CreationHeight,
+			CompletionTime: entry.CompletionTime.Unix(),
+			InitialBalance: entry.InitialBalance.BigInt(),
+			ShareDst:       entry.SharesDst.BigInt(),
+		})
+	}
+
+	redelegation := Redelegation{
+		DelegatorAddress:    utils.AccAddressMustToHexAddress(redelegationResponse.Redelegation.DelegatorAddress),
+		ValidatorSrcAddress: utils.ValAddressMustToHexAddress(redelegationResponse.Redelegation.ValidatorSrcAddress),
+		ValidatorDstAddress: utils.ValAddressMustToHexAddress(redelegationResponse.Redelegation.ValidatorDstAddress),
+		Entries:             redelegationEntries,
+	}
+
+	return RedelegationResponse{
+		Redelegation: redelegation,
+		Entries:      entries,
+	}
+}
+
+func OutputsHeader(header tenderminttypes.Header) Header {
+	return Header{
+		Version: Consensus{Block: header.Version.Block, App: header.Version.App},
+		ChainId: header.ChainID,
+		Height:  header.Height,
+		Time:    header.Time.Unix(),
+		LastBlockId: BlockID{
+			Hash: hexutil.Encode(header.LastBlockId.Hash),
+			PartSetHeader: PartSetHeader{
+				Total: header.LastBlockId.PartSetHeader.Total,
+				Hash:  hexutil.Encode(header.LastBlockId.PartSetHeader.Hash),
+			},
+		},
+		LastCommitHash:     hexutil.Encode(header.LastCommitHash),
+		DataHash:           hexutil.Encode(header.DataHash),
+		ValidatorsHash:     hexutil.Encode(header.ValidatorsHash),
+		NextValidatorsHash: hexutil.Encode(header.NextValidatorsHash),
+		ConsensusHash:      hexutil.Encode(header.ConsensusHash),
+		AppHash:            hexutil.Encode(header.AppHash),
+		LastResultsHash:    hexutil.Encode(header.LastResultsHash),
+		EvidenceHash:       hexutil.Encode(header.EvidenceHash),
+		ProposerAddress:    hexutil.Encode(header.ProposerAddress),
 	}
 }
 

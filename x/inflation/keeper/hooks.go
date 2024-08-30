@@ -60,29 +60,16 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	}
 
 	// mint coins, update supply
+	totalStakingSupply := k.stakingKeeper.StakingTokenSupply(ctx)
 	period := k.GetPeriod(ctx)
 	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
 	bondedRatio := k.BondedRatio(ctx)
 
-	epochMintProvision := types.CalculateEpochMintProvision(
-		params,
-		period,
-		epochsPerPeriod,
-		bondedRatio,
-	)
+	inflation := k.GetInflation(ctx)
+	inflation = types.NextInflationRate(params, bondedRatio, inflation, epochsPerPeriod)
+	k.SetInflation(ctx, inflation)
 
-	if !epochMintProvision.IsPositive() {
-		k.Logger(ctx).Error(
-			"SKIPPING INFLATION: negative epoch mint provision",
-			"value", epochMintProvision.String(),
-		)
-		return
-	}
-
-	mintedCoin := sdk.Coin{
-		Denom:  params.MintDenom,
-		Amount: epochMintProvision.TruncateInt(),
-	}
+	mintedCoin := types.EpochProvision(params, totalStakingSupply, epochsPerPeriod, inflation)
 
 	staking, communityPool, err := k.MintAndAllocateInflation(ctx, mintedCoin, params)
 	if err != nil {
@@ -135,7 +122,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 		sdk.NewEvent(
 			types.EventTypeMint,
 			sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprintf("%d", epochNumber)),
-			sdk.NewAttribute(types.AttributeKeyEpochProvisions, epochMintProvision.String()),
+			sdk.NewAttribute(types.AttributeKeyEpochProvisions, mintedCoin.Amount.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, mintedCoin.Amount.String()),
 		),
 	)

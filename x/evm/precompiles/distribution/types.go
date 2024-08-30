@@ -15,6 +15,10 @@ var (
 	distributionABI     = types.MustABIJson(IDistributionMetaData.ABI)
 )
 
+type (
+	PageRequestJson = PageRequest
+)
+
 func GetAddress() common.Address {
 	return distributionAddress
 }
@@ -158,4 +162,31 @@ func (args *FundCommunityPoolArgs) Validate() error {
 	}
 
 	return nil
+}
+
+type ValidatorSlashesArgs struct {
+	ValidatorAddress common.Address  `abi:"validatorAddress"`
+	StartingHeight   uint64          `abi:"startingHeight"`
+	EndingHeight     uint64          `abi:"endingHeight"`
+	Pagination       PageRequestJson `abi:"pagination"`
+}
+
+// Validate WithdrawDelegatorRewardArgs the args
+func (args *ValidatorSlashesArgs) Validate() error {
+	if args.ValidatorAddress == (common.Address{}) {
+		return fmt.Errorf("invalid validator address: %s", args.ValidatorAddress)
+	}
+	if args.StartingHeight < 0 || args.EndingHeight < 0 {
+		return fmt.Errorf("startingHeight %d is less than 0 or endingHeight %d is less than 0", args.StartingHeight, args.EndingHeight)
+	}
+	if args.StartingHeight > args.EndingHeight {
+		return fmt.Errorf("startingHeight %d is greater than endingHeight %d", args.StartingHeight, args.EndingHeight)
+	}
+	return nil
+}
+
+// GetValidator returns the validator address, caller must ensure the validator address is valid
+func (args *ValidatorSlashesArgs) GetValidator() sdk.ValAddress {
+	valAddr := sdk.ValAddress(args.ValidatorAddress.Bytes())
+	return valAddr
 }

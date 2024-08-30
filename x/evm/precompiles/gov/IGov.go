@@ -57,6 +57,16 @@ type PageResponse struct {
 	Total   uint64
 }
 
+// Params is an auto generated low-level Go binding around an user-defined struct.
+type Params struct {
+	MinDeposit       []Coin
+	MaxDepositPeriod int64
+	VotingPeriod     int64
+	Quorum           string
+	Threshold        string
+	VetoThreshold    string
+}
+
 // Proposal is an auto generated low-level Go binding around an user-defined struct.
 type Proposal struct {
 	Id               uint64
@@ -95,7 +105,7 @@ type WeightedVoteOption struct {
 
 // IGovMetaData contains all meta data concerning the IGov contract.
 var IGovMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"LegacySubmitProposal\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"SubmitProposal\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"int32\",\"name\":\"option\",\"type\":\"int32\"}],\"name\":\"Vote\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"VoteWeighted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"depositQuery\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"internalType\":\"structDepositData\",\"name\":\"deposit\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"deposits\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"internalType\":\"structDepositData[]\",\"name\":\"deposits\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"title\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"initialDeposit\",\"type\":\"tuple[]\"}],\"name\":\"legacySubmitProposal\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"proposal\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"string[]\",\"name\":\"messages\",\"type\":\"string[]\"},{\"internalType\":\"enumProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"yesCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"abstainCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noWithVetoCount\",\"type\":\"string\"}],\"internalType\":\"structTallyResult\",\"name\":\"finalTallyResult\",\"type\":\"tuple\"},{\"internalType\":\"int64\",\"name\":\"submitTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"depositEndTime\",\"type\":\"int64\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"totalDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"int64\",\"name\":\"votingStartTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"votingEndTime\",\"type\":\"int64\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structProposal\",\"name\":\"proposal\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enumProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"proposals\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"string[]\",\"name\":\"messages\",\"type\":\"string[]\"},{\"internalType\":\"enumProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"yesCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"abstainCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noWithVetoCount\",\"type\":\"string\"}],\"internalType\":\"structTallyResult\",\"name\":\"finalTallyResult\",\"type\":\"tuple\"},{\"internalType\":\"int64\",\"name\":\"submitTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"depositEndTime\",\"type\":\"int64\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"totalDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"int64\",\"name\":\"votingStartTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"votingEndTime\",\"type\":\"int64\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structProposal[]\",\"name\":\"proposals\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"messages\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"initialDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"submitProposal\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"tallyResult\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"yesCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"abstainCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noWithVetoCount\",\"type\":\"string\"}],\"internalType\":\"structTallyResult\",\"name\":\"tallyResult\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"int32\",\"name\":\"option\",\"type\":\"int32\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"vote\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"}],\"name\":\"vote\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"enumVoteOption\",\"name\":\"option\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"weight\",\"type\":\"string\"}],\"internalType\":\"structWeightedVoteOption[]\",\"name\":\"options\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structVoteData\",\"name\":\"vote\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"enumVoteOption\",\"name\":\"option\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"weight\",\"type\":\"string\"}],\"internalType\":\"structWeightedVoteOption[]\",\"name\":\"options\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"voteWeighted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"votes\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"enumVoteOption\",\"name\":\"option\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"weight\",\"type\":\"string\"}],\"internalType\":\"structWeightedVoteOption[]\",\"name\":\"options\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structVoteData[]\",\"name\":\"votes\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"LegacySubmitProposal\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"SubmitProposal\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"option\",\"type\":\"uint8\"}],\"name\":\"Vote\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"VoteWeighted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"internalType\":\"structDepositData\",\"name\":\"deposit\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"deposits\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"internalType\":\"structDepositData[]\",\"name\":\"deposits\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"title\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"initialDeposit\",\"type\":\"tuple[]\"}],\"name\":\"legacySubmitProposal\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"params\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"minDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"int64\",\"name\":\"maxDepositPeriod\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"votingPeriod\",\"type\":\"int64\"},{\"internalType\":\"string\",\"name\":\"quorum\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"threshold\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"vetoThreshold\",\"type\":\"string\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"proposal\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"string[]\",\"name\":\"messages\",\"type\":\"string[]\"},{\"internalType\":\"enumProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"yesCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"abstainCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noWithVetoCount\",\"type\":\"string\"}],\"internalType\":\"structTallyResult\",\"name\":\"finalTallyResult\",\"type\":\"tuple\"},{\"internalType\":\"int64\",\"name\":\"submitTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"depositEndTime\",\"type\":\"int64\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"totalDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"int64\",\"name\":\"votingStartTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"votingEndTime\",\"type\":\"int64\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structProposal\",\"name\":\"proposal\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enumProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"proposals\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"string[]\",\"name\":\"messages\",\"type\":\"string[]\"},{\"internalType\":\"enumProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"yesCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"abstainCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noWithVetoCount\",\"type\":\"string\"}],\"internalType\":\"structTallyResult\",\"name\":\"finalTallyResult\",\"type\":\"tuple\"},{\"internalType\":\"int64\",\"name\":\"submitTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"depositEndTime\",\"type\":\"int64\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"totalDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"int64\",\"name\":\"votingStartTime\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"votingEndTime\",\"type\":\"int64\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structProposal[]\",\"name\":\"proposals\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"messages\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"initialDeposit\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"submitProposal\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"}],\"name\":\"tallyResult\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"yesCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"abstainCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noCount\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"noWithVetoCount\",\"type\":\"string\"}],\"internalType\":\"structTallyResult\",\"name\":\"tallyResult\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"enumVoteOption\",\"name\":\"option\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"vote\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"}],\"name\":\"vote\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"enumVoteOption\",\"name\":\"option\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"weight\",\"type\":\"string\"}],\"internalType\":\"structWeightedVoteOption[]\",\"name\":\"options\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structVoteData\",\"name\":\"vote\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"enumVoteOption\",\"name\":\"option\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"weight\",\"type\":\"string\"}],\"internalType\":\"structWeightedVoteOption[]\",\"name\":\"options\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"name\":\"voteWeighted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"votes\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"proposalId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"enumVoteOption\",\"name\":\"option\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"weight\",\"type\":\"string\"}],\"internalType\":\"structWeightedVoteOption[]\",\"name\":\"options\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"metadata\",\"type\":\"string\"}],\"internalType\":\"structVoteData[]\",\"name\":\"votes\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // IGovABI is the input ABI used to generate the binding from.
@@ -244,12 +254,12 @@ func (_IGov *IGovTransactorRaw) Transact(opts *bind.TransactOpts, method string,
 	return _IGov.Contract.contract.Transact(opts, method, params...)
 }
 
-// DepositQuery is a free data retrieval call binding the contract method 0xc8f29794.
+// Deposit is a free data retrieval call binding the contract method 0x576bcd2f.
 //
-// Solidity: function depositQuery(uint64 proposalId, address depositor) view returns((uint64,address,(string,uint256)[]) deposit)
-func (_IGov *IGovCaller) DepositQuery(opts *bind.CallOpts, proposalId uint64, depositor common.Address) (DepositData, error) {
+// Solidity: function deposit(uint64 proposalId, address depositor) view returns((uint64,address,(string,uint256)[]) deposit)
+func (_IGov *IGovCaller) Deposit(opts *bind.CallOpts, proposalId uint64, depositor common.Address) (DepositData, error) {
 	var out []interface{}
-	err := _IGov.contract.Call(opts, &out, "depositQuery", proposalId, depositor)
+	err := _IGov.contract.Call(opts, &out, "deposit", proposalId, depositor)
 
 	if err != nil {
 		return *new(DepositData), err
@@ -261,18 +271,18 @@ func (_IGov *IGovCaller) DepositQuery(opts *bind.CallOpts, proposalId uint64, de
 
 }
 
-// DepositQuery is a free data retrieval call binding the contract method 0xc8f29794.
+// Deposit is a free data retrieval call binding the contract method 0x576bcd2f.
 //
-// Solidity: function depositQuery(uint64 proposalId, address depositor) view returns((uint64,address,(string,uint256)[]) deposit)
-func (_IGov *IGovSession) DepositQuery(proposalId uint64, depositor common.Address) (DepositData, error) {
-	return _IGov.Contract.DepositQuery(&_IGov.CallOpts, proposalId, depositor)
+// Solidity: function deposit(uint64 proposalId, address depositor) view returns((uint64,address,(string,uint256)[]) deposit)
+func (_IGov *IGovSession) Deposit(proposalId uint64, depositor common.Address) (DepositData, error) {
+	return _IGov.Contract.Deposit(&_IGov.CallOpts, proposalId, depositor)
 }
 
-// DepositQuery is a free data retrieval call binding the contract method 0xc8f29794.
+// Deposit is a free data retrieval call binding the contract method 0x576bcd2f.
 //
-// Solidity: function depositQuery(uint64 proposalId, address depositor) view returns((uint64,address,(string,uint256)[]) deposit)
-func (_IGov *IGovCallerSession) DepositQuery(proposalId uint64, depositor common.Address) (DepositData, error) {
-	return _IGov.Contract.DepositQuery(&_IGov.CallOpts, proposalId, depositor)
+// Solidity: function deposit(uint64 proposalId, address depositor) view returns((uint64,address,(string,uint256)[]) deposit)
+func (_IGov *IGovCallerSession) Deposit(proposalId uint64, depositor common.Address) (DepositData, error) {
+	return _IGov.Contract.Deposit(&_IGov.CallOpts, proposalId, depositor)
 }
 
 // Deposits is a free data retrieval call binding the contract method 0xeaf16768.
@@ -318,6 +328,37 @@ func (_IGov *IGovCallerSession) Deposits(proposalId uint64, pagination PageReque
 	PageResponse PageResponse
 }, error) {
 	return _IGov.Contract.Deposits(&_IGov.CallOpts, proposalId, pagination)
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns(((string,uint256)[],int64,int64,string,string,string) params)
+func (_IGov *IGovCaller) Params(opts *bind.CallOpts) (Params, error) {
+	var out []interface{}
+	err := _IGov.contract.Call(opts, &out, "params")
+
+	if err != nil {
+		return *new(Params), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(Params)).(*Params)
+
+	return out0, err
+
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns(((string,uint256)[],int64,int64,string,string,string) params)
+func (_IGov *IGovSession) Params() (Params, error) {
+	return _IGov.Contract.Params(&_IGov.CallOpts)
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns(((string,uint256)[],int64,int64,string,string,string) params)
+func (_IGov *IGovCallerSession) Params() (Params, error) {
+	return _IGov.Contract.Params(&_IGov.CallOpts)
 }
 
 // Proposal is a free data retrieval call binding the contract method 0x7afa0aa3.
@@ -503,25 +544,25 @@ func (_IGov *IGovCallerSession) Votes(proposalId uint64, pagination PageRequest)
 	return _IGov.Contract.Votes(&_IGov.CallOpts, proposalId, pagination)
 }
 
-// Deposit is a paid mutator transaction binding the contract method 0xf0514275.
+// Deposit0 is a paid mutator transaction binding the contract method 0x6170c4b1.
 //
-// Solidity: function deposit(uint64 proposalId, (string,uint256)[] amount) returns(bool success)
-func (_IGov *IGovTransactor) Deposit(opts *bind.TransactOpts, proposalId uint64, amount []Coin) (*types.Transaction, error) {
-	return _IGov.contract.Transact(opts, "deposit", proposalId, amount)
+// Solidity: function deposit(uint64 proposalId, uint256 amount) returns(bool success)
+func (_IGov *IGovTransactor) Deposit0(opts *bind.TransactOpts, proposalId uint64, amount *big.Int) (*types.Transaction, error) {
+	return _IGov.contract.Transact(opts, "deposit0", proposalId, amount)
 }
 
-// Deposit is a paid mutator transaction binding the contract method 0xf0514275.
+// Deposit0 is a paid mutator transaction binding the contract method 0x6170c4b1.
 //
-// Solidity: function deposit(uint64 proposalId, (string,uint256)[] amount) returns(bool success)
-func (_IGov *IGovSession) Deposit(proposalId uint64, amount []Coin) (*types.Transaction, error) {
-	return _IGov.Contract.Deposit(&_IGov.TransactOpts, proposalId, amount)
+// Solidity: function deposit(uint64 proposalId, uint256 amount) returns(bool success)
+func (_IGov *IGovSession) Deposit0(proposalId uint64, amount *big.Int) (*types.Transaction, error) {
+	return _IGov.Contract.Deposit0(&_IGov.TransactOpts, proposalId, amount)
 }
 
-// Deposit is a paid mutator transaction binding the contract method 0xf0514275.
+// Deposit0 is a paid mutator transaction binding the contract method 0x6170c4b1.
 //
-// Solidity: function deposit(uint64 proposalId, (string,uint256)[] amount) returns(bool success)
-func (_IGov *IGovTransactorSession) Deposit(proposalId uint64, amount []Coin) (*types.Transaction, error) {
-	return _IGov.Contract.Deposit(&_IGov.TransactOpts, proposalId, amount)
+// Solidity: function deposit(uint64 proposalId, uint256 amount) returns(bool success)
+func (_IGov *IGovTransactorSession) Deposit0(proposalId uint64, amount *big.Int) (*types.Transaction, error) {
+	return _IGov.Contract.Deposit0(&_IGov.TransactOpts, proposalId, amount)
 }
 
 // LegacySubmitProposal is a paid mutator transaction binding the contract method 0xad5aa33d.
@@ -566,24 +607,24 @@ func (_IGov *IGovTransactorSession) SubmitProposal(messages string, initialDepos
 	return _IGov.Contract.SubmitProposal(&_IGov.TransactOpts, messages, initialDeposit, metadata)
 }
 
-// Vote is a paid mutator transaction binding the contract method 0x19f7a0fb.
+// Vote is a paid mutator transaction binding the contract method 0x528783d5.
 //
-// Solidity: function vote(uint64 proposalId, int32 option, string metadata) returns(bool success)
-func (_IGov *IGovTransactor) Vote(opts *bind.TransactOpts, proposalId uint64, option int32, metadata string) (*types.Transaction, error) {
+// Solidity: function vote(uint64 proposalId, uint8 option, string metadata) returns(bool success)
+func (_IGov *IGovTransactor) Vote(opts *bind.TransactOpts, proposalId uint64, option uint8, metadata string) (*types.Transaction, error) {
 	return _IGov.contract.Transact(opts, "vote", proposalId, option, metadata)
 }
 
-// Vote is a paid mutator transaction binding the contract method 0x19f7a0fb.
+// Vote is a paid mutator transaction binding the contract method 0x528783d5.
 //
-// Solidity: function vote(uint64 proposalId, int32 option, string metadata) returns(bool success)
-func (_IGov *IGovSession) Vote(proposalId uint64, option int32, metadata string) (*types.Transaction, error) {
+// Solidity: function vote(uint64 proposalId, uint8 option, string metadata) returns(bool success)
+func (_IGov *IGovSession) Vote(proposalId uint64, option uint8, metadata string) (*types.Transaction, error) {
 	return _IGov.Contract.Vote(&_IGov.TransactOpts, proposalId, option, metadata)
 }
 
-// Vote is a paid mutator transaction binding the contract method 0x19f7a0fb.
+// Vote is a paid mutator transaction binding the contract method 0x528783d5.
 //
-// Solidity: function vote(uint64 proposalId, int32 option, string metadata) returns(bool success)
-func (_IGov *IGovTransactorSession) Vote(proposalId uint64, option int32, metadata string) (*types.Transaction, error) {
+// Solidity: function vote(uint64 proposalId, uint8 option, string metadata) returns(bool success)
+func (_IGov *IGovTransactorSession) Vote(proposalId uint64, option uint8, metadata string) (*types.Transaction, error) {
 	return _IGov.Contract.Vote(&_IGov.TransactOpts, proposalId, option, metadata)
 }
 
@@ -1114,13 +1155,13 @@ func (it *IGovVoteIterator) Close() error {
 type IGovVote struct {
 	Voter      common.Address
 	ProposalId uint64
-	Option     int32
+	Option     uint8
 	Raw        types.Log // Blockchain specific contextual infos
 }
 
-// FilterVote is a free log retrieval operation binding the contract event 0x136803a3fea2cd3a4136956fbdf8bc0a7d375ee66ae3ca58caba112be1343d4c.
+// FilterVote is a free log retrieval operation binding the contract event 0x71c096cfbbce3e73fe1d1e5943da8fcbdcd2ba95519bfa456d51c282c575c64a.
 //
-// Solidity: event Vote(address indexed voter, uint64 proposalId, int32 option)
+// Solidity: event Vote(address indexed voter, uint64 proposalId, uint8 option)
 func (_IGov *IGovFilterer) FilterVote(opts *bind.FilterOpts, voter []common.Address) (*IGovVoteIterator, error) {
 
 	var voterRule []interface{}
@@ -1135,9 +1176,9 @@ func (_IGov *IGovFilterer) FilterVote(opts *bind.FilterOpts, voter []common.Addr
 	return &IGovVoteIterator{contract: _IGov.contract, event: "Vote", logs: logs, sub: sub}, nil
 }
 
-// WatchVote is a free log subscription operation binding the contract event 0x136803a3fea2cd3a4136956fbdf8bc0a7d375ee66ae3ca58caba112be1343d4c.
+// WatchVote is a free log subscription operation binding the contract event 0x71c096cfbbce3e73fe1d1e5943da8fcbdcd2ba95519bfa456d51c282c575c64a.
 //
-// Solidity: event Vote(address indexed voter, uint64 proposalId, int32 option)
+// Solidity: event Vote(address indexed voter, uint64 proposalId, uint8 option)
 func (_IGov *IGovFilterer) WatchVote(opts *bind.WatchOpts, sink chan<- *IGovVote, voter []common.Address) (event.Subscription, error) {
 
 	var voterRule []interface{}
@@ -1177,9 +1218,9 @@ func (_IGov *IGovFilterer) WatchVote(opts *bind.WatchOpts, sink chan<- *IGovVote
 	}), nil
 }
 
-// ParseVote is a log parse operation binding the contract event 0x136803a3fea2cd3a4136956fbdf8bc0a7d375ee66ae3ca58caba112be1343d4c.
+// ParseVote is a log parse operation binding the contract event 0x71c096cfbbce3e73fe1d1e5943da8fcbdcd2ba95519bfa456d51c282c575c64a.
 //
-// Solidity: event Vote(address indexed voter, uint64 proposalId, int32 option)
+// Solidity: event Vote(address indexed voter, uint64 proposalId, uint8 option)
 func (_IGov *IGovFilterer) ParseVote(log types.Log) (*IGovVote, error) {
 	event := new(IGovVote)
 	if err := _IGov.contract.UnpackLog(event, "Vote", log); err != nil {

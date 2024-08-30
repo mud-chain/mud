@@ -129,6 +129,29 @@ struct UnbondingDelegationEntry {
 }
 
 /**
+ * @dev RedelegationEntry defines a redelegation object with relevant metadata.
+ */
+struct RedelegationEntry {
+    // creationHeight defines the height which the redelegation took place.
+    int64 creationHeight;
+    // completionTime defines the unix time for redelegation completion.
+    int64 completionTime;
+    // initialBalance defines the initial balance when redelegation started.
+    uint256 initialBalance;
+    // shareDst is the amount of destination-validator shares created by redelegation.
+    uint256 shareDst;
+}
+
+/**
+ * @dev RedelegationEntryResponse is equivalent to a RedelegationEntry except that it
+ * contains a balance in addition to shares which is more suitable for client responses.
+ */
+struct RedelegationEntryResponse {
+    RedelegationEntry redelegationEntry;
+    uint256 balance;
+}
+
+/**
  * @dev UnbondingDelegation stores all of a single delegator's unbonding bonds
  * for a single validator in an time-ordered list.
  */
@@ -136,6 +159,123 @@ struct UnbondingDelegation {
     address delegatorAddress;
     address validatorAddress;
     UnbondingDelegationEntry[] entries;
+}
+
+/**
+ * @dev RedelegationResponse is equivalent to a Redelegation except that its entries
+ * contain a balance in addition to shares which is more suitable for client responses.
+ */
+struct RedelegationResponse {
+    Redelegation redelegation;
+    RedelegationEntryResponse[] entries;
+}
+
+/**
+ * @dev Redelegation contains the list of a particular delegator's redelegating bonds
+ * from a particular source validator to a particular destination validator.
+ */
+struct Redelegation {
+    // delegatorAddress is the bech32-encoded address of the delegator.
+    address delegatorAddress;
+    // validatorSrcAddress is the validator redelegation source operator address.
+    address validatorSrcAddress;
+    // validatorDstAddress is the validator redelegation destination operator address.
+    address validatorDstAddress;
+    // entries are the redelegation entries.
+    RedelegationEntry[] entries;
+}
+
+/**
+ * @dev HistoricalInfo contains header and validator information for a given block.
+ * It is stored as part of staking module's state, which persists the `n` most
+ * recent HistoricalInfo
+ * (`n` is set by the staking module's `historical_entries` parameter).
+ */
+struct HistoricalInfo {
+    Header header;
+    Validator[] valset;
+}
+
+/**
+ * @dev Pool is used for tracking bonded and not-bonded token supply of the bond
+ * denomination.
+ */
+struct Pool {
+    uint256 notBondedTokens;
+    uint256 bondedTokens;
+}
+
+/**
+ * @dev Params defines the parameters for the staking module.
+ */
+struct Params {
+    // unbondingTime is the time duration of unbonding.
+    int64 unbondingTime;
+    // maxValidators is the maximum number of validators.
+    uint32 maxValidators;
+    // maxEntries is the max entries for either unbonding delegation or redelegation (per pair/trio).
+    uint32 maxEntries;
+    // historicalEntries is the number of historical entries to persist.
+    uint32 historicalEntries;
+    // bondDenom defines the bondable coin denomination.
+    string bondDenom;
+    // min_commission_rate is the chain-wide minimum commission rate that a validator can charge their delegators
+    uint256 minCommissionRate;
+}
+
+/**
+ * @dev Header defines the structure of a Tendermint block header.
+ */
+struct Header {
+    // basic block info
+    Consensus version;
+    string chainId;
+    int64 height;
+    int64 time;
+
+    // prev block info
+    BlockID lastBlockId;
+
+    // hashes of block data
+    string lastCommitHash;     // commit from validators from the last block
+    string dataHash;           // transactions
+
+    // hashes from the app output from the prev block
+    string validatorsHash;     // validators for the current block
+    string nextValidatorsHash; // validators for the next block
+    string consensusHash;      // consensus params for current block
+    string appHash;            // state after txs from the previous block
+    string lastResultsHash;    // root hash of all results from the txs from the previous block
+
+    // consensus info
+    string evidenceHash;       // evidence included in the block
+    string proposerAddress;    // original proposer of the block
+}
+
+/**
+ * @dev Consensus captures the consensus rules for processing a block in the blockchain,
+ * including all blockchain data structures and the rules of the application's
+ * state transition machine.
+ */
+struct Consensus {
+    uint64 block;
+    uint64 app;
+}
+
+/**
+ * @dev BlockID
+ */
+struct BlockID {
+    string hash;
+    PartSetHeader partSetHeader;
+}
+
+/**
+ * @dev PartsetHeader
+ */
+struct PartSetHeader {
+    uint32 total;
+    string hash;
 }
 
 interface IStaking {
@@ -259,6 +399,49 @@ interface IStaking {
         address delegatorAddr,
         PageRequest calldata pagination
     ) external view returns (UnbondingDelegation[] calldata response, PageResponse calldata pageResponse);
+
+    /**
+     * @dev redelegations queries redelegations of given address.
+     */
+    function redelegations(
+        address delegatorAddr,
+        address srcValidatorAddr,
+        address dstValidatorAddr,
+        PageRequest calldata pagination
+    ) external view returns (RedelegationResponse[] calldata redelegationResponses, PageResponse calldata pageResponse);
+
+    /**
+     * @dev delegatorValidators queries all validators info for given delegator address.
+     */
+    function delegatorValidators(
+        address delegatorAddr,
+        PageRequest calldata pagination
+    ) external view returns (Validator[] calldata validators, PageResponse calldata pageResponse);
+
+    /**
+     * @dev delegatorValidator queries validator info for given delegator validator pair.
+     */
+    function delegatorValidator(
+        address delegatorAddr,
+        address validatorAddr
+    ) external view returns (Validator calldata validator);
+
+    /**
+     * @dev historicalInfo queries the historical info for given height.
+     */
+    function historicalInfo(
+        int64 height
+    ) external view returns (HistoricalInfo calldata historicalInfo);
+
+    /**
+     * @dev pool queries the pool info.
+     */
+    function pool() external view returns (Pool calldata pool);
+
+    /**
+     * @dev params queries the staking params.
+     */
+    function params() external view returns (Params calldata params);
 
     /**
      * @dev CreateValidator defines an Event emitted when a new validator created.

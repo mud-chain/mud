@@ -29,9 +29,43 @@ var (
 	_ = abi.ConvertType
 )
 
+// PageRequest is an auto generated low-level Go binding around an user-defined struct.
+type PageRequest struct {
+	Key        []byte
+	Offset     uint64
+	Limit      uint64
+	CountTotal bool
+	Reverse    bool
+}
+
+// PageResponse is an auto generated low-level Go binding around an user-defined struct.
+type PageResponse struct {
+	NextKey []byte
+	Total   uint64
+}
+
+// Params is an auto generated low-level Go binding around an user-defined struct.
+type Params struct {
+	SignedBlocksWindow      int64
+	MinSignedPerWindow      string
+	DowntimeJailDuration    int64
+	SlashFractionDoubleSign string
+	SlashFractionDowntime   string
+}
+
+// ValidatorSigningInfo is an auto generated low-level Go binding around an user-defined struct.
+type ValidatorSigningInfo struct {
+	ConsAddress         common.Address
+	StartHeight         int64
+	IndexOffset         int64
+	JailedUntil         int64
+	Tombstoned          bool
+	MissedBlocksCounter int64
+}
+
 // ISlashingMetaData contains all meta data concerning the ISlashing contract.
 var ISlashingMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"}],\"name\":\"Unjail\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"unjail\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"}],\"name\":\"Unjail\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"params\",\"outputs\":[{\"components\":[{\"internalType\":\"int64\",\"name\":\"signedBlocksWindow\",\"type\":\"int64\"},{\"internalType\":\"string\",\"name\":\"minSignedPerWindow\",\"type\":\"string\"},{\"internalType\":\"int64\",\"name\":\"downtimeJailDuration\",\"type\":\"int64\"},{\"internalType\":\"string\",\"name\":\"slashFractionDoubleSign\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"slashFractionDowntime\",\"type\":\"string\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"consAddress\",\"type\":\"address\"}],\"name\":\"signingInfo\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"consAddress\",\"type\":\"address\"},{\"internalType\":\"int64\",\"name\":\"startHeight\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"indexOffset\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"jailedUntil\",\"type\":\"int64\"},{\"internalType\":\"bool\",\"name\":\"tombstoned\",\"type\":\"bool\"},{\"internalType\":\"int64\",\"name\":\"missedBlocksCounter\",\"type\":\"int64\"}],\"internalType\":\"structValidatorSigningInfo\",\"name\":\"valSigningInfo\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"signingInfos\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"consAddress\",\"type\":\"address\"},{\"internalType\":\"int64\",\"name\":\"startHeight\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"indexOffset\",\"type\":\"int64\"},{\"internalType\":\"int64\",\"name\":\"jailedUntil\",\"type\":\"int64\"},{\"internalType\":\"bool\",\"name\":\"tombstoned\",\"type\":\"bool\"},{\"internalType\":\"int64\",\"name\":\"missedBlocksCounter\",\"type\":\"int64\"}],\"internalType\":\"structValidatorSigningInfo[]\",\"name\":\"infos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unjail\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // ISlashingABI is the input ABI used to generate the binding from.
@@ -178,6 +212,113 @@ func (_ISlashing *ISlashingTransactorRaw) Transfer(opts *bind.TransactOpts) (*ty
 // Transact invokes the (paid) contract method with params as input values.
 func (_ISlashing *ISlashingTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	return _ISlashing.Contract.contract.Transact(opts, method, params...)
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns((int64,string,int64,string,string) params)
+func (_ISlashing *ISlashingCaller) Params(opts *bind.CallOpts) (Params, error) {
+	var out []interface{}
+	err := _ISlashing.contract.Call(opts, &out, "params")
+
+	if err != nil {
+		return *new(Params), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(Params)).(*Params)
+
+	return out0, err
+
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns((int64,string,int64,string,string) params)
+func (_ISlashing *ISlashingSession) Params() (Params, error) {
+	return _ISlashing.Contract.Params(&_ISlashing.CallOpts)
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns((int64,string,int64,string,string) params)
+func (_ISlashing *ISlashingCallerSession) Params() (Params, error) {
+	return _ISlashing.Contract.Params(&_ISlashing.CallOpts)
+}
+
+// SigningInfo is a free data retrieval call binding the contract method 0x0fc498b4.
+//
+// Solidity: function signingInfo(address consAddress) view returns((address,int64,int64,int64,bool,int64) valSigningInfo)
+func (_ISlashing *ISlashingCaller) SigningInfo(opts *bind.CallOpts, consAddress common.Address) (ValidatorSigningInfo, error) {
+	var out []interface{}
+	err := _ISlashing.contract.Call(opts, &out, "signingInfo", consAddress)
+
+	if err != nil {
+		return *new(ValidatorSigningInfo), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(ValidatorSigningInfo)).(*ValidatorSigningInfo)
+
+	return out0, err
+
+}
+
+// SigningInfo is a free data retrieval call binding the contract method 0x0fc498b4.
+//
+// Solidity: function signingInfo(address consAddress) view returns((address,int64,int64,int64,bool,int64) valSigningInfo)
+func (_ISlashing *ISlashingSession) SigningInfo(consAddress common.Address) (ValidatorSigningInfo, error) {
+	return _ISlashing.Contract.SigningInfo(&_ISlashing.CallOpts, consAddress)
+}
+
+// SigningInfo is a free data retrieval call binding the contract method 0x0fc498b4.
+//
+// Solidity: function signingInfo(address consAddress) view returns((address,int64,int64,int64,bool,int64) valSigningInfo)
+func (_ISlashing *ISlashingCallerSession) SigningInfo(consAddress common.Address) (ValidatorSigningInfo, error) {
+	return _ISlashing.Contract.SigningInfo(&_ISlashing.CallOpts, consAddress)
+}
+
+// SigningInfos is a free data retrieval call binding the contract method 0x7e2277e0.
+//
+// Solidity: function signingInfos((bytes,uint64,uint64,bool,bool) pagination) view returns((address,int64,int64,int64,bool,int64)[] infos, (bytes,uint64) pageResponse)
+func (_ISlashing *ISlashingCaller) SigningInfos(opts *bind.CallOpts, pagination PageRequest) (struct {
+	Infos        []ValidatorSigningInfo
+	PageResponse PageResponse
+}, error) {
+	var out []interface{}
+	err := _ISlashing.contract.Call(opts, &out, "signingInfos", pagination)
+
+	outstruct := new(struct {
+		Infos        []ValidatorSigningInfo
+		PageResponse PageResponse
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Infos = *abi.ConvertType(out[0], new([]ValidatorSigningInfo)).(*[]ValidatorSigningInfo)
+	outstruct.PageResponse = *abi.ConvertType(out[1], new(PageResponse)).(*PageResponse)
+
+	return *outstruct, err
+
+}
+
+// SigningInfos is a free data retrieval call binding the contract method 0x7e2277e0.
+//
+// Solidity: function signingInfos((bytes,uint64,uint64,bool,bool) pagination) view returns((address,int64,int64,int64,bool,int64)[] infos, (bytes,uint64) pageResponse)
+func (_ISlashing *ISlashingSession) SigningInfos(pagination PageRequest) (struct {
+	Infos        []ValidatorSigningInfo
+	PageResponse PageResponse
+}, error) {
+	return _ISlashing.Contract.SigningInfos(&_ISlashing.CallOpts, pagination)
+}
+
+// SigningInfos is a free data retrieval call binding the contract method 0x7e2277e0.
+//
+// Solidity: function signingInfos((bytes,uint64,uint64,bool,bool) pagination) view returns((address,int64,int64,int64,bool,int64)[] infos, (bytes,uint64) pageResponse)
+func (_ISlashing *ISlashingCallerSession) SigningInfos(pagination PageRequest) (struct {
+	Infos        []ValidatorSigningInfo
+	PageResponse PageResponse
+}, error) {
+	return _ISlashing.Contract.SigningInfos(&_ISlashing.CallOpts, pagination)
 }
 
 // Unjail is a paid mutator transaction binding the contract method 0xf679d305.

@@ -2,12 +2,30 @@ package gov
 
 import (
 	"bytes"
+
+	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	proposaltypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v6/modules/apps/transfer/types"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
+
 	"github.com/evmos/evmos/v12/utils"
+	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
+	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
+	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
 
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
@@ -20,14 +38,16 @@ const (
 	DepositQueryGas = 30_000
 	DepositsGas     = 30_000
 	TallyResultGas  = 30_000
+	ParamsGas       = 30_000
 
 	ProposalMethodName     = "proposal"
 	ProposalsMethodName    = "proposals"
 	VoteQueryMethodName    = "vote0"
 	VotesMethodName        = "votes"
-	DepositQueryMethodName = "depositQuery"
+	DepositQueryMethodName = "deposit"
 	DepositsMethodName     = "deposits"
 	TallyResultMethodName  = "tallyResult"
+	ParamsMethodName       = "params"
 )
 
 // Proposal returns proposal details based on ProposalID
@@ -247,23 +267,120 @@ func (c *Contract) TallyResult(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	return method.Outputs.Pack(TallyResult(*res.Tally))
 }
 
+// Params queries the staking parameters
+func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(ParamsMethodName)
+
+	msg1 := &govv1.QueryParamsRequest{
+		ParamsType: govv1.ParamDeposit,
+	}
+
+	res1, err := c.govKeeper.Params(ctx, msg1)
+	if err != nil {
+		return nil, err
+	}
+
+	msg2 := &govv1.QueryParamsRequest{
+		ParamsType: govv1.ParamVoting,
+	}
+
+	res2, err := c.govKeeper.Params(ctx, msg2)
+	if err != nil {
+		return nil, err
+	}
+
+	msg3 := &govv1.QueryParamsRequest{
+		ParamsType: govv1.ParamTallying,
+	}
+
+	res3, err := c.govKeeper.Params(ctx, msg3)
+	if err != nil {
+		return nil, err
+	}
+
+	params := Params{
+		MinDeposit: []Coin{
+			{
+				Denom:  res1.DepositParams.MinDeposit[0].Denom,
+				Amount: res1.DepositParams.MinDeposit[0].Amount.BigInt(),
+			},
+		},
+		MaxDepositPeriod: int64(res1.DepositParams.MaxDepositPeriod.Seconds()),
+		VotingPeriod:     int64(res2.VotingParams.VotingPeriod.Seconds()),
+		Quorum:           res3.TallyParams.Quorum,
+		Threshold:        res3.TallyParams.Threshold,
+		VetoThreshold:    res3.TallyParams.VetoThreshold,
+	}
+
+	return method.Outputs.Pack(params)
+}
+
 func OutputsProposal(proposal govv1.Proposal) Proposal {
 	var messages []string
-	for _, message := range proposal.Messages {
-		// TODO must format to readable string
-		msg, ok := message.GetCachedValue().(govv1.MsgExecLegacyContent)
-		if ok {
-			messages = append(messages, msg.String())
-			continue
-		}
-		messages = append(messages, message.String())
+	msgs, err := proposal.GetMsgs()
+
+	emptyProposal := Proposal{
+		Id:               0,
+		Messages:         nil,
+		Status:           0,
+		FinalTallyResult: TallyResult{},
+		SubmitTime:       0,
+		DepositEndTime:   0,
+		TotalDeposit:     nil,
+		VotingStartTime:  0,
+		VotingEndTime:    0,
+		Metadata:         "",
 	}
+
+	if err != nil {
+		return emptyProposal
+	}
+
+	interfaceRegistry := codectypes.NewInterfaceRegistry()
+
+	authtypes.RegisterInterfaces(interfaceRegistry)
+	banktypes.RegisterInterfaces(interfaceRegistry)
+	stakingtypes.RegisterInterfaces(interfaceRegistry)
+	distrtypes.RegisterInterfaces(interfaceRegistry)
+	slashingtypes.RegisterInterfaces(interfaceRegistry)
+	govv1beta1.RegisterInterfaces(interfaceRegistry)
+	govv1.RegisterInterfaces(interfaceRegistry)
+	crisistypes.RegisterInterfaces(interfaceRegistry)
+	ibctransfertypes.RegisterInterfaces(interfaceRegistry)
+	types.RegisterInterfaces(interfaceRegistry)
+	feemarkettypes.RegisterInterfaces(interfaceRegistry)
+	inflationtypes.RegisterInterfaces(interfaceRegistry)
+	erc20types.RegisterInterfaces(interfaceRegistry)
+	upgradetypes.RegisterInterfaces(interfaceRegistry)
+	proposaltypes.RegisterInterfaces(interfaceRegistry)
+
+	ethosCodec := codec.NewProtoCodec(interfaceRegistry)
+
+	for _, msg := range msgs {
+		bytesMsg, err := ethosCodec.MarshalInterfaceJSON(msg)
+		if err != nil {
+			messages = append(messages, msg.String())
+		}
+
+		messages = append(messages, string(bytesMsg))
+	}
+
 	var totalDeposit []Coin
 	for _, coin := range proposal.TotalDeposit {
 		totalDeposit = append(totalDeposit, Coin{
 			Denom:  coin.Denom,
 			Amount: coin.Amount.BigInt(),
 		})
+	}
+
+	var votingStartTime int64 = 0
+	if proposal.VotingStartTime != nil {
+		votingStartTime = proposal.VotingStartTime.Unix()
+	}
+
+	var votingEndTime int64 = 0
+	if proposal.VotingEndTime != nil {
+		votingEndTime = proposal.VotingEndTime.Unix()
 	}
 
 	return Proposal{
@@ -274,8 +391,8 @@ func OutputsProposal(proposal govv1.Proposal) Proposal {
 		SubmitTime:       proposal.SubmitTime.Unix(),
 		DepositEndTime:   proposal.DepositEndTime.Unix(),
 		TotalDeposit:     totalDeposit,
-		VotingStartTime:  proposal.VotingStartTime.Unix(),
-		VotingEndTime:    proposal.VotingEndTime.Unix(),
+		VotingStartTime:  votingStartTime,
+		VotingEndTime:    votingEndTime,
 		Metadata:         proposal.Metadata,
 	}
 }

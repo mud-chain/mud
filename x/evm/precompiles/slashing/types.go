@@ -3,6 +3,8 @@ package slashing
 import (
 	"bytes"
 	"fmt"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
@@ -60,4 +62,33 @@ func MustEvent(name string) abi.Event {
 		panic(err)
 	}
 	return event
+}
+
+type PageRequestJson = PageRequest
+
+type SigningInfoArgs struct {
+	ConsAddress common.Address `abi:"consAddress"`
+}
+
+// Validate SigningInfo args
+func (args *SigningInfoArgs) Validate() error {
+	if args.ConsAddress == (common.Address{}) {
+		return fmt.Errorf("invalid consensus address: %s", args.ConsAddress)
+	}
+	return nil
+}
+
+// GetConsAddress returns the consensus address, caller must ensure the consensus address is valid
+func (args *SigningInfoArgs) GetConsAddress() sdk.ConsAddress {
+	consAddress := sdk.ConsAddress(args.ConsAddress.Bytes())
+	return consAddress
+}
+
+type SigningInfosArgs struct {
+	Pagination PageRequestJson `abi:"pagination"`
+}
+
+// Validate SigningInfos args
+func (args *SigningInfosArgs) Validate() error {
+	return nil
 }

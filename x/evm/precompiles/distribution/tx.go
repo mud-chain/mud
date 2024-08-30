@@ -32,10 +32,11 @@ const (
 
 func (c *Contract) SetWithdrawAddress(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("setWithdrawAddress method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, errors.New("only allow EOA can call this method")
 	}
 
 	method := MustMethod(SetWithdrawAddressMethodName)
@@ -74,10 +75,11 @@ func (c *Contract) SetWithdrawAddress(ctx sdk.Context, evm *vm.EVM, contract *vm
 
 func (c *Contract) WithdrawDelegatorReward(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("withdrawDelegatorReward method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, errors.New("only allow EOA can call this method")
 	}
 
 	method := MustMethod(WithdrawDelegatorRewardMethodName)
@@ -103,6 +105,11 @@ func (c *Contract) WithdrawDelegatorReward(ctx sdk.Context, evm *vm.EVM, contrac
 		return nil, err
 	}
 
+	if evm.Origin != contract.Caller() {
+		// ensure that the funds of the contract account in the EVM are consistent with the funds recorded in the bank module account.
+		evm.StateDB.AddBalance(contract.Caller(), res.Amount[0].Amount.BigInt())
+	}
+
 	if err := c.AddLog(
 		evm,
 		MustEvent(WithdrawDelegatorRewardEventName),
@@ -125,10 +132,11 @@ func (c *Contract) WithdrawDelegatorReward(ctx sdk.Context, evm *vm.EVM, contrac
 
 func (c *Contract) WithdrawValidatorCommission(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("withdrawValidatorCommission method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, errors.New("only allow EOA can call this method")
 	}
 
 	method := MustMethod(WithdrawValidatorCommissionMethodName)
@@ -169,10 +177,11 @@ func (c *Contract) WithdrawValidatorCommission(ctx sdk.Context, evm *vm.EVM, con
 
 func (c *Contract) FundCommunityPool(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("fundCommunityPool method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, errors.New("only allow EOA can call this method")
 	}
 
 	method := MustMethod(FundCommunityPoolMethodName)

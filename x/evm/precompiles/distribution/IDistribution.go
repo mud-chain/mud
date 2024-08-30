@@ -48,9 +48,38 @@ type DelegationDelegatorReward struct {
 	Rewards          []DecCoin
 }
 
+// PageRequest is an auto generated low-level Go binding around an user-defined struct.
+type PageRequest struct {
+	Key        []byte
+	Offset     uint64
+	Limit      uint64
+	CountTotal bool
+	Reverse    bool
+}
+
+// PageResponse is an auto generated low-level Go binding around an user-defined struct.
+type PageResponse struct {
+	NextKey []byte
+	Total   uint64
+}
+
+// Params is an auto generated low-level Go binding around an user-defined struct.
+type Params struct {
+	CommunityTax        *big.Int
+	BaseProposerReward  *big.Int
+	BonusProposerReward *big.Int
+	WithdrawAddrEnabled bool
+}
+
+// ValidatorSlashEvent is an auto generated low-level Go binding around an user-defined struct.
+type ValidatorSlashEvent struct {
+	ValidatorPeriod uint64
+	Fraction        *big.Int
+}
+
 // IDistributionMetaData contains all meta data concerning the IDistribution contract.
 var IDistributionMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"FundCommunityPool\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"withdrawAddress\",\"type\":\"address\"}],\"name\":\"SetWithdrawAddress\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"withdrawAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"WithdrawDelegatorReward\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"WithdrawValidatorCommission\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"communityPool\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"pool\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"delegationRewards\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"}],\"name\":\"delegationTotalRewards\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"}],\"internalType\":\"structDelegationDelegatorReward[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"total\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"name\":\"fundCommunityPool\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"withdrawAddress\",\"type\":\"address\"}],\"name\":\"setWithdrawAddress\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"validatorCommission\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"commission\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"validatorDistributionInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"operatorAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"selfBondRewards\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"commission\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"validatorOutstandingRewards\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"withdrawDelegatorReward\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawValidatorCommission\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"FundCommunityPool\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"withdrawAddress\",\"type\":\"address\"}],\"name\":\"SetWithdrawAddress\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"withdrawAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"WithdrawDelegatorReward\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amount\",\"type\":\"string\"}],\"name\":\"WithdrawValidatorCommission\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"communityPool\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"pool\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"delegationRewards\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"}],\"name\":\"delegationTotalRewards\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"}],\"internalType\":\"structDelegationDelegatorReward[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"total\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"}],\"name\":\"delegatorValidators\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"delegatorAddress\",\"type\":\"address\"}],\"name\":\"delegatorWithdrawAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"withdrawAddress\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"name\":\"fundCommunityPool\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"params\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"communityTax\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseProposerReward\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"bonusProposerReward\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"withdrawAddrEnabled\",\"type\":\"bool\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"withdrawAddress\",\"type\":\"address\"}],\"name\":\"setWithdrawAddress\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"validatorCommission\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"commission\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"validatorDistributionInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"operatorAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"selfBondRewards\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"commission\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"validatorOutstandingRewards\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin[]\",\"name\":\"rewards\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"},{\"internalType\":\"uint64\",\"name\":\"startingHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"endingHeight\",\"type\":\"uint64\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"validatorSlashes\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"validatorPeriod\",\"type\":\"uint64\"},{\"internalType\":\"uint256\",\"name\":\"fraction\",\"type\":\"uint256\"}],\"internalType\":\"structValidatorSlashEvent[]\",\"name\":\"validatorSlashEvents\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"validatorAddress\",\"type\":\"address\"}],\"name\":\"withdrawDelegatorReward\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawValidatorCommission\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin[]\",\"name\":\"amount\",\"type\":\"tuple[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IDistributionABI is the input ABI used to generate the binding from.
@@ -306,6 +335,99 @@ func (_IDistribution *IDistributionCallerSession) DelegationTotalRewards(delegat
 	return _IDistribution.Contract.DelegationTotalRewards(&_IDistribution.CallOpts, delegatorAddress)
 }
 
+// DelegatorValidators is a free data retrieval call binding the contract method 0xa66cb605.
+//
+// Solidity: function delegatorValidators(address delegatorAddress) view returns(address[] validators)
+func (_IDistribution *IDistributionCaller) DelegatorValidators(opts *bind.CallOpts, delegatorAddress common.Address) ([]common.Address, error) {
+	var out []interface{}
+	err := _IDistribution.contract.Call(opts, &out, "delegatorValidators", delegatorAddress)
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
+}
+
+// DelegatorValidators is a free data retrieval call binding the contract method 0xa66cb605.
+//
+// Solidity: function delegatorValidators(address delegatorAddress) view returns(address[] validators)
+func (_IDistribution *IDistributionSession) DelegatorValidators(delegatorAddress common.Address) ([]common.Address, error) {
+	return _IDistribution.Contract.DelegatorValidators(&_IDistribution.CallOpts, delegatorAddress)
+}
+
+// DelegatorValidators is a free data retrieval call binding the contract method 0xa66cb605.
+//
+// Solidity: function delegatorValidators(address delegatorAddress) view returns(address[] validators)
+func (_IDistribution *IDistributionCallerSession) DelegatorValidators(delegatorAddress common.Address) ([]common.Address, error) {
+	return _IDistribution.Contract.DelegatorValidators(&_IDistribution.CallOpts, delegatorAddress)
+}
+
+// DelegatorWithdrawAddress is a free data retrieval call binding the contract method 0x5431f450.
+//
+// Solidity: function delegatorWithdrawAddress(address delegatorAddress) view returns(address withdrawAddress)
+func (_IDistribution *IDistributionCaller) DelegatorWithdrawAddress(opts *bind.CallOpts, delegatorAddress common.Address) (common.Address, error) {
+	var out []interface{}
+	err := _IDistribution.contract.Call(opts, &out, "delegatorWithdrawAddress", delegatorAddress)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// DelegatorWithdrawAddress is a free data retrieval call binding the contract method 0x5431f450.
+//
+// Solidity: function delegatorWithdrawAddress(address delegatorAddress) view returns(address withdrawAddress)
+func (_IDistribution *IDistributionSession) DelegatorWithdrawAddress(delegatorAddress common.Address) (common.Address, error) {
+	return _IDistribution.Contract.DelegatorWithdrawAddress(&_IDistribution.CallOpts, delegatorAddress)
+}
+
+// DelegatorWithdrawAddress is a free data retrieval call binding the contract method 0x5431f450.
+//
+// Solidity: function delegatorWithdrawAddress(address delegatorAddress) view returns(address withdrawAddress)
+func (_IDistribution *IDistributionCallerSession) DelegatorWithdrawAddress(delegatorAddress common.Address) (common.Address, error) {
+	return _IDistribution.Contract.DelegatorWithdrawAddress(&_IDistribution.CallOpts, delegatorAddress)
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns((uint256,uint256,uint256,bool) params)
+func (_IDistribution *IDistributionCaller) Params(opts *bind.CallOpts) (Params, error) {
+	var out []interface{}
+	err := _IDistribution.contract.Call(opts, &out, "params")
+
+	if err != nil {
+		return *new(Params), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(Params)).(*Params)
+
+	return out0, err
+
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns((uint256,uint256,uint256,bool) params)
+func (_IDistribution *IDistributionSession) Params() (Params, error) {
+	return _IDistribution.Contract.Params(&_IDistribution.CallOpts)
+}
+
+// Params is a free data retrieval call binding the contract method 0xcff0ab96.
+//
+// Solidity: function params() view returns((uint256,uint256,uint256,bool) params)
+func (_IDistribution *IDistributionCallerSession) Params() (Params, error) {
+	return _IDistribution.Contract.Params(&_IDistribution.CallOpts)
+}
+
 // ValidatorCommission is a free data retrieval call binding the contract method 0x83a25078.
 //
 // Solidity: function validatorCommission(address validatorAddress) view returns((string,uint256,uint8)[] commission)
@@ -416,6 +538,51 @@ func (_IDistribution *IDistributionSession) ValidatorOutstandingRewards(validato
 // Solidity: function validatorOutstandingRewards(address validatorAddress) view returns((string,uint256,uint8)[] rewards)
 func (_IDistribution *IDistributionCallerSession) ValidatorOutstandingRewards(validatorAddress common.Address) ([]DecCoin, error) {
 	return _IDistribution.Contract.ValidatorOutstandingRewards(&_IDistribution.CallOpts, validatorAddress)
+}
+
+// ValidatorSlashes is a free data retrieval call binding the contract method 0xbd2e5693.
+//
+// Solidity: function validatorSlashes(address validatorAddress, uint64 startingHeight, uint64 endingHeight, (bytes,uint64,uint64,bool,bool) pagination) view returns((uint64,uint256)[] validatorSlashEvents, (bytes,uint64) pageResponse)
+func (_IDistribution *IDistributionCaller) ValidatorSlashes(opts *bind.CallOpts, validatorAddress common.Address, startingHeight uint64, endingHeight uint64, pagination PageRequest) (struct {
+	ValidatorSlashEvents []ValidatorSlashEvent
+	PageResponse         PageResponse
+}, error) {
+	var out []interface{}
+	err := _IDistribution.contract.Call(opts, &out, "validatorSlashes", validatorAddress, startingHeight, endingHeight, pagination)
+
+	outstruct := new(struct {
+		ValidatorSlashEvents []ValidatorSlashEvent
+		PageResponse         PageResponse
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.ValidatorSlashEvents = *abi.ConvertType(out[0], new([]ValidatorSlashEvent)).(*[]ValidatorSlashEvent)
+	outstruct.PageResponse = *abi.ConvertType(out[1], new(PageResponse)).(*PageResponse)
+
+	return *outstruct, err
+
+}
+
+// ValidatorSlashes is a free data retrieval call binding the contract method 0xbd2e5693.
+//
+// Solidity: function validatorSlashes(address validatorAddress, uint64 startingHeight, uint64 endingHeight, (bytes,uint64,uint64,bool,bool) pagination) view returns((uint64,uint256)[] validatorSlashEvents, (bytes,uint64) pageResponse)
+func (_IDistribution *IDistributionSession) ValidatorSlashes(validatorAddress common.Address, startingHeight uint64, endingHeight uint64, pagination PageRequest) (struct {
+	ValidatorSlashEvents []ValidatorSlashEvent
+	PageResponse         PageResponse
+}, error) {
+	return _IDistribution.Contract.ValidatorSlashes(&_IDistribution.CallOpts, validatorAddress, startingHeight, endingHeight, pagination)
+}
+
+// ValidatorSlashes is a free data retrieval call binding the contract method 0xbd2e5693.
+//
+// Solidity: function validatorSlashes(address validatorAddress, uint64 startingHeight, uint64 endingHeight, (bytes,uint64,uint64,bool,bool) pagination) view returns((uint64,uint256)[] validatorSlashEvents, (bytes,uint64) pageResponse)
+func (_IDistribution *IDistributionCallerSession) ValidatorSlashes(validatorAddress common.Address, startingHeight uint64, endingHeight uint64, pagination PageRequest) (struct {
+	ValidatorSlashEvents []ValidatorSlashEvent
+	PageResponse         PageResponse
+}, error) {
+	return _IDistribution.Contract.ValidatorSlashes(&_IDistribution.CallOpts, validatorAddress, startingHeight, endingHeight, pagination)
 }
 
 // FundCommunityPool is a paid mutator transaction binding the contract method 0x515a092c.

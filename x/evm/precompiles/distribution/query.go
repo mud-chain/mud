@@ -1,8 +1,12 @@
 package distribution
 
 import (
+	"bytes"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/evm/types"
@@ -15,6 +19,10 @@ const (
 	DelegationRewardsGas           = 30_000
 	DelegationTotalRewardsGas      = 30_000
 	CommunityPoolGas               = 30_000
+	ParamsGas                      = 30_000
+	ValidatorSlashesGas            = 30_000
+	DelegatorValidatorsGas         = 30_000
+	delegatorWithdrawAddressGas    = 30_000
 
 	ValidatorDistributionInfoMethodName   = "validatorDistributionInfo"
 	ValidatorOutstandingRewardsMethodName = "validatorOutstandingRewards"
@@ -22,6 +30,10 @@ const (
 	DelegationRewardsMethodName           = "delegationRewards"
 	DelegationTotalRewardsMethodName      = "delegationTotalRewards"
 	CommunityPoolMethodName               = "communityPool"
+	ParamsMethodName                      = "params"
+	ValidatorSlashesMethodName            = "validatorSlashes"
+	DelegatorValidatorsMethodName         = "delegatorValidators"
+	delegatorWithdrawAddressMethodName    = "delegatorWithdrawAddress"
 )
 
 // ValidatorDistributionInfo queries validator commision and self-delegation rewards for validator
@@ -224,4 +236,116 @@ func (c *Contract) CommunityPool(ctx sdk.Context, _ *vm.EVM, contract *vm.Contra
 	}
 
 	return method.Outputs.Pack(rewards)
+}
+
+// Params queries params of distribution module
+func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(ParamsMethodName)
+
+	msg := &distributiontypes.QueryParamsRequest{}
+
+	res, err := c.distributionKeeper.Params(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	params := Params{
+		CommunityTax:        res.Params.CommunityTax.BigInt(),
+		BaseProposerReward:  res.Params.BaseProposerReward.BigInt(),
+		BonusProposerReward: res.Params.BonusProposerReward.BigInt(),
+		WithdrawAddrEnabled: res.Params.WithdrawAddrEnabled,
+	}
+
+	return method.Outputs.Pack(params)
+}
+
+// ValidatorSlashes queries slash events of a validator
+func (c *Contract) ValidatorSlashes(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(ValidatorSlashesMethodName)
+
+	var args ValidatorSlashesArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	if bytes.Equal(args.Pagination.Key, []byte{0}) {
+		args.Pagination.Key = nil
+	}
+	msg := &distributiontypes.QueryValidatorSlashesRequest{
+		ValidatorAddress: args.GetValidator().String(),
+		StartingHeight:   args.StartingHeight,
+		EndingHeight:     args.EndingHeight,
+		Pagination: &query.PageRequest{
+			Key:        args.Pagination.Key,
+			Offset:     args.Pagination.Offset,
+			Limit:      args.Pagination.Limit,
+			CountTotal: args.Pagination.CountTotal,
+			Reverse:    args.Pagination.Reverse,
+		},
+	}
+
+	res, err := c.distributionKeeper.ValidatorSlashes(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var slashEvents []ValidatorSlashEvent
+	for _, slash := range res.Slashes {
+		slashEvents = append(slashEvents, ValidatorSlashEvent{
+			ValidatorPeriod: slash.ValidatorPeriod,
+			Fraction:        slash.Fraction.BigInt(),
+		})
+	}
+
+	var pageResponse PageResponse
+	pageResponse.NextKey = res.Pagination.NextKey
+	pageResponse.Total = res.Pagination.Total
+
+	return method.Outputs.Pack(slashEvents, pageResponse)
+}
+
+// DelegatorValidators queries the validators list of a delegator
+func (c *Contract) DelegatorValidators(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(DelegatorValidatorsMethodName)
+
+	var args DelegatorAddressArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	msg := &distributiontypes.QueryDelegatorValidatorsRequest{
+		DelegatorAddress: args.GetDelegator().String(),
+	}
+
+	res, err := c.distributionKeeper.DelegatorValidators(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var validators []common.Address
+	for _, validator := range res.Validators {
+		validators = append(validators, utils.ValAddressMustToHexAddress(validator))
+	}
+
+	return method.Outputs.Pack(validators)
+}
+
+// DelegatorWithdrawAddress queries Query/delegatorWithdrawAddress
+func (c *Contract) DelegatorWithdrawAddress(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(delegatorWithdrawAddressMethodName)
+
+	var args DelegatorAddressArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	msg := &distributiontypes.QueryDelegatorWithdrawAddressRequest{
+		DelegatorAddress: args.GetDelegator().String(),
+	}
+
+	res, err := c.distributionKeeper.DelegatorWithdrawAddress(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	withdrawAddress := utils.AccAddressMustToHexAddress(res.WithdrawAddress)
+
+	return method.Outputs.Pack(withdrawAddress)
 }

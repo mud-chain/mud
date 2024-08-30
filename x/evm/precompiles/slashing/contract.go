@@ -41,6 +41,10 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return UnjailGas
 	case SigningInfoMethodName:
 		return SigningInfoGas
+	case SigningInfosMethodName:
+		return SigningInfosGas
+	case ParamsMethodName:
+		return paramsGas
 	default:
 		return 0
 	}
@@ -51,7 +55,7 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		return types.PackRetError("invalid input")
 	}
 
-	cacheCtx, commit := c.ctx.CacheContext()
+	ctx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
 
 	method, err := GetMethodByID(contract.Input)
@@ -59,9 +63,13 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		// parse input
 		switch method.Name {
 		case UnjailMethodName:
-			ret, err = c.Unjail(cacheCtx, evm, contract, readonly)
+			ret, err = c.Unjail(ctx, evm, contract, readonly)
 		case SigningInfoMethodName:
-			ret, err = c.SigningInfo(cacheCtx, evm, contract, readonly)
+			ret, err = c.SigningInfo(ctx, evm, contract, readonly)
+		case SigningInfosMethodName:
+			ret, err = c.SigningInfos(ctx, evm, contract, readonly)
+		case ParamsMethodName:
+			ret, err = c.Params(ctx, evm, contract, readonly)
 		default:
 			err = fmt.Errorf("method %s is not handle", method.Name)
 		}

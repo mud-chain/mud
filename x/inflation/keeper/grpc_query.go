@@ -44,7 +44,7 @@ func (k Keeper) EpochMintProvision(
 	epochMintProvision := k.GetEpochMintProvision(ctx)
 
 	mintDenom := k.GetParams(ctx).MintDenom
-	coin := sdk.NewDecCoinFromDec(mintDenom, epochMintProvision)
+	coin := sdk.NewDecCoin(mintDenom, epochMintProvision.Amount)
 
 	return &types.QueryEpochMintProvisionResponse{EpochMintProvision: coin}, nil
 }
@@ -65,8 +65,8 @@ func (k Keeper) InflationRate(
 	_ *types.QueryInflationRateRequest,
 ) (*types.QueryInflationRateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	mintDenom := k.GetParams(ctx).MintDenom
-	inflationRate := k.GetInflationRate(ctx, mintDenom)
+	inflationRate := types.NextInflationRate(k.GetParams(ctx), k.BondedRatio(ctx), k.GetInflation(ctx), k.GetEpochsPerPeriod(ctx))
+	inflationRate = inflationRate.MulInt64(100)
 
 	return &types.QueryInflationRateResponse{InflationRate: inflationRate}, nil
 }

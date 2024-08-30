@@ -96,6 +96,18 @@ struct DepositData {
     Coin[] amount;
 }
 
+/**
+ * @dev Params defines the parameters for the gov module.
+ */
+struct Params {
+    Coin[] minDeposit;
+    int64 maxDepositPeriod;
+    int64 votingPeriod;
+    string quorum;
+    string threshold;
+    string vetoThreshold;
+}
+
 interface IGov {
     /**
      * @dev legacySubmitProposal defines a method to create new proposal given a content for v1beat1.
@@ -120,7 +132,7 @@ interface IGov {
      */
     function vote(
         uint64 proposalId,
-        int32 option,
+        VoteOption option,
         string memory metadata
     ) external returns (bool success);
 
@@ -138,7 +150,7 @@ interface IGov {
      */
     function deposit(
         uint64 proposalId,
-        Coin[] memory amount
+        uint256 amount
     ) external returns (bool success);
 
     /**
@@ -175,9 +187,9 @@ interface IGov {
     ) external view returns (VoteData[] calldata votes, PageResponse calldata pageResponse);
 
     /**
-     * @dev depositQuery queries single deposit information based proposalID, depositAddr.
+     * @dev deposit queries single deposit information based proposalID, depositAddr.
      */
-    function depositQuery(
+    function deposit(
         uint64 proposalId,
         address depositor
     ) external view returns (DepositData calldata deposit);
@@ -189,6 +201,11 @@ interface IGov {
         uint64 proposalId,
         PageRequest calldata pagination
     ) external view returns (DepositData[] calldata deposits, PageResponse calldata pageResponse);
+
+    /**
+     * @dev params queries the gov params.
+     */
+    function params() external view returns (Params calldata params);
 
     /**
      * @dev tallyResult queries the tally of a proposal vote.
@@ -219,7 +236,7 @@ interface IGov {
     event Vote(
         address indexed voter,
         uint64 proposalId,
-        int32 option
+        uint8 option
     );
 
     /**

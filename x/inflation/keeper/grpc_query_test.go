@@ -75,15 +75,15 @@ func (suite *KeeperTestSuite) TestEpochMintProvision() {
 			"default epochMintProvision",
 			func() {
 				params := types.DefaultParams()
-				defaultEpochMintProvision := types.CalculateEpochMintProvision(
+				defaultEpochMintProvision := types.EpochProvision(
 					params,
-					uint64(0),
+					sdk.MustNewDecFromStr("1000100000000000000").TruncateInt(),
 					365,
-					sdk.OneDec(),
+					sdk.MustNewDecFromStr("0.129824628904927949"),
 				)
 				req = &types.QueryEpochMintProvisionRequest{}
 				expRes = &types.QueryEpochMintProvisionResponse{
-					EpochMintProvision: sdk.NewDecCoinFromDec(types.DefaultInflationDenom, defaultEpochMintProvision),
+					EpochMintProvision: sdk.NewDecCoinFromDec(types.DefaultInflationDenom, sdk.NewDecFromInt(defaultEpochMintProvision.Amount)),
 				}
 			},
 			true,
@@ -167,15 +167,12 @@ func (suite *KeeperTestSuite) TestQueryCirculatingSupply() {
 	err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
 	suite.Require().NoError(err)
 
-	// team allocation is zero if not on mainnet
-	expCirculatingSupply := sdk.NewDecCoin(mintDenom, sdk.TokensFromConsensusPower(200_000_000, evmostypes.PowerReduction))
-
 	// the total bonded tokens for the 2 accounts initialized on the setup
 	bondedAmt := sdk.NewInt64DecCoin(evmostypes.AttoEvmos, 1000100000000000000)
 
 	res, err := suite.queryClient.CirculatingSupply(ctx, &types.QueryCirculatingSupplyRequest{})
 	suite.Require().NoError(err)
-	suite.Require().Equal(expCirculatingSupply.Add(bondedAmt), res.CirculatingSupply)
+	suite.Require().Equal(bondedAmt.Amount.Add(sdk.NewDecFromInt(mintCoin.Amount)), res.CirculatingSupply.Amount)
 }
 
 func (suite *KeeperTestSuite) TestQueryInflationRate() {
@@ -190,7 +187,7 @@ func (suite *KeeperTestSuite) TestQueryInflationRate() {
 	err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
 	suite.Require().NoError(err)
 
-	expInflationRate := sdk.MustNewDecFromStr("154.687500000000000000")
+	expInflationRate := sdk.MustNewDecFromStr("13.035616438223267200")
 	res, err := suite.queryClient.InflationRate(ctx, &types.QueryInflationRateRequest{})
 	suite.Require().NoError(err)
 	suite.Require().Equal(expInflationRate, res.InflationRate)

@@ -5,20 +5,18 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/gogo/protobuf/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -38,6 +36,8 @@ type GenesisState struct {
 	EpochsPerPeriod int64 `protobuf:"varint,4,opt,name=epochs_per_period,json=epochsPerPeriod,proto3" json:"epochs_per_period,omitempty"`
 	// skipped_epochs is the number of epochs that have passed while inflation is disabled
 	SkippedEpochs uint64 `protobuf:"varint,5,opt,name=skipped_epochs,json=skippedEpochs,proto3" json:"skipped_epochs,omitempty"`
+	// current annual inflation rate
+	Inflation github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=inflation,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"inflation" yaml:"inflation"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -46,11 +46,9 @@ func (*GenesisState) ProtoMessage()    {}
 func (*GenesisState) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1cb8eee530db1235, []int{0}
 }
-
 func (m *GenesisState) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GenesisState.Marshal(b, m, deterministic)
@@ -63,15 +61,12 @@ func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-
 func (m *GenesisState) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GenesisState.Merge(m, src)
 }
-
 func (m *GenesisState) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GenesisState) XXX_DiscardUnknown() {
 	xxx_messageInfo_GenesisState.DiscardUnknown(m)
 }
@@ -117,12 +112,18 @@ func (m *GenesisState) GetSkippedEpochs() uint64 {
 type Params struct {
 	// mint_denom specifies the type of coin to mint
 	MintDenom string `protobuf:"bytes,1,opt,name=mint_denom,json=mintDenom,proto3" json:"mint_denom,omitempty"`
-	// exponential_calculation takes in the variables to calculate exponential inflation
-	ExponentialCalculation ExponentialCalculation `protobuf:"bytes,2,opt,name=exponential_calculation,json=exponentialCalculation,proto3" json:"exponential_calculation"`
 	// inflation_distribution of the minted denom
-	InflationDistribution InflationDistribution `protobuf:"bytes,3,opt,name=inflation_distribution,json=inflationDistribution,proto3" json:"inflation_distribution"`
+	InflationDistribution InflationDistribution `protobuf:"bytes,2,opt,name=inflation_distribution,json=inflationDistribution,proto3" json:"inflation_distribution"`
 	// enable_inflation is the parameter that enables inflation and halts increasing the skipped_epochs
-	EnableInflation bool `protobuf:"varint,4,opt,name=enable_inflation,json=enableInflation,proto3" json:"enable_inflation,omitempty"`
+	EnableInflation bool `protobuf:"varint,3,opt,name=enable_inflation,json=enableInflation,proto3" json:"enable_inflation,omitempty"`
+	// maximum annual change in inflation rate
+	InflationRateChange github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=inflation_rate_change,json=inflationRateChange,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"inflation_rate_change" yaml:"inflation_rate_change"`
+	// maximum inflation rate
+	InflationMax github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=inflation_max,json=inflationMax,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"inflation_max" yaml:"inflation_max"`
+	// minimum inflation rate
+	InflationMin github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=inflation_min,json=inflationMin,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"inflation_min" yaml:"inflation_min"`
+	// goal of percent bonded cerbo
+	GoalBonded github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=goal_bonded,json=goalBonded,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"goal_bonded" yaml:"goal_bonded"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -131,11 +132,9 @@ func (*Params) ProtoMessage()    {}
 func (*Params) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1cb8eee530db1235, []int{1}
 }
-
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Params.Marshal(b, m, deterministic)
@@ -148,15 +147,12 @@ func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Params) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Params.Merge(m, src)
 }
-
 func (m *Params) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Params) XXX_DiscardUnknown() {
 	xxx_messageInfo_Params.DiscardUnknown(m)
 }
@@ -168,13 +164,6 @@ func (m *Params) GetMintDenom() string {
 		return m.MintDenom
 	}
 	return ""
-}
-
-func (m *Params) GetExponentialCalculation() ExponentialCalculation {
-	if m != nil {
-		return m.ExponentialCalculation
-	}
-	return ExponentialCalculation{}
 }
 
 func (m *Params) GetInflationDistribution() InflationDistribution {
@@ -199,33 +188,41 @@ func init() {
 func init() { proto.RegisterFile("evmos/inflation/v1/genesis.proto", fileDescriptor_1cb8eee530db1235) }
 
 var fileDescriptor_1cb8eee530db1235 = []byte{
-	// 415 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x52, 0x4d, 0x6f, 0xd3, 0x40,
-	0x10, 0xcd, 0x36, 0xc1, 0x22, 0x5b, 0xa0, 0xb0, 0x82, 0x60, 0x45, 0xc2, 0x58, 0x91, 0x90, 0xdc,
-	0x0a, 0xd9, 0xa4, 0x5c, 0x38, 0x97, 0x16, 0xd4, 0x5b, 0x64, 0x6e, 0x5c, 0x56, 0xfe, 0x98, 0xb8,
-	0x2b, 0xec, 0xdd, 0x95, 0x77, 0x63, 0x95, 0x7f, 0xc1, 0x9f, 0xe0, 0xbf, 0xf4, 0xd8, 0x23, 0xa7,
-	0x0a, 0x25, 0x7f, 0x04, 0x79, 0xd7, 0x38, 0x95, 0xea, 0x8b, 0xe5, 0x7d, 0xef, 0xcd, 0x7b, 0x33,
-	0xa3, 0xc1, 0x3e, 0x34, 0x95, 0x50, 0x11, 0xe3, 0xeb, 0x32, 0xd1, 0x4c, 0xf0, 0xa8, 0x59, 0x46,
-	0x05, 0x70, 0x50, 0x4c, 0x85, 0xb2, 0x16, 0x5a, 0x10, 0x62, 0x14, 0x61, 0xaf, 0x08, 0x9b, 0xe5,
-	0xfc, 0x65, 0x21, 0x0a, 0x61, 0xe8, 0xa8, 0xfd, 0xb3, 0xca, 0xf9, 0x62, 0xc0, 0x6b, 0x5f, 0x66,
-	0x34, 0x8b, 0x3b, 0x84, 0x9f, 0x7c, 0xb5, 0xfe, 0xdf, 0x74, 0xa2, 0x81, 0x7c, 0xc2, 0x8e, 0x4c,
-	0xea, 0xa4, 0x52, 0x2e, 0xf2, 0x51, 0x70, 0x78, 0x3a, 0x0f, 0x1f, 0xe6, 0x85, 0x2b, 0xa3, 0x38,
-	0x9b, 0xdc, 0xdc, 0xbd, 0x1d, 0xc5, 0x9d, 0x9e, 0xcc, 0xb0, 0x23, 0xa1, 0x66, 0x22, 0x77, 0x0f,
-	0x7c, 0x14, 0x4c, 0xe2, 0xee, 0x45, 0x8e, 0xf1, 0x73, 0x90, 0x22, 0xbb, 0xa2, 0x2c, 0x07, 0xae,
-	0xd9, 0x9a, 0x41, 0xed, 0x8e, 0x7d, 0x14, 0x4c, 0xe3, 0x23, 0x83, 0x5f, 0xf6, 0x30, 0x39, 0xc1,
-	0x2f, 0x0c, 0xa4, 0xa8, 0x84, 0x9a, 0x76, 0x6e, 0x13, 0x1f, 0x05, 0xe3, 0x4e, 0xab, 0x56, 0x50,
-	0xaf, 0xac, 0xed, 0x3b, 0xfc, 0x4c, 0xfd, 0x60, 0x52, 0x42, 0x4e, 0x2d, 0xe5, 0x3e, 0x32, 0xb1,
-	0x4f, 0x3b, 0xf4, 0xc2, 0x80, 0x8b, 0xdf, 0x07, 0xd8, 0xb1, 0xed, 0x92, 0x37, 0x18, 0x57, 0x8c,
-	0x6b, 0x9a, 0x03, 0x17, 0x95, 0x19, 0x6f, 0x1a, 0x4f, 0x5b, 0xe4, 0xbc, 0x05, 0x08, 0xc3, 0xaf,
-	0xe1, 0x5a, 0x0a, 0xde, 0x76, 0x93, 0x94, 0x34, 0x4b, 0xca, 0x6c, 0x63, 0x47, 0x36, 0x03, 0x1d,
-	0x9e, 0x9e, 0x0c, 0xad, 0xe2, 0x62, 0x5f, 0xf2, 0x79, 0x5f, 0xd1, 0xad, 0x66, 0x06, 0x83, 0x2c,
-	0x59, 0xe3, 0x59, 0x6f, 0x42, 0x73, 0xa6, 0x74, 0xcd, 0xd2, 0x8d, 0x49, 0x1a, 0x9b, 0xa4, 0xe3,
-	0xa1, 0xa4, 0xcb, 0xff, 0x8f, 0xf3, 0x7b, 0x05, 0x5d, 0xd0, 0x2b, 0x36, 0x44, 0x9a, 0xd5, 0xf3,
-	0x24, 0x2d, 0x81, 0xf6, 0xbc, 0x59, 0xe7, 0xe3, 0xf8, 0xc8, 0xe2, 0xbd, 0xe7, 0xd9, 0x97, 0x9b,
-	0xad, 0x87, 0x6e, 0xb7, 0x1e, 0xfa, 0xbb, 0xf5, 0xd0, 0xaf, 0x9d, 0x37, 0xba, 0xdd, 0x79, 0xa3,
-	0x3f, 0x3b, 0x6f, 0xf4, 0xfd, 0x7d, 0xc1, 0xf4, 0xd5, 0x26, 0x0d, 0x33, 0x51, 0x45, 0xf6, 0xa2,
-	0xec, 0xb7, 0x59, 0x7e, 0x88, 0xae, 0xef, 0x5d, 0x97, 0xfe, 0x29, 0x41, 0xa5, 0x8e, 0xb9, 0xab,
-	0x8f, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0xa2, 0xbd, 0xac, 0x94, 0xc9, 0x02, 0x00, 0x00,
+	// 542 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xc1, 0x6e, 0xd3, 0x30,
+	0x1c, 0xc6, 0x9b, 0xae, 0x2b, 0xc4, 0xdb, 0xd8, 0x30, 0x63, 0x8a, 0x2a, 0x48, 0xab, 0x48, 0xa0,
+	0x0e, 0x41, 0xa2, 0x8e, 0x0b, 0xe2, 0x18, 0xca, 0xd0, 0x0e, 0xa0, 0x2a, 0xdc, 0xb8, 0x04, 0xb7,
+	0xf9, 0x37, 0xb5, 0xda, 0xd8, 0x51, 0xec, 0x55, 0xdd, 0x0d, 0xf1, 0x04, 0x3c, 0x12, 0xc7, 0x1d,
+	0x77, 0x44, 0x1c, 0x2a, 0xd4, 0xbe, 0x01, 0x4f, 0x80, 0xe2, 0x64, 0x69, 0x28, 0xbd, 0x54, 0xe2,
+	0xd2, 0xf6, 0xff, 0xf9, 0xf3, 0xf7, 0x73, 0xbf, 0x44, 0x46, 0x2d, 0x98, 0x46, 0x5c, 0x38, 0x94,
+	0x0d, 0x27, 0x44, 0x52, 0xce, 0x9c, 0x69, 0xc7, 0x09, 0x81, 0x81, 0xa0, 0xc2, 0x8e, 0x13, 0x2e,
+	0x39, 0xc6, 0xca, 0x61, 0x17, 0x0e, 0x7b, 0xda, 0x69, 0x1c, 0x87, 0x3c, 0xe4, 0x6a, 0xd9, 0x49,
+	0x7f, 0x65, 0xce, 0x86, 0xb5, 0x21, 0x6b, 0xb5, 0x4d, 0x79, 0xac, 0xef, 0x55, 0xb4, 0xff, 0x2e,
+	0xcb, 0xff, 0x28, 0x89, 0x04, 0xfc, 0x0a, 0xd5, 0x63, 0x92, 0x90, 0x48, 0x18, 0x5a, 0x4b, 0x6b,
+	0xef, 0x9d, 0x35, 0xec, 0x7f, 0x79, 0x76, 0x4f, 0x39, 0xdc, 0xda, 0xf5, 0xbc, 0x59, 0xf1, 0x72,
+	0x3f, 0x3e, 0x41, 0xf5, 0x18, 0x12, 0xca, 0x03, 0xa3, 0xda, 0xd2, 0xda, 0x35, 0x2f, 0x9f, 0xf0,
+	0x29, 0x3a, 0x82, 0x98, 0x0f, 0x46, 0x3e, 0x0d, 0x80, 0x49, 0x3a, 0xa4, 0x90, 0x18, 0x3b, 0x2d,
+	0xad, 0xad, 0x7b, 0x87, 0x4a, 0xbf, 0x28, 0x64, 0xfc, 0x0c, 0xdd, 0x57, 0x92, 0xf0, 0x63, 0x48,
+	0xfc, 0x3c, 0xad, 0xd6, 0xd2, 0xda, 0x3b, 0xb9, 0x57, 0xf4, 0x20, 0xe9, 0x65, 0xb1, 0x4f, 0xd0,
+	0x3d, 0x31, 0xa6, 0x71, 0x0c, 0x81, 0x9f, 0x2d, 0x19, 0xbb, 0x0a, 0x7b, 0x90, 0xab, 0x6f, 0x95,
+	0x88, 0x3f, 0x23, 0xbd, 0x38, 0xba, 0x51, 0x4f, 0xb1, 0xae, 0x9b, 0x1e, 0xfb, 0xe7, 0xbc, 0xf9,
+	0x34, 0xa4, 0x72, 0x74, 0xd9, 0xb7, 0x07, 0x3c, 0x72, 0x06, 0x5c, 0xa4, 0x5d, 0x65, 0x5f, 0x2f,
+	0x44, 0x30, 0x76, 0xe4, 0x55, 0x0c, 0xc2, 0xee, 0xc2, 0xe0, 0xf7, 0xbc, 0x79, 0x74, 0x45, 0xa2,
+	0xc9, 0x6b, 0xab, 0x08, 0xb2, 0xbc, 0x55, 0xa8, 0xf5, 0x65, 0x17, 0xd5, 0xb3, 0x42, 0xf0, 0x63,
+	0x84, 0x22, 0xca, 0xa4, 0x1f, 0x00, 0xe3, 0x91, 0x2a, 0x50, 0xf7, 0xf4, 0x54, 0xe9, 0xa6, 0x02,
+	0x1e, 0xa2, 0x93, 0x62, 0x9b, 0x1f, 0x50, 0x21, 0x13, 0xda, 0xbf, 0x54, 0x07, 0xab, 0xaa, 0xae,
+	0x4f, 0x37, 0x75, 0x7d, 0x71, 0x3b, 0x74, 0x4b, 0x1b, 0xf2, 0xea, 0x1f, 0xd2, 0x4d, 0x8b, 0xaa,
+	0x71, 0x46, 0xfa, 0x13, 0xf0, 0x57, 0x7f, 0x3d, 0x6d, 0xfc, 0xae, 0x77, 0x98, 0xe9, 0x45, 0x26,
+	0xfe, 0xaa, 0xa1, 0x55, 0x88, 0x9f, 0x10, 0x09, 0xfe, 0x60, 0x44, 0x58, 0x08, 0xaa, 0x76, 0xdd,
+	0xfd, 0xb0, 0x75, 0x57, 0x8f, 0xd6, 0xba, 0x2a, 0x87, 0x5a, 0xde, 0x83, 0x42, 0xf7, 0x88, 0x84,
+	0x37, 0x4a, 0xc5, 0x63, 0x74, 0xb0, 0xb2, 0x47, 0x64, 0xa6, 0x9e, 0xa4, 0xee, 0x9e, 0x6f, 0xcd,
+	0x3e, 0x5e, 0x67, 0x47, 0x64, 0x66, 0x79, 0xfb, 0xc5, 0xfc, 0x9e, 0xcc, 0xd6, 0x60, 0xf4, 0xf6,
+	0xa5, 0xf8, 0x1f, 0x30, 0xca, 0xfe, 0x82, 0x51, 0x86, 0x01, 0xed, 0x85, 0x9c, 0x4c, 0xfc, 0x3e,
+	0x67, 0x01, 0x04, 0xc6, 0x1d, 0x85, 0xea, 0x6e, 0x8d, 0xc2, 0x19, 0xaa, 0x14, 0x65, 0x79, 0x28,
+	0x9d, 0x5c, 0x35, 0xb8, 0xe7, 0xd7, 0x0b, 0x53, 0xbb, 0x59, 0x98, 0xda, 0xaf, 0x85, 0xa9, 0x7d,
+	0x5b, 0x9a, 0x95, 0x9b, 0xa5, 0x59, 0xf9, 0xb1, 0x34, 0x2b, 0x9f, 0x9e, 0x97, 0x18, 0xd9, 0x75,
+	0x90, 0x7d, 0x4e, 0x3b, 0x67, 0xce, 0xac, 0x74, 0x35, 0x28, 0x5a, 0xbf, 0xae, 0x2e, 0x85, 0x97,
+	0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x66, 0xab, 0xa3, 0xaa, 0x86, 0x04, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -248,6 +245,16 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.Inflation.Size()
+		i -= size
+		if _, err := m.Inflation.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
 	if m.SkippedEpochs != 0 {
 		i = encodeVarintGenesis(dAtA, i, uint64(m.SkippedEpochs))
 		i--
@@ -303,6 +310,46 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.GoalBonded.Size()
+		i -= size
+		if _, err := m.GoalBonded.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x3a
+	{
+		size := m.InflationMin.Size()
+		i -= size
+		if _, err := m.InflationMin.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
+	{
+		size := m.InflationMax.Size()
+		i -= size
+		if _, err := m.InflationMax.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.InflationRateChange.Size()
+		i -= size
+		if _, err := m.InflationRateChange.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
 	if m.EnableInflation {
 		i--
 		if m.EnableInflation {
@@ -311,20 +358,10 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x18
 	}
 	{
 		size, err := m.InflationDistribution.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintGenesis(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	{
-		size, err := m.ExponentialCalculation.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -354,7 +391,6 @@ func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *GenesisState) Size() (n int) {
 	if m == nil {
 		return 0
@@ -376,6 +412,8 @@ func (m *GenesisState) Size() (n int) {
 	if m.SkippedEpochs != 0 {
 		n += 1 + sovGenesis(uint64(m.SkippedEpochs))
 	}
+	l = m.Inflation.Size()
+	n += 1 + l + sovGenesis(uint64(l))
 	return n
 }
 
@@ -389,24 +427,28 @@ func (m *Params) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovGenesis(uint64(l))
 	}
-	l = m.ExponentialCalculation.Size()
-	n += 1 + l + sovGenesis(uint64(l))
 	l = m.InflationDistribution.Size()
 	n += 1 + l + sovGenesis(uint64(l))
 	if m.EnableInflation {
 		n += 2
 	}
+	l = m.InflationRateChange.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	l = m.InflationMax.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	l = m.InflationMin.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	l = m.GoalBonded.Size()
+	n += 1 + l + sovGenesis(uint64(l))
 	return n
 }
 
 func sovGenesis(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozGenesis(x uint64) (n int) {
 	return sovGenesis(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -558,6 +600,40 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Inflation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Inflation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGenesis(dAtA[iNdEx:])
@@ -579,7 +655,6 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -643,39 +718,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ExponentialCalculation", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.ExponentialCalculation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field InflationDistribution", wireType)
 			}
 			var msglen int
@@ -707,7 +749,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EnableInflation", wireType)
 			}
@@ -727,6 +769,142 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.EnableInflation = bool(v != 0)
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InflationRateChange", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.InflationRateChange.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InflationMax", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.InflationMax.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InflationMin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.InflationMin.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GoalBonded", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.GoalBonded.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGenesis(dAtA[iNdEx:])
@@ -748,7 +926,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipGenesis(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

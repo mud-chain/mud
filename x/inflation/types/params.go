@@ -28,43 +28,44 @@ import (
 var ParamsKey = []byte("Params")
 
 var (
-	DefaultInflationDenom         = evm.DefaultEVMDenom
-	DefaultInflation              = true
-	DefaultExponentialCalculation = ExponentialCalculation{
-		A:             sdk.NewDec(int64(300_000_000)),
-		R:             sdk.NewDecWithPrec(50, 2), // 50%
-		C:             sdk.NewDec(int64(9_375_000)),
-		BondingTarget: sdk.NewDecWithPrec(66, 2), // 66%
-		MaxVariance:   sdk.ZeroDec(),             // 0%
-	}
+	DefaultInflationDenom        = evm.DefaultEVMDenom
+	DefaultEnableInflation       = true
 	DefaultInflationDistribution = InflationDistribution{
-		StakingRewards:  sdk.NewDecWithPrec(533333334, 9), // 0.53
-		UsageIncentives: sdk.ZeroDec(),                    // Deprecated
-		CommunityPool:   sdk.NewDecWithPrec(466666666, 9), // 0.47
+		StakingRewards: sdk.NewDecWithPrec(8, 1), // 0.8
+		CommunityPool:  sdk.NewDecWithPrec(2, 1), // 0.2
 	}
 )
 
 func NewParams(
 	mintDenom string,
-	exponentialCalculation ExponentialCalculation,
 	inflationDistribution InflationDistribution,
 	enableInflation bool,
+	inflationRateChange sdk.Dec,
+	inflationMax sdk.Dec,
+	inflationMin sdk.Dec,
+	goalBonded sdk.Dec,
 ) Params {
 	return Params{
-		MintDenom:              mintDenom,
-		ExponentialCalculation: exponentialCalculation,
-		InflationDistribution:  inflationDistribution,
-		EnableInflation:        enableInflation,
+		MintDenom:             mintDenom,
+		InflationDistribution: inflationDistribution,
+		EnableInflation:       enableInflation,
+		InflationRateChange:   inflationRateChange,
+		InflationMax:          inflationMax,
+		InflationMin:          inflationMin,
+		GoalBonded:            goalBonded,
 	}
 }
 
 // default minting module parameters
 func DefaultParams() Params {
 	return Params{
-		MintDenom:              DefaultInflationDenom,
-		ExponentialCalculation: DefaultExponentialCalculation,
-		InflationDistribution:  DefaultInflationDistribution,
-		EnableInflation:        DefaultInflation,
+		MintDenom:             DefaultInflationDenom,
+		InflationDistribution: DefaultInflationDistribution,
+		EnableInflation:       DefaultEnableInflation,
+		InflationRateChange:   sdk.NewDecWithPrec(13, 2),
+		InflationMax:          sdk.NewDecWithPrec(20, 2),
+		InflationMin:          sdk.NewDecWithPrec(7, 2),
+		GoalBonded:            sdk.NewDecWithPrec(67, 2),
 	}
 }
 
@@ -81,48 +82,6 @@ func validateMintDenom(i interface{}) error {
 	return sdk.ValidateDenom(v)
 }
 
-func validateExponentialCalculation(i interface{}) error {
-	v, ok := i.(ExponentialCalculation)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	// validate initial value
-	if v.A.IsNegative() {
-		return fmt.Errorf("initial value cannot be negative")
-	}
-
-	// validate reduction factor
-	if v.R.GT(sdk.NewDec(1)) {
-		return fmt.Errorf("reduction factor cannot be greater than 1")
-	}
-
-	if v.R.IsNegative() {
-		return fmt.Errorf("reduction factor cannot be negative")
-	}
-
-	// validate long term inflation
-	if v.C.IsNegative() {
-		return fmt.Errorf("long term inflation cannot be negative")
-	}
-
-	// validate bonded target
-	if v.BondingTarget.GT(sdk.NewDec(1)) {
-		return fmt.Errorf("bonded target cannot be greater than 1")
-	}
-
-	if !v.BondingTarget.IsPositive() {
-		return fmt.Errorf("bonded target cannot be zero or negative")
-	}
-
-	// validate max variance
-	if v.MaxVariance.IsNegative() {
-		return fmt.Errorf("max variance cannot be negative")
-	}
-
-	return nil
-}
-
 func validateInflationDistribution(i interface{}) error {
 	v, ok := i.(InflationDistribution)
 	if !ok {
@@ -133,15 +92,11 @@ func validateInflationDistribution(i interface{}) error {
 		return errors.New("staking distribution ratio must not be negative")
 	}
 
-	if !v.UsageIncentives.IsZero() {
-		return errors.New("incentives pool distribution is deprecated. UsageIncentives param should be zero")
-	}
-
 	if v.CommunityPool.IsNegative() {
 		return errors.New("community pool distribution ratio must not be negative")
 	}
 
-	totalProportions := v.StakingRewards.Add(v.UsageIncentives).Add(v.CommunityPool)
+	totalProportions := v.StakingRewards.Add(v.CommunityPool)
 	if !totalProportions.Equal(sdk.NewDec(1)) {
 		return errors.New("total distributions ratio should be 1")
 	}
@@ -158,14 +113,87 @@ func validateBool(i interface{}) error {
 	return nil
 }
 
+func validateInflationRateChange(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("inflation rate change cannot be negative: %s", v)
+	}
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("inflation rate change too large: %s", v)
+	}
+
+	return nil
+}
+
+func validateInflationMax(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("max inflation cannot be negative: %s", v)
+	}
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("max inflation too large: %s", v)
+	}
+
+	return nil
+}
+
+func validateInflationMin(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("min inflation cannot be negative: %s", v)
+	}
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("min inflation too large: %s", v)
+	}
+
+	return nil
+}
+
+func validateGoalBonded(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("goal bonded cannot be negative: %s", v)
+	}
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("goal bonded too large: %s", v)
+	}
+
+	return nil
+}
+
 func (p Params) Validate() error {
 	if err := validateMintDenom(p.MintDenom); err != nil {
 		return err
 	}
-	if err := validateExponentialCalculation(p.ExponentialCalculation); err != nil {
+	if err := validateInflationDistribution(p.InflationDistribution); err != nil {
 		return err
 	}
-	if err := validateInflationDistribution(p.InflationDistribution); err != nil {
+	if err := validateInflationRateChange(p.InflationRateChange); err != nil {
+		return err
+	}
+	if err := validateInflationMax(p.InflationMax); err != nil {
+		return err
+	}
+	if err := validateInflationMin(p.InflationMin); err != nil {
+		return err
+	}
+	if err := validateGoalBonded(p.GoalBonded); err != nil {
 		return err
 	}
 

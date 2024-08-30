@@ -23,8 +23,8 @@ func (suite *KeeperTestSuite) TestMintAndAllocateInflation() {
 			"pass",
 			sdk.NewCoin(denomMint, sdk.NewInt(1_000_000)),
 			func() {},
-			sdk.NewCoin(denomMint, sdk.NewInt(533_333)),
-			sdk.NewDecCoins(sdk.NewDecCoin(denomMint, sdk.NewInt(466_667))),
+			sdk.NewCoin(denomMint, sdk.NewInt(800_000)),
+			sdk.NewDecCoins(sdk.NewDecCoin(denomMint, sdk.NewInt(200_000))),
 			true,
 		},
 		{
@@ -89,25 +89,25 @@ func (suite *KeeperTestSuite) TestGetCirculatingSupplyAndInflationRate() {
 			func() {
 				suite.app.InflationKeeper.SetEpochsPerPeriod(suite.ctx, 0)
 			},
-			sdk.ZeroDec(),
+			sdk.MustNewDecFromStr("0.130356164382232672"),
 		},
 		{
 			"high supply",
 			sdk.TokensFromConsensusPower(800_000_000, evmostypes.PowerReduction).Sub(bondedAmt),
 			func() {},
-			sdk.MustNewDecFromStr("51.562500000000000000"),
+			sdk.MustNewDecFromStr("0.130356164382897158"),
 		},
 		{
 			"low supply",
 			sdk.TokensFromConsensusPower(400_000_000, evmostypes.PowerReduction).Sub(bondedAmt),
 			func() {},
-			sdk.MustNewDecFromStr("154.687500000000000000"),
+			sdk.MustNewDecFromStr("0.130356164382232672"),
 		},
 		{
 			"zero circulating supply",
 			sdk.TokensFromConsensusPower(200_000_000, evmostypes.PowerReduction).Sub(bondedAmt),
 			func() {},
-			sdk.ZeroDec(),
+			sdk.MustNewDecFromStr("0.130356164380903701"),
 		},
 	}
 	for _, tc := range testCases {
@@ -115,7 +115,7 @@ func (suite *KeeperTestSuite) TestGetCirculatingSupplyAndInflationRate() {
 			suite.SetupTest() // reset
 
 			// Team allocation is only set on mainnet
-			suite.ctx = suite.ctx.WithChainID("mud_168168-1")
+			suite.ctx = suite.ctx.WithChainID("evmos_9001-1")
 			tc.malleate()
 
 			// Mint coins to increase supply
@@ -127,15 +127,10 @@ func (suite *KeeperTestSuite) TestGetCirculatingSupplyAndInflationRate() {
 			err := suite.app.InflationKeeper.MintCoins(suite.ctx, coin)
 			suite.Require().NoError(err)
 
-			teamAlloc := sdk.NewDecCoin(
-				types.DefaultInflationDenom,
-				sdk.TokensFromConsensusPower(int64(200_000_000), evmostypes.PowerReduction),
-			)
-
 			circulatingSupply := s.app.InflationKeeper.GetCirculatingSupply(suite.ctx, types.DefaultInflationDenom)
-			suite.Require().Equal(decCoin.Add(bondedCoins).Sub(teamAlloc).Amount, circulatingSupply)
+			suite.Require().Equal(decCoin.Add(bondedCoins).Amount, circulatingSupply)
 
-			inflationRate := s.app.InflationKeeper.GetInflationRate(suite.ctx, types.DefaultInflationDenom)
+			inflationRate := types.NextInflationRate(suite.app.InflationKeeper.GetParams(suite.ctx), suite.app.InflationKeeper.BondedRatio(suite.ctx), sdk.NewDecWithPrec(13, 2), 365)
 			suite.Require().Equal(tc.expInflationRate, inflationRate)
 		})
 	}
@@ -152,7 +147,7 @@ func (suite *KeeperTestSuite) TestBondedRatio() {
 			"is mainnet",
 			true,
 			func() {},
-			sdk.ZeroDec(),
+			sdk.MustNewDecFromStr("0.999900009999000099"),
 		},
 		{
 			"not mainnet",
@@ -167,7 +162,7 @@ func (suite *KeeperTestSuite) TestBondedRatio() {
 
 			// Team allocation is only set on mainnet
 			if tc.isMainnet {
-				suite.ctx = suite.ctx.WithChainID("mud_168168-1")
+				suite.ctx = suite.ctx.WithChainID("evmos_9001-1")
 			} else {
 				suite.ctx = suite.ctx.WithChainID("evmos_9999-666")
 			}

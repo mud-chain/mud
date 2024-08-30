@@ -19,6 +19,8 @@ package types
 import (
 	fmt "fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	epochstypes "github.com/evmos/evmos/v12/x/epochs/types"
 )
 
@@ -29,6 +31,7 @@ func NewGenesisState(
 	epochIdentifier string,
 	epochsPerPeriod int64,
 	skippedEpochs uint64,
+	inflation sdk.Dec,
 ) GenesisState {
 	return GenesisState{
 		Params:          params,
@@ -36,6 +39,7 @@ func NewGenesisState(
 		EpochIdentifier: epochIdentifier,
 		EpochsPerPeriod: epochsPerPeriod,
 		SkippedEpochs:   skippedEpochs,
+		Inflation:       inflation,
 	}
 }
 
@@ -47,6 +51,7 @@ func DefaultGenesisState() *GenesisState {
 		EpochIdentifier: epochstypes.DayEpochID,
 		EpochsPerPeriod: 365,
 		SkippedEpochs:   0,
+		Inflation:       sdk.NewDecWithPrec(13, 2),
 	}
 }
 
@@ -62,6 +67,10 @@ func (gs GenesisState) Validate() error {
 	}
 
 	if err := validateSkippedEpochs(gs.SkippedEpochs); err != nil {
+		return err
+	}
+
+	if err := validateInflation(gs.Inflation); err != nil {
 		return err
 	}
 
@@ -83,6 +92,14 @@ func validateEpochsPerPeriod(i interface{}) error {
 
 func validateSkippedEpochs(i interface{}) error {
 	_, ok := i.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid genesis state type: %T", i)
+	}
+	return nil
+}
+
+func validateInflation(i interface{}) error {
+	_, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid genesis state type: %T", i)
 	}

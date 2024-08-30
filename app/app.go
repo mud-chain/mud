@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/evmos/evmos/v12/utils"
 	"io"
 	"net/http"
 	"os"
@@ -130,9 +131,13 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
 	evmkeeper "github.com/evmos/evmos/v12/x/evm/keeper"
+	precompilesauth "github.com/evmos/evmos/v12/x/evm/precompiles/auth"
 	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
 	precompilesdistribution "github.com/evmos/evmos/v12/x/evm/precompiles/distribution"
+	precompilesepochs "github.com/evmos/evmos/v12/x/evm/precompiles/epochs"
+	precompilesevidence "github.com/evmos/evmos/v12/x/evm/precompiles/evidence"
 	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
+	precompilesinflation "github.com/evmos/evmos/v12/x/evm/precompiles/inflation"
 	precompilesslashing "github.com/evmos/evmos/v12/x/evm/precompiles/slashing"
 	precompilesstaking "github.com/evmos/evmos/v12/x/evm/precompiles/staking"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
@@ -859,6 +864,24 @@ func (app *Evmos) BlockedAddrs() map[string]bool {
 		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
+	blockedPrecompilesHex := []string{
+		precompilesbank.GetAddress().String(),
+		precompilesdistribution.GetAddress().String(),
+		precompilesgov.GetAddress().String(),
+		precompilesslashing.GetAddress().String(),
+		precompilesstaking.GetAddress().String(),
+		precompilesepochs.GetAddress().String(),
+		precompilesevidence.GetAddress().String(),
+		precompilesinflation.GetAddress().String(),
+	}
+	for _, addr := range vm.PrecompiledAddressesBerlin {
+		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
+	}
+
+	for _, precompile := range blockedPrecompilesHex {
+		blockedAddrs[utils.EthHexToCosmosAddr(precompile).String()] = true
+	}
+
 	return blockedAddrs
 }
 
@@ -1042,6 +1065,11 @@ func (app *Evmos) EvmPrecompiled() {
 		return precompilesbank.NewPrecompiledContract(ctx, app.BankKeeper)
 	}
 
+	// auth precompile
+	precompiled[precompilesauth.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesauth.NewPrecompiledContract(ctx, app.AccountKeeper)
+	}
+
 	// staking precompile
 	precompiled[precompilesstaking.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesstaking.NewPrecompiledContract(ctx, app.StakingKeeper)
@@ -1057,9 +1085,24 @@ func (app *Evmos) EvmPrecompiled() {
 		return precompilesgov.NewPrecompiledContract(ctx, app.GovKeeper, app.AccountKeeper)
 	}
 
-	// staking precompile
+	// slashing precompile
 	precompiled[precompilesslashing.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesslashing.NewPrecompiledContract(ctx, app.SlashingKeeper)
+	}
+
+	// evidence precompile
+	precompiled[precompilesevidence.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesevidence.NewPrecompiledContract(ctx, app.EvidenceKeeper)
+	}
+
+	// epochs precompile
+	precompiled[precompilesepochs.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesepochs.NewPrecompiledContract(ctx, app.EpochsKeeper)
+	}
+
+	// inflation precompile
+	precompiled[precompilesinflation.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesinflation.NewPrecompiledContract(ctx, app.InflationKeeper)
 	}
 
 	// set precompiled contracts

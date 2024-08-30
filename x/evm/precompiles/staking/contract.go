@@ -57,25 +57,37 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return ValidatorGas
 	case ValidatorsMethodName:
 		return ValidatorsGas
-	case ValidatorDelegationsName:
+	case ValidatorDelegationsMethodName:
 		return ValidatorDelegationsGas
-	case ValidatorUnbondingDelegationsName:
+	case ValidatorUnbondingDelegationsMethodName:
 		return ValidatorUnbondingDelegationsGas
-	case DelegatorDelegationsName:
+	case DelegatorDelegationsMethodName:
 		return DelegatorDelegationsGas
-	case DelegatorUnbondingDelegationsName:
+	case DelegatorUnbondingDelegationsMethodName:
 		return DelegatorUnbondingDelegationsGas
+	case RedelegationsMethodName:
+		return RedelegationsGas
+	case DelegatorValidatorsMethodName:
+		return DelegatorValidatorsGas
+	case DelegatorValidatorMethodName:
+		return DelegatorValidatorGas
+	case HistoricalInfoMethodName:
+		return HistoricalInfoGas
+	case PoolMethodName:
+		return PoolGas
+	case ParamsMethodName:
+		return ParamsGas
 	default:
 		return 0
 	}
 }
 
 func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret []byte, err error) {
-	if len(contract.Input) <= 4 {
+	if len(contract.Input) < 4 {
 		return types.PackRetError("invalid input")
 	}
 
-	cacheCtx, commit := c.ctx.CacheContext()
+	ctx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
 
 	method, err := GetMethodByID(contract.Input)
@@ -83,33 +95,45 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		// parse input
 		switch method.Name {
 		case CreateValidatorMethodName:
-			ret, err = c.CreateValidator(cacheCtx, evm, contract, readonly)
+			ret, err = c.CreateValidator(ctx, evm, contract, readonly)
 		case EditValidatorMethodName:
-			ret, err = c.EditValidator(cacheCtx, evm, contract, readonly)
+			ret, err = c.EditValidator(ctx, evm, contract, readonly)
 		case DelegateMethodName:
-			ret, err = c.Delegate(cacheCtx, evm, contract, readonly)
+			ret, err = c.Delegate(ctx, evm, contract, readonly)
 		case UndelegateMethodName:
-			ret, err = c.Undelegate(cacheCtx, evm, contract, readonly)
+			ret, err = c.Undelegate(ctx, evm, contract, readonly)
 		case RedelegateMethodName:
-			ret, err = c.Redelegatge(cacheCtx, evm, contract, readonly)
+			ret, err = c.Redelegatge(ctx, evm, contract, readonly)
 		case CancelUnbondingDelegationMethodName:
-			ret, err = c.CancelUnbondingDelegation(cacheCtx, evm, contract, readonly)
+			ret, err = c.CancelUnbondingDelegation(ctx, evm, contract, readonly)
 		case DelegationMethodName:
-			ret, err = c.Delegation(cacheCtx, evm, contract, readonly)
+			ret, err = c.Delegation(ctx, evm, contract, readonly)
 		case UnbondingDelegationMethodName:
-			ret, err = c.UnbondingDelegation(cacheCtx, evm, contract, readonly)
+			ret, err = c.UnbondingDelegation(ctx, evm, contract, readonly)
 		case ValidatorMethodName:
-			ret, err = c.Validator(cacheCtx, evm, contract, readonly)
+			ret, err = c.Validator(ctx, evm, contract, readonly)
 		case ValidatorsMethodName:
-			ret, err = c.Validators(cacheCtx, evm, contract, readonly)
-		case ValidatorDelegationsName:
-			ret, err = c.ValidatorDelegations(cacheCtx, evm, contract, readonly)
-		case ValidatorUnbondingDelegationsName:
-			ret, err = c.ValidatorUnbondingDelegations(cacheCtx, evm, contract, readonly)
-		case DelegatorDelegationsName:
-			ret, err = c.DelegatorDelegations(cacheCtx, evm, contract, readonly)
-		case DelegatorUnbondingDelegationsName:
-			ret, err = c.DelegatorUnbondingDelegations(cacheCtx, evm, contract, readonly)
+			ret, err = c.Validators(ctx, evm, contract, readonly)
+		case ValidatorDelegationsMethodName:
+			ret, err = c.ValidatorDelegations(ctx, evm, contract, readonly)
+		case ValidatorUnbondingDelegationsMethodName:
+			ret, err = c.ValidatorUnbondingDelegations(ctx, evm, contract, readonly)
+		case DelegatorDelegationsMethodName:
+			ret, err = c.DelegatorDelegations(ctx, evm, contract, readonly)
+		case DelegatorUnbondingDelegationsMethodName:
+			ret, err = c.DelegatorUnbondingDelegations(ctx, evm, contract, readonly)
+		case RedelegationsMethodName:
+			ret, err = c.Redelegations(ctx, evm, contract, readonly)
+		case DelegatorValidatorsMethodName:
+			ret, err = c.DelegatorValidators(ctx, evm, contract, readonly)
+		case DelegatorValidatorMethodName:
+			ret, err = c.DelegatorValidator(ctx, evm, contract, readonly)
+		case HistoricalInfoMethodName:
+			ret, err = c.HistoricalInfo(ctx, evm, contract, readonly)
+		case PoolMethodName:
+			ret, err = c.Pool(ctx, evm, contract, readonly)
+		case ParamsMethodName:
+			ret, err = c.Params(ctx, evm, contract, readonly)
 		default:
 			err = fmt.Errorf("method %s is not handle", method.Name)
 		}

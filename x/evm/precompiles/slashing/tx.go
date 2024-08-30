@@ -1,7 +1,8 @@
 package slashing
 
 import (
-	"errors"
+	"github.com/evmos/evmos/v12/x/evm/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
@@ -19,10 +20,11 @@ const (
 
 func (c *Contract) Unjail(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("unjail method have write protection")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(UnjailMethodName)

@@ -26,8 +26,7 @@ echo "===> Compiling contracts"
 [[ ! -d "$project_dir/x/evm/precompiles/contracts/artifacts" ]] && mkdir -p "$project_dir/x/evm/precompiles/contracts/artifacts"
 
 # add core contracts
-contracts=(IStaking IDistribution IGov IBank ISlashing)
-contracts_test=()
+contracts=(IStaking IDistribution IBank ISlashing IEvidence IEpochs IGov IAuth IInflation)
 # add 3rd party contracts
 
 for contract in "${contracts[@]}"; do
@@ -41,18 +40,17 @@ for contract in "${contracts[@]}"; do
     --bin "$project_dir/x/evm/precompiles/contracts/artifacts/${contract}.bin" \
     --type "${contract}" --pkg ${pkg} \
     --out "$project_dir/x/evm/precompiles/${pkg}/${contract}.go"
-done
 
-# test contracts
-for contract_test in "${contracts_test[@]}"; do
-  echo "===> Ethereum ABI wrapper code generator: $contract_test"
-  file_path=$(find "$project_dir/solidity/artifacts" -name "${contract_test}.json" -type f)
-  jq -c '.abi' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.abi"
-  jq -r '.bytecode' "$file_path" >"$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.bin"
-  abigen --abi "$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.abi" \
-    --bin "$project_dir/x/evm/precompiles/contracts/artifacts/${contract_test}.bin" \
-    --type "${contract_test}" --pkg contracts \
-    --out "$project_dir/tests/contracts/${contract_test}.go"
+  # Copy ABI files
+  test_file_name="${contract:1}Test.json"
+  test_file_path=$(find "$project_dir/solidity/artifacts" -name $test_file_name -type f)
+  destination_path="$project_dir/x/evm/precompiles/${pkg}/abi"
+  # Check if path exists
+  if [ -d "${destination_path}" ]; then
+    echo "===> Copy ABI files for module: $contract"
+    cp "$file_path" "$destination_path/${contract}.json"
+    cp "$test_file_path" "$destination_path/$test_file_name"
+  fi
 done
 
 rm -rf "$project_dir/x/evm/precompiles/contracts"

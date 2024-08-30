@@ -1,7 +1,6 @@
 package staking
 
 import (
-	"errors"
 	"math/big"
 
 	"cosmossdk.io/math"
@@ -39,10 +38,11 @@ const (
 
 func (c *Contract) CreateValidator(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("createValidator method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(CreateValidatorMethodName)
@@ -97,10 +97,11 @@ func (c *Contract) CreateValidator(ctx sdk.Context, evm *vm.EVM, contract *vm.Co
 
 func (c *Contract) EditValidator(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("editValidator method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(EditValidatorMethodName)
@@ -145,10 +146,11 @@ func (c *Contract) EditValidator(ctx sdk.Context, evm *vm.EVM, contract *vm.Cont
 
 func (c *Contract) Delegate(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("delegate method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(DelegateMethodName)
@@ -194,10 +196,11 @@ func (c *Contract) Delegate(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract,
 
 func (c *Contract) Undelegate(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("undelegate method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(UndelegateMethodName)
@@ -244,12 +247,8 @@ func (c *Contract) Undelegate(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 
 func (c *Contract) Redelegatge(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("redelegate method are readonly")
+		return nil, types.ErrReadOnly
 	}
-	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
-	}
-
 	method := MustMethod(RedelegateMethodName)
 
 	// parse args
@@ -296,10 +295,11 @@ func (c *Contract) Redelegatge(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 
 func (c *Contract) CancelUnbondingDelegation(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("cancelUnbondingDelegation method are readonly")
+		return nil, types.ErrReadOnly
 	}
+
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA contract call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(CancelUnbondingDelegationMethodName)

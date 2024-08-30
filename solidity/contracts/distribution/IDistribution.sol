@@ -12,6 +12,40 @@ struct DelegationDelegatorReward {
     DecCoin[] rewards;
 }
 
+
+/**
+ * @dev Params defines the set of params for the distribution module.
+ */
+struct Params {
+    uint256 communityTax;
+    uint256 baseProposerReward;
+    uint256 bonusProposerReward;
+    bool withdrawAddrEnabled;
+}
+
+
+/**
+ * @dev QueryValidatorSlashesRequest is the request type for the
+ * Query/ValidatorSlashes RPC method
+ */
+struct QueryValidatorSlashesRequest {
+    string validatorAddress;
+    uint64 startingHeight;
+    uint64 endingHeight;
+    PageRequest pagination;
+}
+
+/**
+ * @dev ValidatorSlashEvent represents a validator slash event.
+ * Height is implicit within the store key.
+ * This is needed to calculate appropriate amount of staking tokens
+ * for delegations which are withdrawn after a slash has occurred.
+ */
+struct ValidatorSlashEvent {
+    uint64 validatorPeriod;
+    uint256 fraction;
+}
+
 interface IDistribution {
     /**
      * @dev setWithdrawAddress SetWithdrawAddress defines a method to change the withdraw address
@@ -84,6 +118,34 @@ interface IDistribution {
      */
     function communityPool() external view returns (DecCoin[] memory pool);
 
+    /**
+     * @dev params queries params of the distribution module.
+     */
+    function params() external view returns (Params memory params);
+
+    /**
+     * @dev validatorSlashes queries slash events of a validator.
+     */
+    function validatorSlashes(
+        address validatorAddress,
+        uint64 startingHeight,
+        uint64 endingHeight,
+        PageRequest calldata pagination
+    ) external view returns (ValidatorSlashEvent[] memory validatorSlashEvents, PageResponse memory pageResponse);
+
+    /**
+     * @dev delegatorValidators queries the validators of a delegator.
+     */
+    function delegatorValidators(
+        address delegatorAddress
+    ) external view returns (address[] memory validators);
+
+    /**
+     * @dev delegatorWithdrawAddress queries withdraw address of a delegator.
+     */
+    function delegatorWithdrawAddress(
+        address delegatorAddress
+    ) external view returns (address withdrawAddress);
 
     /**
      * @dev SetWithdrawAddress defines an Event emitted when a user change the withdraw address

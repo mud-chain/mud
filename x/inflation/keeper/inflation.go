@@ -21,7 +21,6 @@ import (
 
 	evmostypes "github.com/evmos/evmos/v12/types"
 
-	utils "github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/inflation/types"
 )
 
@@ -47,8 +46,7 @@ func (k Keeper) MintAndAllocateInflation(
 		return nil, nil, err
 	}
 
-	// Allocate minted coins according to allocation proportions (staking, usage
-	// incentives, community pool)
+	// Allocate minted coins according to allocation proportions (staking, community pool)
 	return k.AllocateExponentialInflation(ctx, coin, params)
 }
 
@@ -62,7 +60,6 @@ func (k Keeper) MintCoins(ctx sdk.Context, coin sdk.Coin) error {
 // AllocateExponentialInflation allocates coins from the inflation to external
 // modules according to allocation proportions:
 //   - staking rewards -> sdk `auth` module fee collector
-//   - usage incentives -> `x/incentives` module
 //   - community pool -> `sdk `distr` module community pool
 func (k Keeper) AllocateExponentialInflation(
 	ctx sdk.Context,
@@ -117,68 +114,47 @@ func (k Keeper) GetProportions(
 }
 
 // BondedRatio the fraction of the staking tokens which are currently bonded
-// It doesn't consider team allocation for inflation
 func (k Keeper) BondedRatio(ctx sdk.Context) sdk.Dec {
-	stakeSupply := k.stakingKeeper.StakingTokenSupply(ctx)
-
-	isMainnet := utils.IsMainnet(ctx.ChainID())
-
-	if !stakeSupply.IsPositive() || (isMainnet && stakeSupply.LTE(teamAlloc)) {
-		return sdk.ZeroDec()
-	}
-
-	// don't count team allocation in bonded ratio's stake supple
-	if isMainnet {
-		stakeSupply = stakeSupply.Sub(teamAlloc)
-	}
-
-	return sdk.NewDecFromInt(k.stakingKeeper.TotalBondedTokens(ctx)).QuoInt(stakeSupply)
+	bondedRatio := k.stakingKeeper.BondedRatio(ctx)
+	return bondedRatio
 }
 
-// GetCirculatingSupply returns the bank supply of the mintDenom excluding the
-// team allocation in the first year
+// GetCirculatingSupply returns the bank supply of the mintDenom
 func (k Keeper) GetCirculatingSupply(ctx sdk.Context, mintDenom string) sdk.Dec {
 	circulatingSupply := sdk.NewDecFromInt(k.bankKeeper.GetSupply(ctx, mintDenom).Amount)
-	teamAllocation := sdk.NewDecFromInt(teamAlloc)
-
-	// Consider team allocation only on mainnet chain id
-	if utils.IsMainnet(ctx.ChainID()) {
-		circulatingSupply = circulatingSupply.Sub(teamAllocation)
-	}
 
 	return circulatingSupply
 }
 
-// GetInflationRate returns the inflation rate for the current period.
-func (k Keeper) GetInflationRate(ctx sdk.Context, mintDenom string) sdk.Dec {
-	epp := k.GetEpochsPerPeriod(ctx)
-	if epp == 0 {
+// GetInflation get the epoch mint inflation
+func (k Keeper) GetInflation(ctx sdk.Context) (inflation sdk.Dec) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyPrefixInflation)
+	if len(bz) == 0 {
 		return sdk.ZeroDec()
 	}
-
-	epochMintProvision := k.GetEpochMintProvision(ctx)
-	if epochMintProvision.IsZero() {
-		return sdk.ZeroDec()
+	err := inflation.Unmarshal(bz)
+	if err != nil {
+		panic(err)
 	}
 
-	epochsPerPeriod := sdk.NewDec(epp)
-
-	circulatingSupply := k.GetCirculatingSupply(ctx, mintDenom)
-	if circulatingSupply.IsZero() {
-		return sdk.ZeroDec()
-	}
-
-	// EpochMintProvision * 365 / circulatingSupply * 100
-	return epochMintProvision.Mul(epochsPerPeriod).Quo(circulatingSupply).Mul(sdk.NewDec(100))
+	return inflation
 }
 
-// GetEpochMintProvision retrieves necessary params KV storage
-// and calculate EpochMintProvision
-func (k Keeper) GetEpochMintProvision(ctx sdk.Context) sdk.Dec {
-	return types.CalculateEpochMintProvision(
-		k.GetParams(ctx),
-		k.GetPeriod(ctx),
-		k.GetEpochsPerPeriod(ctx),
-		k.BondedRatio(ctx),
-	)
+// SetInflation set the epoch mint inflation
+func (k Keeper) SetInflation(ctx sdk.Context, inflation sdk.Dec) {
+	store := ctx.KVStore(k.storeKey)
+	bytes, err := inflation.Marshal()
+	if err != nil {
+		panic(err)
+	}
+	store.Set(types.KeyPrefixInflation, bytes)
+}
+
+// GetEpochMintProvision get the epoch mint provision
+func (k Keeper) GetEpochMintProvision(ctx sdk.Context) (epochMintProvision sdk.Coin) {
+	inflation := types.NextInflationRate(k.GetParams(ctx), k.BondedRatio(ctx), k.GetInflation(ctx), k.GetEpochsPerPeriod(ctx))
+	epochMintProvision = types.EpochProvision(k.GetParams(ctx), k.stakingKeeper.StakingTokenSupply(ctx), k.GetEpochsPerPeriod(ctx), inflation)
+
+	return epochMintProvision
 }

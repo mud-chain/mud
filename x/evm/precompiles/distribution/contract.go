@@ -55,6 +55,14 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return DelegationTotalRewardsGas
 	case CommunityPoolMethodName:
 		return CommunityPoolGas
+	case ParamsMethodName:
+		return ParamsGas
+	case ValidatorSlashesMethodName:
+		return ValidatorSlashesGas
+	case DelegatorValidatorsMethodName:
+		return DelegatorValidatorsGas
+	case delegatorWithdrawAddressMethodName:
+		return delegatorWithdrawAddressGas
 	default:
 		return 0
 	}
@@ -65,7 +73,7 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		return types.PackRetError("invalid input")
 	}
 
-	cacheCtx, commit := c.ctx.CacheContext()
+	ctx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
 
 	method, err := GetMethodByID(contract.Input)
@@ -73,25 +81,33 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		// parse input
 		switch method.Name {
 		case SetWithdrawAddressMethodName:
-			ret, err = c.SetWithdrawAddress(cacheCtx, evm, contract, readonly)
+			ret, err = c.SetWithdrawAddress(ctx, evm, contract, readonly)
 		case WithdrawDelegatorRewardMethodName:
-			ret, err = c.WithdrawDelegatorReward(cacheCtx, evm, contract, readonly)
+			ret, err = c.WithdrawDelegatorReward(ctx, evm, contract, readonly)
 		case WithdrawValidatorCommissionMethodName:
-			ret, err = c.WithdrawValidatorCommission(cacheCtx, evm, contract, readonly)
+			ret, err = c.WithdrawValidatorCommission(ctx, evm, contract, readonly)
 		case FundCommunityPoolMethodName:
-			ret, err = c.FundCommunityPool(cacheCtx, evm, contract, readonly)
+			ret, err = c.FundCommunityPool(ctx, evm, contract, readonly)
 		case ValidatorDistributionInfoMethodName:
-			ret, err = c.ValidatorDistributionInfo(cacheCtx, evm, contract, readonly)
+			ret, err = c.ValidatorDistributionInfo(ctx, evm, contract, readonly)
 		case ValidatorOutstandingRewardsMethodName:
-			ret, err = c.ValidatorOutstandingRewards(cacheCtx, evm, contract, readonly)
+			ret, err = c.ValidatorOutstandingRewards(ctx, evm, contract, readonly)
 		case ValidatorCommissionMethodName:
-			ret, err = c.ValidatorCommission(cacheCtx, evm, contract, readonly)
+			ret, err = c.ValidatorCommission(ctx, evm, contract, readonly)
 		case DelegationRewardsMethodName:
-			ret, err = c.DelegationRewards(cacheCtx, evm, contract, readonly)
+			ret, err = c.DelegationRewards(ctx, evm, contract, readonly)
 		case DelegationTotalRewardsMethodName:
-			ret, err = c.DelegationTotalRewards(cacheCtx, evm, contract, readonly)
+			ret, err = c.DelegationTotalRewards(ctx, evm, contract, readonly)
 		case CommunityPoolMethodName:
-			ret, err = c.CommunityPool(cacheCtx, evm, contract, readonly)
+			ret, err = c.CommunityPool(ctx, evm, contract, readonly)
+		case ParamsMethodName:
+			ret, err = c.Params(ctx, evm, contract, readonly)
+		case ValidatorSlashesMethodName:
+			ret, err = c.ValidatorSlashes(ctx, evm, contract, readonly)
+		case DelegatorValidatorsMethodName:
+			ret, err = c.DelegatorValidators(ctx, evm, contract, readonly)
+		case delegatorWithdrawAddressMethodName:
+			ret, err = c.DelegatorWithdrawAddress(ctx, evm, contract, readonly)
 		}
 	}
 

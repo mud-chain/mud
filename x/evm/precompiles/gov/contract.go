@@ -1,6 +1,8 @@
 package gov
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	accountkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
@@ -62,7 +64,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return DepositsGas
 	case TallyResultMethodName:
 		return TallyResultGas
-
+	case ParamsMethodName:
+		return ParamsGas
 	default:
 		return 0
 	}
@@ -73,7 +76,7 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		return types.PackRetError("invalid input")
 	}
 
-	cacheCtx, commit := c.ctx.CacheContext()
+	ctx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
 
 	method, err := GetMethodByID(contract.Input)
@@ -81,29 +84,33 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		// parse input
 		switch method.Name {
 		case LegacySubmitProposalMethodName:
-			ret, err = c.LegacySubmitProposal(cacheCtx, evm, contract, readonly)
+			ret, err = c.LegacySubmitProposal(ctx, evm, contract, readonly)
 		case SubmitProposalMethodName:
-			ret, err = c.SubmitProposal(cacheCtx, evm, contract, readonly)
+			ret, err = c.SubmitProposal(ctx, evm, contract, readonly)
 		case VoteMethodName:
-			ret, err = c.Vote(cacheCtx, evm, contract, readonly)
+			ret, err = c.Vote(ctx, evm, contract, readonly)
 		case VoteWeightedMethodName:
-			ret, err = c.VoteWeighted(cacheCtx, evm, contract, readonly)
+			ret, err = c.VoteWeighted(ctx, evm, contract, readonly)
 		case DepositMethodName:
-			ret, err = c.Deposit(cacheCtx, evm, contract, readonly)
+			ret, err = c.Deposit(ctx, evm, contract, readonly)
 		case ProposalMethodName:
-			ret, err = c.Proposal(cacheCtx, evm, contract, readonly)
+			ret, err = c.Proposal(ctx, evm, contract, readonly)
 		case ProposalsMethodName:
-			ret, err = c.Proposals(cacheCtx, evm, contract, readonly)
+			ret, err = c.Proposals(ctx, evm, contract, readonly)
 		case VoteQueryMethodName:
-			ret, err = c.VoteQuery(cacheCtx, evm, contract, readonly)
+			ret, err = c.VoteQuery(ctx, evm, contract, readonly)
 		case VotesMethodName:
-			ret, err = c.Votes(cacheCtx, evm, contract, readonly)
+			ret, err = c.Votes(ctx, evm, contract, readonly)
 		case DepositQueryMethodName:
-			ret, err = c.DepositQuery(cacheCtx, evm, contract, readonly)
+			ret, err = c.DepositQuery(ctx, evm, contract, readonly)
 		case DepositsMethodName:
-			ret, err = c.Deposits(cacheCtx, evm, contract, readonly)
+			ret, err = c.Deposits(ctx, evm, contract, readonly)
 		case TallyResultMethodName:
-			ret, err = c.TallyResult(cacheCtx, evm, contract, readonly)
+			ret, err = c.TallyResult(ctx, evm, contract, readonly)
+		case ParamsMethodName:
+			ret, err = c.Params(ctx, evm, contract, readonly)
+		default:
+			err = fmt.Errorf("method %s is not handle", method.Name)
 		}
 	}
 

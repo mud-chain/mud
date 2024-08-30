@@ -3,6 +3,8 @@ package gov
 import (
 	"bytes"
 	"fmt"
+	"math/big"
+
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -115,7 +117,7 @@ func (args *SubmitProposalArgs) Validate() error {
 
 type VoteArgs struct {
 	ProposalId uint64 `abi:"proposalId"`
-	Option     int32  `abi:"option"`
+	Option     uint8  `abi:"option"`
 	Metadata   string `abi:"metadata"`
 }
 
@@ -147,8 +149,8 @@ func (args *VoteWeightedArgs) Validate() error {
 }
 
 type DepositArgs struct {
-	ProposalId uint64     `abi:"proposalId"`
-	Amount     []CoinJson `abi:"amount"`
+	ProposalId uint64   `abi:"proposalId"`
+	Amount     *big.Int `abi:"amount"`
 }
 
 // Validate VoteWeighted args
@@ -156,11 +158,11 @@ func (args *DepositArgs) Validate() error {
 	if args.ProposalId == 0 {
 		return fmt.Errorf("proposal id must greater than 0")
 	}
-	for _, deposit := range args.Amount {
-		if deposit.Amount.Sign() <= 0 {
-			return fmt.Errorf("deposit %s amount is %s, need to greater than 0", deposit.Denom, deposit.Amount.String())
-		}
+
+	if args.Amount.Sign() <= 0 {
+		return fmt.Errorf("deposit amount is %s, need to greater than 0", args.Amount.String())
 	}
+
 	return nil
 }
 
