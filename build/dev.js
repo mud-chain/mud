@@ -318,8 +318,9 @@ const main = async function () {
                 continue;
               }
               duplicate[address] = true;
-
-              accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), { base_account: { address } }));
+              if(address !== "mud1d4e35hk3gk4k6t5gh02dcm923z8ck86qq63aqs") {
+                accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), {base_account: {address}}));
+              }
               balances.push(Object.assign(JSON.parse(JSON.stringify(balance)), { address }));
             }
           }

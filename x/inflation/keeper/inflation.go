@@ -41,13 +41,31 @@ func (k Keeper) MintAndAllocateInflation(
 		return nil, nil, nil
 	}
 
-	// Mint coins for distribution
-	if err := k.MintCoins(ctx, coin); err != nil {
+	// check inflation module has enough coin for burn and reward
+	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+	if k.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom).Amount.LT(coin.Amount) {
+		return nil, nil, nil
+	}
+
+	// 1/3 will be directly burn, and 2/3 will be used to reward validators.
+	burnAmount := coin.Amount.QuoRaw(3)
+	burnCoins := sdk.Coins{
+		sdk.Coin{
+			Denom:  coin.Denom,
+			Amount: burnAmount,
+		},
+	}
+	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
 		return nil, nil, err
 	}
 
+	distributionCoin := sdk.Coin{
+		Denom:  coin.Denom,
+		Amount: coin.Amount.Sub(burnAmount),
+	}
+
 	// Allocate minted coins according to allocation proportions (staking, community pool)
-	return k.AllocateExponentialInflation(ctx, coin, params)
+	return k.AllocateExponentialInflation(ctx, distributionCoin, params)
 }
 
 // MintCoins implements an alias call to the underlying supply keeper's
@@ -83,14 +101,17 @@ func (k Keeper) AllocateExponentialInflation(
 		return nil, nil, err
 	}
 
-	// Allocate community pool amount (remaining module balance) to community
-	// pool address
-	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	inflationBalance := k.bankKeeper.GetAllBalances(ctx, moduleAddr)
+	communityPool = sdk.Coins{
+		sdk.Coin{
+			Denom:  mintedCoin.Denom,
+			Amount: mintedCoin.Amount.Sub(staking.AmountOf(mintedCoin.Denom)),
+		},
+	}
 
+	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 	err = k.distrKeeper.FundCommunityPool(
 		ctx,
-		inflationBalance,
+		communityPool,
 		moduleAddr,
 	)
 	if err != nil {
