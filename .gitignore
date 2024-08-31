@@ -20,10 +20,11 @@
 .glide/
 vendor
 build/*
-!build/dev.js
-!build/config.default.json
-!build/package.json
-!build/README.md
+deploy/*
+!deploy/dev.js
+!deploy/config.default.json
+!deploy/package.json
+!deploy/README.md
 bin
 tools/bin/*
 docs/_build
