@@ -1,8 +1,6 @@
 package distribution
 
 import (
-	"errors"
-
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -36,7 +34,7 @@ func (c *Contract) SetWithdrawAddress(ctx sdk.Context, evm *vm.EVM, contract *vm
 	}
 
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA can call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(SetWithdrawAddressMethodName)
@@ -79,7 +77,7 @@ func (c *Contract) WithdrawDelegatorReward(ctx sdk.Context, evm *vm.EVM, contrac
 	}
 
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA can call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(WithdrawDelegatorRewardMethodName)
@@ -136,7 +134,7 @@ func (c *Contract) WithdrawValidatorCommission(ctx sdk.Context, evm *vm.EVM, con
 	}
 
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA can call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(WithdrawValidatorCommissionMethodName)
@@ -181,7 +179,7 @@ func (c *Contract) FundCommunityPool(ctx sdk.Context, evm *vm.EVM, contract *vm.
 	}
 
 	if evm.Origin != contract.Caller() {
-		return nil, errors.New("only allow EOA can call this method")
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(FundCommunityPoolMethodName)
