@@ -17,8 +17,9 @@
 package utils
 
 import (
-	"github.com/ethereum/go-ethereum/common"
 	"strings"
+
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 
