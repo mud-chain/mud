@@ -614,3 +614,21 @@ create-contracts-json:
 		mv $(TMP_JSON) $(COMPILED_DIR)/$${c}.json ;\
 	done
 	@rm -rf tmp
+
+precompile:
+	@cd x/evm/precompiles && sh compile.sh
+
+init:
+	@cd deploy && npm run init
+
+start:
+	@cd deploy && npm start
+
+start4v:
+	@cd deploy && npm run start4v
+
+stop:
+	@cd deploy && npm stop
+
+restart:
+	@cd deploy && npm restart
