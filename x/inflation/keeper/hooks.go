@@ -60,7 +60,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	}
 
 	// mint coins, update supply
-	totalStakingSupply := k.stakingKeeper.StakingTokenSupply(ctx)
+	bondedTokens := k.stakingKeeper.TotalBondedTokens(ctx)
 	period := k.GetPeriod(ctx)
 	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
 	bondedRatio := k.BondedRatio(ctx)
@@ -69,7 +69,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	inflation = types.NextInflationRate(params, bondedRatio, inflation, epochsPerPeriod)
 	k.SetInflation(ctx, inflation)
 
-	mintedCoin := types.EpochProvision(params, totalStakingSupply, epochsPerPeriod, inflation)
+	mintedCoin := types.EpochProvision(params, bondedTokens, epochsPerPeriod, inflation)
 
 	staking, communityPool, err := k.MintAndAllocateInflation(ctx, mintedCoin, params)
 	if err != nil {

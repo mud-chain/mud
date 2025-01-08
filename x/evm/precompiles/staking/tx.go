@@ -249,6 +249,11 @@ func (c *Contract) Redelegatge(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 	if readonly {
 		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := MustMethod(RedelegateMethodName)
 
 	// parse args
