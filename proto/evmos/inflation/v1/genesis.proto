@@ -2,7 +2,7 @@ syntax = "proto3";
 package evmos.inflation.v1;
 
 import "gogoproto/gogo.proto";
-
+import "cosmos/base/v1beta1/coin.proto";
 import "evmos/inflation/v1/inflation.proto";
 
 option go_package = "github.com/evmos/evmos/v12/x/inflation/types";
@@ -56,6 +56,18 @@ message Params {
   // goal of percent bonded cerbo
   string goal_bonded = 7 [
     (gogoproto.moretags) = "yaml:\"goal_bonded\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // inflation_amount inflation amount for tokens
+  cosmos.base.v1beta1.Coin inflation_amount = 8 [
+    (gogoproto.moretags) = "yaml:\"inflation_start\"",
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  // inflation_decay inflation decay for next year
+  string inflation_decay = 9 [
+    (gogoproto.moretags) = "yaml:\"inflation_decay\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
