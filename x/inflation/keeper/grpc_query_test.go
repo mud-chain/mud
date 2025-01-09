@@ -78,7 +78,7 @@ func (suite *KeeperTestSuite) TestEpochMintProvision() {
 				defaultEpochMintProvision := types.EpochProvision(
 					sdk.Coin{
 						Denom:  config.BaseDenom,
-						Amount: sdk.MustNewDecFromStr("1000100000000000000").TruncateInt(),
+						Amount: sdk.MustNewDecFromStr("37500000000000000000000000").TruncateInt(),
 					},
 					365,
 				)

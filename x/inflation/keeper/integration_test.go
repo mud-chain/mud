@@ -21,6 +21,8 @@ var (
 var _ = Describe("Inflation", Ordered, func() {
 	BeforeEach(func() {
 		s.SetupTest()
+		err := s.app.InflationKeeper.MintCoins(s.ctx, sdk.NewCoin(denomMint, sdk.NewInt(1_000_000)))
+		s.Require().NoError(err)
 	})
 
 	Describe("Committing a block", func() {

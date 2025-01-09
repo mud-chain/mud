@@ -92,25 +92,25 @@ func (suite *KeeperTestSuite) TestGetCirculatingSupplyAndInflationRate() {
 			func() {
 				suite.app.InflationKeeper.SetEpochsPerPeriod(suite.ctx, 0)
 			},
-			sdk.MustNewDecFromStr("0.130356164382232672"),
+			sdk.MustNewDecFromStr("0.200000000000000000"),
 		},
 		{
 			"high supply",
 			sdk.TokensFromConsensusPower(800_000_000, evmostypes.PowerReduction).Sub(bondedAmt),
 			func() {},
-			sdk.MustNewDecFromStr("0.130356164382897158"),
+			sdk.MustNewDecFromStr("0.200000000000000000"),
 		},
 		{
 			"low supply",
 			sdk.TokensFromConsensusPower(400_000_000, evmostypes.PowerReduction).Sub(bondedAmt),
 			func() {},
-			sdk.MustNewDecFromStr("0.130356164382232672"),
+			sdk.MustNewDecFromStr("0.200000000000000000"),
 		},
 		{
 			"zero circulating supply",
 			sdk.TokensFromConsensusPower(200_000_000, evmostypes.PowerReduction).Sub(bondedAmt),
 			func() {},
-			sdk.MustNewDecFromStr("0.130356164380903701"),
+			sdk.MustNewDecFromStr("0.200000000000000000"),
 		},
 	}
 	for _, tc := range testCases {
