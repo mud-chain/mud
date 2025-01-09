@@ -37,35 +37,26 @@ var (
 )
 
 func NewParams(
-	mintDenom string,
 	inflationDistribution InflationDistribution,
 	enableInflation bool,
-	inflationRateChange sdk.Dec,
 	inflationMax sdk.Dec,
-	inflationMin sdk.Dec,
-	goalBonded sdk.Dec,
+	inflationDecay sdk.Dec,
 ) Params {
 	return Params{
-		MintDenom:             mintDenom,
 		InflationDistribution: inflationDistribution,
 		EnableInflation:       enableInflation,
-		InflationRateChange:   inflationRateChange,
 		InflationMax:          inflationMax,
-		InflationMin:          inflationMin,
-		GoalBonded:            goalBonded,
+		InflationDecay:        inflationDecay,
 	}
 }
 
 // default minting module parameters
 func DefaultParams() Params {
 	return Params{
-		MintDenom:             DefaultInflationDenom,
 		InflationDistribution: DefaultInflationDistribution,
 		EnableInflation:       DefaultEnableInflation,
-		InflationRateChange:   sdk.NewDecWithPrec(13, 2),
 		InflationMax:          sdk.NewDecWithPrec(20, 2),
-		InflationMin:          sdk.NewDecWithPrec(7, 2),
-		GoalBonded:            sdk.NewDecWithPrec(67, 2),
+		InflationDecay:        sdk.NewDecWithPrec(8, 1),
 	}
 }
 
@@ -113,22 +104,6 @@ func validateBool(i interface{}) error {
 	return nil
 }
 
-func validateInflationRateChange(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNegative() {
-		return fmt.Errorf("inflation rate change cannot be negative: %s", v)
-	}
-	if v.GT(sdk.OneDec()) {
-		return fmt.Errorf("inflation rate change too large: %s", v)
-	}
-
-	return nil
-}
-
 func validateInflationMax(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
@@ -145,57 +120,12 @@ func validateInflationMax(i interface{}) error {
 	return nil
 }
 
-func validateInflationMin(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNegative() {
-		return fmt.Errorf("min inflation cannot be negative: %s", v)
-	}
-	if v.GT(sdk.OneDec()) {
-		return fmt.Errorf("min inflation too large: %s", v)
-	}
-
-	return nil
-}
-
-func validateGoalBonded(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNegative() {
-		return fmt.Errorf("goal bonded cannot be negative: %s", v)
-	}
-	if v.GT(sdk.OneDec()) {
-		return fmt.Errorf("goal bonded too large: %s", v)
-	}
-
-	return nil
-}
-
 func (p Params) Validate() error {
-	if err := validateMintDenom(p.MintDenom); err != nil {
-		return err
-	}
 	if err := validateInflationDistribution(p.InflationDistribution); err != nil {
-		return err
-	}
-	if err := validateInflationRateChange(p.InflationRateChange); err != nil {
 		return err
 	}
 	if err := validateInflationMax(p.InflationMax); err != nil {
 		return err
 	}
-	if err := validateInflationMin(p.InflationMin); err != nil {
-		return err
-	}
-	if err := validateGoalBonded(p.GoalBonded); err != nil {
-		return err
-	}
-
 	return validateBool(p.EnableInflation)
 }

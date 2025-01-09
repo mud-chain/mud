@@ -14,14 +14,11 @@ IInflation constant INFLATION_CONTRACT = IInflation(INFLATION_PRECOMPILE_ADDRESS
  * @dev Params defines the parameters for the auth module.
  */
 struct Params {
-    string mintDenom;
     Dec stakingRewards;
     Dec communityPool;
     bool enableInflation;
-    Dec inflationRateChange;
     Dec inflationMax;
-    Dec inflationMin;
-    Dec goalBonded;
+    Dec inflationDecay;
 }
 
 interface IInflation {

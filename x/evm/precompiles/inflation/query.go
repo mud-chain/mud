@@ -115,7 +115,6 @@ func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, _ *vm.Contract, _ bool) ([
 	}
 
 	params := Params{
-		MintDenom: res.Params.MintDenom,
 		StakingRewards: Dec{
 			Amount:    res.Params.InflationDistribution.StakingRewards.BigInt(),
 			Precision: uint8(sdk.Precision),
@@ -125,20 +124,12 @@ func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, _ *vm.Contract, _ bool) ([
 			Precision: uint8(sdk.Precision),
 		},
 		EnableInflation: res.Params.EnableInflation,
-		InflationRateChange: Dec{
-			Amount:    res.Params.InflationRateChange.BigInt(),
-			Precision: uint8(sdk.Precision),
-		},
 		InflationMax: Dec{
 			Amount:    res.Params.InflationMax.BigInt(),
 			Precision: uint8(sdk.Precision),
 		},
-		InflationMin: Dec{
-			Amount:    res.Params.InflationMin.BigInt(),
-			Precision: uint8(sdk.Precision),
-		},
-		GoalBonded: Dec{
-			Amount:    res.Params.GoalBonded.BigInt(),
+		InflationDecay: Dec{
+			Amount:    res.Params.InflationDecay.BigInt(),
 			Precision: uint8(sdk.Precision),
 		},
 	}

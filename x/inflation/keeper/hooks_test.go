@@ -176,11 +176,13 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 
 			if tc.periodChanges {
 				newProvision := suite.app.InflationKeeper.GetEpochMintProvision(suite.ctx)
+
+				inflationAmount := suite.app.InflationKeeper.GetInflationAmount(suite.ctx)
+				epochsPerPeriod := suite.app.InflationKeeper.GetEpochsPerPeriod(suite.ctx)
+
 				expectedProvision := types.EpochProvision(
-					suite.app.InflationKeeper.GetParams(suite.ctx),
-					suite.app.StakingKeeper.StakingTokenSupply(suite.ctx),
-					currentEpochPeriod,
-					suite.app.InflationKeeper.GetInflation(suite.ctx),
+					inflationAmount,
+					epochsPerPeriod,
 				)
 				suite.Require().Equal(expectedProvision, newProvision)
 				// mint provisions will change

@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	"github.com/evmos/evmos/v12/cmd/config"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -74,12 +75,12 @@ func (suite *KeeperTestSuite) TestEpochMintProvision() {
 		{
 			"default epochMintProvision",
 			func() {
-				params := types.DefaultParams()
 				defaultEpochMintProvision := types.EpochProvision(
-					params,
-					sdk.MustNewDecFromStr("1000100000000000000").TruncateInt(),
+					sdk.Coin{
+						Denom:  config.BaseDenom,
+						Amount: sdk.MustNewDecFromStr("1000100000000000000").TruncateInt(),
+					},
 					365,
-					sdk.MustNewDecFromStr("0.129824628904927949"),
 				)
 				req = &types.QueryEpochMintProvisionRequest{}
 				expRes = &types.QueryEpochMintProvisionResponse{
@@ -162,7 +163,7 @@ func (suite *KeeperTestSuite) TestQueryCirculatingSupply() {
 	ctx := sdk.WrapSDKContext(suite.ctx)
 
 	// Mint coins to increase supply
-	mintDenom := suite.app.InflationKeeper.GetParams(suite.ctx).MintDenom
+	mintDenom := config.BaseDenom
 	mintCoin := sdk.NewCoin(mintDenom, sdk.TokensFromConsensusPower(int64(400_000_000), evmostypes.PowerReduction))
 	err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
 	suite.Require().NoError(err)
@@ -182,12 +183,12 @@ func (suite *KeeperTestSuite) TestQueryInflationRate() {
 	bondedAmt := math.NewInt(1000100000000000000)
 
 	// Mint coins to increase supply
-	mintDenom := suite.app.InflationKeeper.GetParams(suite.ctx).MintDenom
+	mintDenom := config.BaseDenom
 	mintCoin := sdk.NewCoin(mintDenom, sdk.TokensFromConsensusPower(int64(400_000_000), evmostypes.PowerReduction).Sub(bondedAmt))
 	err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
 	suite.Require().NoError(err)
 
-	expInflationRate := sdk.MustNewDecFromStr("13.035616438223267200")
+	expInflationRate := sdk.MustNewDecFromStr("20.000000000000000000")
 	res, err := suite.queryClient.InflationRate(ctx, &types.QueryInflationRateRequest{})
 	suite.Require().NoError(err)
 	suite.Require().Equal(expInflationRate, res.InflationRate)

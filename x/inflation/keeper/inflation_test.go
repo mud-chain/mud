@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	evmostypes "github.com/evmos/evmos/v12/types"
@@ -40,9 +39,13 @@ func (suite *KeeperTestSuite) TestMintAndAllocateInflation() {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			suite.SetupTest() // reset
 
+			err := suite.app.InflationKeeper.MintCoins(suite.ctx, tc.mintCoin)
+			suite.Require().NoError(err)
+
 			tc.malleate()
 
-			_, _, err := suite.app.InflationKeeper.MintAndAllocateInflation(suite.ctx, tc.mintCoin, types.DefaultParams())
+			bondedTokens := suite.app.StakingKeeper.TotalBondedTokens(suite.ctx)
+			_, _, err = suite.app.InflationKeeper.MintAndAllocateInflation(suite.ctx, bondedTokens, tc.mintCoin, types.DefaultParams())
 
 			// Get balances
 			balanceModule := suite.app.BankKeeper.GetBalance(
@@ -130,7 +133,11 @@ func (suite *KeeperTestSuite) TestGetCirculatingSupplyAndInflationRate() {
 			circulatingSupply := s.app.InflationKeeper.GetCirculatingSupply(suite.ctx, types.DefaultInflationDenom)
 			suite.Require().Equal(decCoin.Add(bondedCoins).Amount, circulatingSupply)
 
-			inflationRate := types.NextInflationRate(suite.app.InflationKeeper.GetParams(suite.ctx), suite.app.InflationKeeper.BondedRatio(suite.ctx), sdk.NewDecWithPrec(13, 2), 365)
+			params := suite.app.InflationKeeper.GetParams(suite.ctx)
+			inflationAmount := suite.app.InflationKeeper.GetInflationAmount(suite.ctx).Amount
+			bondedTokens := suite.app.StakingKeeper.TotalBondedTokens(suite.ctx)
+
+			inflationRate := types.InflationRate(params, inflationAmount, bondedTokens)
 			suite.Require().Equal(tc.expInflationRate, inflationRate)
 		})
 	}

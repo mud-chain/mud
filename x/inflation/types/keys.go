@@ -36,6 +36,7 @@ const (
 	prefixEpochsPerPeriod
 	prefixSkippedEpochs
 	prefixInflation
+	prefixInflationAmount
 )
 
 // KVStore key prefixes
@@ -45,4 +46,5 @@ var (
 	KeyPrefixEpochsPerPeriod = []byte{prefixEpochsPerPeriod}
 	KeyPrefixSkippedEpochs   = []byte{prefixSkippedEpochs}
 	KeyPrefixInflation       = []byte{prefixInflation}
+	KeyPrefixInflationAmount = []byte{prefixInflationAmount}
 )
