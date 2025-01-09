@@ -129,7 +129,7 @@ func (k Keeper) AllocateExponentialInflation(
 	return staking, communityPool, nil
 }
 
-// GetAllocationProportion calculates the proportion of coins that is to be
+// GetProportions calculates the proportion of coins that is to be
 // allocated during inflation for a given distribution.
 func (k Keeper) GetProportions(
 	_ sdk.Context,
@@ -153,31 +153,6 @@ func (k Keeper) GetCirculatingSupply(ctx sdk.Context, mintDenom string) sdk.Dec 
 	circulatingSupply := sdk.NewDecFromInt(k.bankKeeper.GetSupply(ctx, mintDenom).Amount)
 
 	return circulatingSupply
-}
-
-// GetInflation get the epoch mint inflation
-func (k Keeper) GetInflation(ctx sdk.Context) (inflation sdk.Dec) {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyPrefixInflation)
-	if len(bz) == 0 {
-		return sdk.ZeroDec()
-	}
-	err := inflation.Unmarshal(bz)
-	if err != nil {
-		panic(err)
-	}
-
-	return inflation
-}
-
-// SetInflation set the epoch mint inflation
-func (k Keeper) SetInflation(ctx sdk.Context, inflation sdk.Dec) {
-	store := ctx.KVStore(k.storeKey)
-	bytes, err := inflation.Marshal()
-	if err != nil {
-		panic(err)
-	}
-	store.Set(types.KeyPrefixInflation, bytes)
 }
 
 // GetInflationAmount get the inflation amount coin
