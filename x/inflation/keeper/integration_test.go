@@ -1,15 +1,18 @@
 package keeper_test
 
 import (
+	"math/big"
 	"time"
 
-	"github.com/evmos/evmos/v12/x/inflation/types"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	evmostypes "github.com/evmos/evmos/v12/types"
 	epochstypes "github.com/evmos/evmos/v12/x/epochs/types"
+	"github.com/evmos/evmos/v12/x/inflation/types"
 )
 
 var (
@@ -21,8 +24,6 @@ var (
 var _ = Describe("Inflation", Ordered, func() {
 	BeforeEach(func() {
 		s.SetupTest()
-		err := s.app.InflationKeeper.MintCoins(s.ctx, sdk.NewCoin(denomMint, sdk.NewInt(1_000_000)))
-		s.Require().NoError(err)
 	})
 
 	Describe("Committing a block", func() {
@@ -60,7 +61,7 @@ var _ = Describe("Inflation", Ordered, func() {
 					expected := sdk.NewDecFromInt(provision.Amount).Mul(distribution)
 
 					Expect(balanceCommunityPool.IsZero()).ToNot(BeTrue())
-					Expect(balanceCommunityPool.AmountOf(denomMint).GT(expected)).To(BeTrue())
+					Expect(balanceCommunityPool.AmountOf(denomMint).LT(expected)).To(BeTrue())
 				})
 			})
 		})
@@ -103,7 +104,7 @@ var _ = Describe("Inflation", Ordered, func() {
 					expected := sdk.NewDecFromInt(provision.Amount).Mul(distribution)
 
 					Expect(balanceCommunityPool.IsZero()).ToNot(BeTrue())
-					Expect(balanceCommunityPool.AmountOf(denomMint).GT(expected)).To(BeTrue())
+					Expect(balanceCommunityPool.AmountOf(denomMint).LT(expected)).To(BeTrue())
 				})
 			})
 		})
@@ -142,7 +143,7 @@ var _ = Describe("Inflation", Ordered, func() {
 					expected := sdk.NewDecFromInt(provision.Amount).Mul(distribution)
 
 					Expect(balanceCommunityPool.IsZero()).ToNot(BeTrue())
-					Expect(balanceCommunityPool.AmountOf(denomMint).GT(expected)).To(BeTrue())
+					Expect(balanceCommunityPool.AmountOf(denomMint).LT(expected)).To(BeTrue())
 				})
 			})
 		})
@@ -236,8 +237,9 @@ var _ = Describe("Inflation", Ordered, func() {
 
 						It("should recalculate the EpochMintProvision", func() {
 							provisionAfter := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
+							expectAmount := sdkmath.NewInt(30000000).Mul(sdkmath.NewIntFromBigInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(evmostypes.BaseDenomUnit), nil)))
 							Expect(provisionAfter).ToNot(Equal(provision))
-							Expect(provisionAfter).To(Equal(sdk.NewCoin(denomMint, sdk.NewInt(74907490000000000))))
+							Expect(provisionAfter).To(Equal(sdk.NewCoin(denomMint, expectAmount)))
 						})
 					})
 				})

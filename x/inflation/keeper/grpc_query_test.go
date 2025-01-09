@@ -173,7 +173,7 @@ func (suite *KeeperTestSuite) TestQueryCirculatingSupply() {
 
 	res, err := suite.queryClient.CirculatingSupply(ctx, &types.QueryCirculatingSupplyRequest{})
 	suite.Require().NoError(err)
-	suite.Require().Equal(bondedAmt.Amount.Add(sdk.NewDecFromInt(mintCoin.Amount)), res.CirculatingSupply.Amount)
+	suite.Require().Equal(bondedAmt.Amount.Add(sdk.NewDecFromInt(mintCoin.Amount)).Add(sdk.NewDecFromInt(types.DefaultInflationAmount)), res.CirculatingSupply.Amount)
 }
 
 func (suite *KeeperTestSuite) TestQueryInflationRate() {

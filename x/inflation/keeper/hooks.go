@@ -68,14 +68,10 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	if epochNumber%epochsPerPeriod == 0 {
 		inflationAmount = sdk.Coin{
 			Denom:  inflationAmount.Denom,
-			Amount: sdk.NewIntFromBigInt(sdk.NewDecFromInt(inflationAmount.Amount).Mul(params.InflationDecay).BigInt()),
+			Amount: sdk.NewIntFromBigInt(sdk.NewDecFromInt(inflationAmount.Amount).Mul(params.InflationDecay).TruncateInt().BigInt()),
 		}
 		k.SetInflationAmount(ctx, inflationAmount)
 	}
-
-	inflation := k.GetInflation(ctx)
-	inflation = types.InflationRate(params, inflationAmount.Amount, bondedTokens)
-	k.SetInflation(ctx, inflation)
 
 	mintedCoin := types.EpochProvision(inflationAmount, epochsPerPeriod)
 

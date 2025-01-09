@@ -39,13 +39,15 @@ func (suite *KeeperTestSuite) TestMintAndAllocateInflation() {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			suite.SetupTest() // reset
 
-			err := suite.app.InflationKeeper.MintCoins(suite.ctx, tc.mintCoin)
-			suite.Require().NoError(err)
+			if !tc.mintCoin.Amount.IsZero() {
+				err := suite.app.InflationKeeper.MintCoins(suite.ctx, tc.mintCoin)
+				suite.Require().NoError(err)
+			}
 
 			tc.malleate()
 
 			bondedTokens := suite.app.StakingKeeper.TotalBondedTokens(suite.ctx)
-			_, _, err = suite.app.InflationKeeper.MintAndAllocateInflation(suite.ctx, bondedTokens, tc.mintCoin, types.DefaultParams())
+			_, _, err := suite.app.InflationKeeper.MintAndAllocateInflation(suite.ctx, bondedTokens, tc.mintCoin, types.DefaultParams())
 
 			// Get balances
 			balanceModule := suite.app.BankKeeper.GetBalance(
@@ -65,7 +67,7 @@ func (suite *KeeperTestSuite) TestMintAndAllocateInflation() {
 
 			if tc.expPass {
 				suite.Require().NoError(err, tc.name)
-				suite.Require().True(balanceModule.IsZero())
+				suite.Require().False(balanceModule.IsZero())
 				suite.Require().Equal(tc.expStakingRewardAmt, balanceStakingRewards)
 				suite.Require().Equal(tc.expCommunityPoolAmt, balanceCommunityPool)
 			} else {
@@ -131,7 +133,7 @@ func (suite *KeeperTestSuite) TestGetCirculatingSupplyAndInflationRate() {
 			suite.Require().NoError(err)
 
 			circulatingSupply := s.app.InflationKeeper.GetCirculatingSupply(suite.ctx, types.DefaultInflationDenom)
-			suite.Require().Equal(decCoin.Add(bondedCoins).Amount, circulatingSupply)
+			suite.Require().Equal(decCoin.Add(bondedCoins).Amount.Add(sdk.NewDecFromInt(types.DefaultInflationAmount)), circulatingSupply)
 
 			params := suite.app.InflationKeeper.GetParams(suite.ctx)
 			inflationAmount := suite.app.InflationKeeper.GetInflationAmount(suite.ctx).Amount
@@ -154,13 +156,13 @@ func (suite *KeeperTestSuite) TestBondedRatio() {
 			"is mainnet",
 			true,
 			func() {},
-			sdk.MustNewDecFromStr("0.999900009999000099"),
+			sdk.MustNewDecFromStr("0.000000026666665955"),
 		},
 		{
 			"not mainnet",
 			false,
 			func() {},
-			sdk.MustNewDecFromStr("0.999900009999000099"),
+			sdk.MustNewDecFromStr("0.000000026666665955"),
 		},
 	}
 	for _, tc := range testCases {

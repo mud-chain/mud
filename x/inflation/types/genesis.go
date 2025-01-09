@@ -27,6 +27,8 @@ import (
 	epochstypes "github.com/evmos/evmos/v12/x/epochs/types"
 )
 
+var DefaultInflationAmount = sdkmath.NewInt(37500000).Mul(sdkmath.NewIntFromBigInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(types.BaseDenomUnit), nil)))
+
 // NewGenesisState creates a new GenesisState object
 func NewGenesisState(
 	params Params,
@@ -56,7 +58,7 @@ func DefaultGenesisState() *GenesisState {
 		SkippedEpochs:   0,
 		InflationAmount: sdk.Coin{
 			Denom:  types.AttoEvmos,
-			Amount: sdkmath.NewInt(37500000).Mul(sdkmath.NewIntFromBigInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(types.BaseDenomUnit), nil))),
+			Amount: DefaultInflationAmount,
 		},
 	}
 }

@@ -38,22 +38,27 @@ func (k Keeper) MintAndAllocateInflation(
 		return nil, nil, nil
 	}
 
+	distributionCoin := coin
+
 	// check inflation module has enough coin for burn and reward
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	if k.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom).Amount.LT(coin.Amount) {
-		return nil, nil, nil
+	leftCoin := k.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom)
+	if leftCoin.Amount.LT(coin.Amount) {
+		if leftCoin.Amount.IsZero() {
+			return nil, nil, nil
+		} else {
+			distributionCoin = leftCoin
+		}
 	}
-
-	distributionCoin := coin
 
 	// If the amount of staking is excessive, we have an annualized upper limit.
 	// Once it exceeds this annualized upper limit, we will directly destroy the surplus coins.
 	inflationMaxAmount := sdk.NewDecFromInt(bondedTokens).Mul(params.InflationMax).TruncateInt()
-	if coin.Amount.GT(inflationMaxAmount) {
-		burnAmount := coin.Amount.Sub(inflationMaxAmount)
+	if distributionCoin.Amount.GT(inflationMaxAmount) {
+		burnAmount := distributionCoin.Amount.Sub(inflationMaxAmount)
 		burnCoins := sdk.Coins{
 			sdk.Coin{
-				Denom:  coin.Denom,
+				Denom:  distributionCoin.Denom,
 				Amount: burnAmount,
 			},
 		}
@@ -62,7 +67,7 @@ func (k Keeper) MintAndAllocateInflation(
 		}
 
 		distributionCoin = sdk.Coin{
-			Denom:  coin.Denom,
+			Denom:  distributionCoin.Denom,
 			Amount: inflationMaxAmount,
 		}
 	}
