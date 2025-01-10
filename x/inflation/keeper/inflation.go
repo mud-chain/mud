@@ -100,13 +100,15 @@ func (k Keeper) AllocateExponentialInflation(
 	// Allocate staking rewards into fee collector account
 	staking = sdk.Coins{k.GetProportions(ctx, mintedCoin, distribution.StakingRewards)}
 
-	if err := k.bankKeeper.SendCoinsFromModuleToModule(
-		ctx,
-		types.ModuleName,
-		k.feeCollectorName,
-		staking,
-	); err != nil {
-		return nil, nil, err
+	if !staking.IsZero() {
+		if err := k.bankKeeper.SendCoinsFromModuleToModule(
+			ctx,
+			types.ModuleName,
+			k.feeCollectorName,
+			staking,
+		); err != nil {
+			return nil, nil, err
+		}
 	}
 
 	communityPool = sdk.Coins{
@@ -116,14 +118,16 @@ func (k Keeper) AllocateExponentialInflation(
 		},
 	}
 
-	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	err = k.distrKeeper.FundCommunityPool(
-		ctx,
-		communityPool,
-		moduleAddr,
-	)
-	if err != nil {
-		return nil, nil, err
+	if !communityPool.IsZero() {
+		moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+		err = k.distrKeeper.FundCommunityPool(
+			ctx,
+			communityPool,
+			moduleAddr,
+		)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	return staking, communityPool, nil
