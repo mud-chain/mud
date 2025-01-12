@@ -53,7 +53,8 @@ func (k Keeper) MintAndAllocateInflation(
 
 	// If the amount of staking is excessive, we have an annualized upper limit.
 	// Once it exceeds this annualized upper limit, we will directly destroy the surplus coins.
-	inflationMaxAmount := sdk.NewDecFromInt(bondedTokens).Mul(params.InflationMax).TruncateInt()
+	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
+	inflationMaxAmount := sdk.NewDecFromInt(bondedTokens).Mul(params.InflationMax).QuoInt64(epochsPerPeriod).TruncateInt()
 	if distributionCoin.Amount.GT(inflationMaxAmount) {
 		burnAmount := distributionCoin.Amount.Sub(inflationMaxAmount)
 		burnCoins := sdk.Coins{
