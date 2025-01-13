@@ -114,23 +114,23 @@ func (m *QueryPeriodResponse) GetPeriod() uint64 {
 	return 0
 }
 
-// QueryEpochMintProvisionRequest is the request type for the
-// Query/EpochMintProvision RPC method.
-type QueryEpochMintProvisionRequest struct {
+// QueryEpochProvisionRequest is the request type for the
+// Query/EpochProvision RPC method.
+type QueryEpochProvisionRequest struct {
 }
 
-func (m *QueryEpochMintProvisionRequest) Reset()         { *m = QueryEpochMintProvisionRequest{} }
-func (m *QueryEpochMintProvisionRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryEpochMintProvisionRequest) ProtoMessage()    {}
-func (*QueryEpochMintProvisionRequest) Descriptor() ([]byte, []int) {
+func (m *QueryEpochProvisionRequest) Reset()         { *m = QueryEpochProvisionRequest{} }
+func (m *QueryEpochProvisionRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEpochProvisionRequest) ProtoMessage()    {}
+func (*QueryEpochProvisionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_91b9f1b5d47c7fd7, []int{2}
 }
-func (m *QueryEpochMintProvisionRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryEpochProvisionRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEpochMintProvisionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEpochProvisionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEpochMintProvisionRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEpochProvisionRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -140,37 +140,41 @@ func (m *QueryEpochMintProvisionRequest) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *QueryEpochMintProvisionRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEpochMintProvisionRequest.Merge(m, src)
+func (m *QueryEpochProvisionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEpochProvisionRequest.Merge(m, src)
 }
-func (m *QueryEpochMintProvisionRequest) XXX_Size() int {
+func (m *QueryEpochProvisionRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEpochMintProvisionRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEpochMintProvisionRequest.DiscardUnknown(m)
+func (m *QueryEpochProvisionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEpochProvisionRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEpochMintProvisionRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryEpochProvisionRequest proto.InternalMessageInfo
 
-// QueryEpochMintProvisionResponse is the response type for the
-// Query/EpochMintProvision RPC method.
-type QueryEpochMintProvisionResponse struct {
-	// epoch_mint_provision is the current minting per epoch provision value.
-	EpochMintProvision types.DecCoin `protobuf:"bytes,1,opt,name=epoch_mint_provision,json=epochMintProvision,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.DecCoins" json:"epoch_mint_provision"`
+// QueryEpochProvisionResponse is the response type for the
+// Query/EpochProvision RPC method.
+type QueryEpochProvisionResponse struct {
+	// mint is the current minting per epoch provision value.
+	Mint types.Coin `protobuf:"bytes,1,opt,name=mint,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coin" json:"mint"`
+	// burn is the current burn per epoch provision value.
+	Burn types.Coin `protobuf:"bytes,2,opt,name=burn,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coin" json:"burn"`
+	// reward is the current reward per epoch provision value.
+	Reward types.Coin `protobuf:"bytes,3,opt,name=reward,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coin" json:"reward"`
 }
 
-func (m *QueryEpochMintProvisionResponse) Reset()         { *m = QueryEpochMintProvisionResponse{} }
-func (m *QueryEpochMintProvisionResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryEpochMintProvisionResponse) ProtoMessage()    {}
-func (*QueryEpochMintProvisionResponse) Descriptor() ([]byte, []int) {
+func (m *QueryEpochProvisionResponse) Reset()         { *m = QueryEpochProvisionResponse{} }
+func (m *QueryEpochProvisionResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEpochProvisionResponse) ProtoMessage()    {}
+func (*QueryEpochProvisionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_91b9f1b5d47c7fd7, []int{3}
 }
-func (m *QueryEpochMintProvisionResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryEpochProvisionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEpochMintProvisionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEpochProvisionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEpochMintProvisionResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEpochProvisionResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -180,23 +184,37 @@ func (m *QueryEpochMintProvisionResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *QueryEpochMintProvisionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEpochMintProvisionResponse.Merge(m, src)
+func (m *QueryEpochProvisionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEpochProvisionResponse.Merge(m, src)
 }
-func (m *QueryEpochMintProvisionResponse) XXX_Size() int {
+func (m *QueryEpochProvisionResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEpochMintProvisionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEpochMintProvisionResponse.DiscardUnknown(m)
+func (m *QueryEpochProvisionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEpochProvisionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEpochMintProvisionResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryEpochProvisionResponse proto.InternalMessageInfo
 
-func (m *QueryEpochMintProvisionResponse) GetEpochMintProvision() types.DecCoin {
+func (m *QueryEpochProvisionResponse) GetMint() types.Coin {
 	if m != nil {
-		return m.EpochMintProvision
+		return m.Mint
 	}
-	return types.DecCoin{}
+	return types.Coin{}
+}
+
+func (m *QueryEpochProvisionResponse) GetBurn() types.Coin {
+	if m != nil {
+		return m.Burn
+	}
+	return types.Coin{}
+}
+
+func (m *QueryEpochProvisionResponse) GetReward() types.Coin {
+	if m != nil {
+		return m.Reward
+	}
+	return types.Coin{}
 }
 
 // QuerySkippedEpochsRequest is the request type for the Query/SkippedEpochs RPC
@@ -533,8 +551,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 func init() {
 	proto.RegisterType((*QueryPeriodRequest)(nil), "evmos.inflation.v1.QueryPeriodRequest")
 	proto.RegisterType((*QueryPeriodResponse)(nil), "evmos.inflation.v1.QueryPeriodResponse")
-	proto.RegisterType((*QueryEpochMintProvisionRequest)(nil), "evmos.inflation.v1.QueryEpochMintProvisionRequest")
-	proto.RegisterType((*QueryEpochMintProvisionResponse)(nil), "evmos.inflation.v1.QueryEpochMintProvisionResponse")
+	proto.RegisterType((*QueryEpochProvisionRequest)(nil), "evmos.inflation.v1.QueryEpochProvisionRequest")
+	proto.RegisterType((*QueryEpochProvisionResponse)(nil), "evmos.inflation.v1.QueryEpochProvisionResponse")
 	proto.RegisterType((*QuerySkippedEpochsRequest)(nil), "evmos.inflation.v1.QuerySkippedEpochsRequest")
 	proto.RegisterType((*QuerySkippedEpochsResponse)(nil), "evmos.inflation.v1.QuerySkippedEpochsResponse")
 	proto.RegisterType((*QueryCirculatingSupplyRequest)(nil), "evmos.inflation.v1.QueryCirculatingSupplyRequest")
@@ -548,50 +566,52 @@ func init() {
 func init() { proto.RegisterFile("evmos/inflation/v1/query.proto", fileDescriptor_91b9f1b5d47c7fd7) }
 
 var fileDescriptor_91b9f1b5d47c7fd7 = []byte{
-	// 681 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x95, 0xbf, 0x6e, 0xd3, 0x40,
-	0x1c, 0xc7, 0x73, 0xa8, 0x04, 0x71, 0xa8, 0x95, 0x7a, 0x54, 0x08, 0x4c, 0x71, 0x2a, 0x0b, 0x4a,
-	0x55, 0xe8, 0x1d, 0x49, 0x17, 0xe6, 0x16, 0x90, 0x18, 0x10, 0x25, 0x15, 0x0b, 0x4b, 0xe4, 0xb8,
-	0x87, 0x7b, 0x6a, 0x73, 0x77, 0xf5, 0x39, 0x16, 0x1d, 0x90, 0x10, 0xbc, 0x00, 0x12, 0x1b, 0x03,
-	0x0b, 0x03, 0x52, 0x17, 0x5e, 0xa3, 0x63, 0x25, 0x16, 0xc4, 0x50, 0x50, 0xc3, 0x83, 0x20, 0x9f,
-	0xcf, 0x69, 0x5c, 0x9f, 0xd3, 0x76, 0x60, 0x49, 0x9c, 0xdf, 0xdf, 0xaf, 0xbf, 0xbe, 0x8f, 0x03,
-	0x5d, 0x9a, 0xf4, 0x84, 0x22, 0x8c, 0xbf, 0xde, 0xf6, 0x63, 0x26, 0x38, 0x49, 0x9a, 0x64, 0xa7,
-	0x4f, 0xa3, 0x5d, 0x2c, 0x23, 0x11, 0x0b, 0x84, 0x74, 0x1e, 0x0f, 0xf3, 0x38, 0x69, 0x3a, 0x6e,
-	0x20, 0x54, 0xda, 0xd4, 0xf5, 0x15, 0x25, 0x49, 0xb3, 0x4b, 0x63, 0xbf, 0x49, 0x02, 0xc1, 0x78,
-	0xd6, 0xe3, 0xcc, 0x59, 0x66, 0x86, 0x94, 0x53, 0xc5, 0x94, 0xa9, 0x98, 0x09, 0x45, 0x28, 0xf4,
-	0x25, 0x49, 0xaf, 0x4c, 0x74, 0x36, 0x14, 0x22, 0xdc, 0xa6, 0xc4, 0x97, 0x8c, 0xf8, 0x9c, 0x8b,
-	0x58, 0x77, 0x9b, 0x1e, 0x6f, 0x06, 0xa2, 0x17, 0xa9, 0xb0, 0x35, 0x1a, 0x31, 0xb1, 0xd1, 0xa6,
-	0x3b, 0x7d, 0xaa, 0x62, 0x6f, 0x09, 0x5e, 0x2d, 0x44, 0x95, 0x14, 0x5c, 0x51, 0x74, 0x0d, 0xd6,
-	0xa5, 0x8e, 0x5c, 0x07, 0x73, 0x60, 0x61, 0xa2, 0x6d, 0x7e, 0x79, 0x73, 0xd0, 0xd5, 0xe5, 0x8f,
-	0xa5, 0x08, 0x36, 0x9f, 0x31, 0x1e, 0xaf, 0x45, 0x22, 0x61, 0x8a, 0x09, 0x9e, 0x0f, 0xfc, 0x06,
-	0x60, 0xa3, 0xb2, 0xc4, 0x4c, 0xff, 0x00, 0xe0, 0x0c, 0x4d, 0xd3, 0x9d, 0x1e, 0xe3, 0x71, 0x47,
-	0xe6, 0x05, 0x7a, 0xd9, 0x95, 0xd6, 0x2c, 0xce, 0x0c, 0xc2, 0xa9, 0x41, 0xd8, 0x18, 0x84, 0x1f,
-	0xd1, 0x60, 0x55, 0x30, 0xbe, 0xb2, 0xbc, 0x7f, 0xd8, 0xa8, 0xed, 0xfd, 0x6e, 0xdc, 0x0b, 0x59,
-	0xbc, 0xd9, 0xef, 0xe2, 0x40, 0xf4, 0x88, 0x31, 0x34, 0xfb, 0x5a, 0x52, 0x1b, 0x5b, 0x24, 0xde,
-	0x95, 0x54, 0xe5, 0x3d, 0xaa, 0x8d, 0x68, 0x49, 0x8d, 0x77, 0x13, 0xde, 0xd0, 0x42, 0xd7, 0xb7,
-	0x98, 0x94, 0x74, 0x43, 0xeb, 0x55, 0xf9, 0x6d, 0xac, 0x42, 0xc7, 0x96, 0x34, 0x37, 0x70, 0x07,
-	0x4e, 0xa9, 0x2c, 0xd1, 0xd1, 0x83, 0x95, 0xb1, 0x69, 0x52, 0x8d, 0x96, 0x7b, 0x0d, 0x78, 0x4b,
-	0x0f, 0x59, 0x65, 0x51, 0xd0, 0x4f, 0x9f, 0x25, 0x0f, 0xd7, 0xfb, 0x52, 0x6e, 0xef, 0xe6, 0x5b,
-	0xbe, 0x02, 0xe3, 0xa7, 0xa5, 0xc2, 0xac, 0x7a, 0x07, 0x20, 0x0a, 0x8e, 0xb3, 0x1d, 0xa5, 0xd3,
-	0xff, 0xcf, 0xa9, 0xe9, 0xe0, 0xa4, 0x94, 0xa1, 0x51, 0x4f, 0xf3, 0x03, 0xd9, 0xf6, 0x63, 0x9a,
-	0xdf, 0x82, 0x32, 0x46, 0x9d, 0x48, 0x1a, 0xf5, 0x2f, 0xe1, 0xd4, 0xf0, 0x18, 0x77, 0x22, 0x3f,
-	0xa6, 0x5a, 0xf8, 0xe5, 0x15, 0x9c, 0x4a, 0xfb, 0x75, 0xd8, 0x98, 0x3f, 0x9b, 0xb4, 0xf6, 0x24,
-	0x1b, 0x1d, 0x7f, 0x7c, 0x96, 0xfd, 0xc8, 0xef, 0x0d, 0x9f, 0xd9, 0xf3, 0xfc, 0x2c, 0x9b, 0xa8,
-	0xd1, 0xf0, 0x10, 0xd6, 0xa5, 0x8e, 0x18, 0xd3, 0x1c, 0x5c, 0x66, 0x12, 0x67, 0x3d, 0x2b, 0x13,
-	0xa9, 0xae, 0xb6, 0xa9, 0x6f, 0x7d, 0xb9, 0x04, 0x2f, 0xea, 0x89, 0xe8, 0x2d, 0xac, 0x67, 0x84,
-	0xa0, 0x79, 0x5b, 0x77, 0x19, 0x2c, 0xe7, 0xee, 0xa9, 0x75, 0x99, 0x3c, 0xcf, 0x7b, 0xff, 0xe3,
-	0xef, 0xa7, 0x0b, 0xb3, 0xc8, 0x21, 0x16, 0xec, 0x33, 0xec, 0xd0, 0x77, 0x00, 0x51, 0x99, 0x27,
-	0xd4, 0xaa, 0xdc, 0x51, 0xc9, 0xa7, 0xb3, 0x7c, 0xae, 0x1e, 0xa3, 0xf1, 0x81, 0xd6, 0xb8, 0x88,
-	0x16, 0x6c, 0x1a, 0x6d, 0x24, 0xa3, 0xcf, 0x00, 0x4e, 0x16, 0xd8, 0x41, 0x4b, 0x95, 0x8b, 0x6d,
-	0x00, 0x3a, 0xf8, 0xac, 0xe5, 0x46, 0xe2, 0xa2, 0x96, 0x78, 0x1b, 0x79, 0x36, 0x89, 0x45, 0x58,
-	0xd1, 0x1e, 0x80, 0xd3, 0x25, 0xe2, 0x50, 0xb3, 0x72, 0x63, 0x15, 0xbf, 0x4e, 0xeb, 0x3c, 0x2d,
-	0x46, 0x28, 0xd6, 0x42, 0x17, 0xd0, 0xbc, 0x4d, 0x68, 0x99, 0x74, 0xed, 0x64, 0x01, 0xae, 0x31,
-	0x4e, 0xda, 0x08, 0x1d, 0xe3, 0xa4, 0x95, 0xd9, 0xf1, 0x4e, 0x16, 0x69, 0xd6, 0x5c, 0x68, 0x56,
-	0xc6, 0x71, 0x31, 0x0a, 0xe9, 0x38, 0x2e, 0x0a, 0xd8, 0x9e, 0xc2, 0x45, 0x86, 0xeb, 0x93, 0xfd,
-	0x23, 0x17, 0x1c, 0x1c, 0xb9, 0xe0, 0xcf, 0x91, 0x0b, 0x3e, 0x0e, 0xdc, 0xda, 0xc1, 0xc0, 0xad,
-	0xfd, 0x1c, 0xb8, 0xb5, 0x57, 0xf7, 0x47, 0x5e, 0x2c, 0x59, 0x7f, 0xf6, 0x99, 0x34, 0x5b, 0xe4,
-	0xcd, 0xc8, 0x2c, 0xfd, 0x8a, 0xe9, 0xd6, 0xf5, 0x5f, 0xe4, 0xf2, 0xbf, 0x00, 0x00, 0x00, 0xff,
-	0xff, 0x68, 0xc2, 0xf7, 0x19, 0xce, 0x07, 0x00, 0x00,
+	// 713 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x95, 0xcf, 0x4f, 0x13, 0x4f,
+	0x18, 0xc6, 0xbb, 0x7c, 0xf9, 0xd6, 0x38, 0x06, 0x12, 0x46, 0x62, 0x60, 0xa9, 0x5b, 0xb2, 0xca,
+	0x8f, 0x88, 0xcc, 0xa4, 0xe5, 0xe2, 0x19, 0xd4, 0xc4, 0x93, 0xb8, 0xc4, 0x8b, 0x07, 0x9b, 0xed,
+	0x76, 0x5c, 0x26, 0xd0, 0x9d, 0x65, 0x67, 0x5b, 0xe5, 0x60, 0x62, 0xbc, 0x9b, 0x98, 0x78, 0xf3,
+	0xe0, 0xc5, 0x1b, 0xff, 0x85, 0x37, 0x8e, 0x24, 0x5e, 0x8c, 0x07, 0x34, 0xe0, 0x1f, 0x62, 0xf6,
+	0xdd, 0xb7, 0xa5, 0xdb, 0x6e, 0x4b, 0x4d, 0xb8, 0xc0, 0x76, 0xde, 0xf7, 0x7d, 0xe6, 0xe9, 0x33,
+	0xfb, 0x99, 0x12, 0x4b, 0xb4, 0x9b, 0x4a, 0x73, 0x19, 0xbc, 0xda, 0x77, 0x63, 0xa9, 0x02, 0xde,
+	0xae, 0xf0, 0x83, 0x96, 0x88, 0x0e, 0x59, 0x18, 0xa9, 0x58, 0x51, 0x0a, 0x75, 0xd6, 0xad, 0xb3,
+	0x76, 0xc5, 0xb4, 0x3c, 0xa5, 0x93, 0xa1, 0xba, 0xab, 0x05, 0x6f, 0x57, 0xea, 0x22, 0x76, 0x2b,
+	0xdc, 0x53, 0x32, 0x48, 0x67, 0xcc, 0xc5, 0x1c, 0x4d, 0x5f, 0x04, 0x42, 0x4b, 0x8d, 0x1d, 0xb3,
+	0xbe, 0xf2, 0x15, 0x3c, 0xf2, 0xe4, 0x09, 0x57, 0x4b, 0xbe, 0x52, 0xfe, 0xbe, 0xe0, 0x6e, 0x28,
+	0xb9, 0x1b, 0x04, 0x2a, 0x86, 0x69, 0x9c, 0xb1, 0x67, 0x09, 0x7d, 0x96, 0x18, 0xdb, 0x16, 0x91,
+	0x54, 0x0d, 0x47, 0x1c, 0xb4, 0x84, 0x8e, 0xed, 0x75, 0x72, 0x33, 0xb3, 0xaa, 0x43, 0x15, 0x68,
+	0x41, 0x6f, 0x91, 0x62, 0x08, 0x2b, 0x73, 0xc6, 0xa2, 0xb1, 0x3a, 0xe9, 0xe0, 0x27, 0xbb, 0x44,
+	0x4c, 0x68, 0x7f, 0x14, 0x2a, 0x6f, 0x77, 0x3b, 0x52, 0x6d, 0xa9, 0xa5, 0x0a, 0x3a, 0x62, 0xdf,
+	0x26, 0xc8, 0x42, 0x6e, 0x19, 0x55, 0x5f, 0x92, 0xc9, 0xa6, 0x0c, 0x62, 0xd0, 0xbc, 0x51, 0x9d,
+	0x67, 0x69, 0x0e, 0x2c, 0xc9, 0x81, 0x61, 0x0e, 0x6c, 0x4b, 0xc9, 0x60, 0x93, 0x1f, 0x9f, 0x96,
+	0x0b, 0x47, 0xbf, 0xca, 0x2b, 0xbe, 0x8c, 0x77, 0x5b, 0x75, 0xe6, 0xa9, 0x26, 0xc7, 0xd0, 0xd2,
+	0x7f, 0xeb, 0xba, 0xb1, 0xc7, 0xe3, 0xc3, 0x50, 0x68, 0x18, 0x70, 0x40, 0x37, 0xd1, 0xaf, 0xb7,
+	0xa2, 0x60, 0x6e, 0xe2, 0xea, 0xf5, 0x13, 0x5d, 0x5a, 0x27, 0xc5, 0x48, 0xbc, 0x76, 0xa3, 0xc6,
+	0xdc, 0x7f, 0x57, 0xbe, 0x03, 0x2a, 0xdb, 0x0b, 0x64, 0x1e, 0x22, 0xdc, 0xd9, 0x93, 0x61, 0x28,
+	0x1a, 0x90, 0xa4, 0xee, 0x04, 0xbc, 0x85, 0xf1, 0xf7, 0x15, 0x31, 0xde, 0x25, 0x32, 0xad, 0xd3,
+	0x42, 0x4d, 0x40, 0x05, 0x0f, 0x6f, 0x4a, 0xf7, 0xb6, 0xdb, 0x65, 0x72, 0x1b, 0x44, 0xb6, 0x64,
+	0xe4, 0xb5, 0x92, 0x37, 0x2c, 0xf0, 0x77, 0x5a, 0x61, 0xb8, 0x7f, 0xd8, 0xd9, 0xe5, 0xab, 0x41,
+	0xac, 0x61, 0x1d, 0xb8, 0xd5, 0x3b, 0x83, 0x50, 0xef, 0xa2, 0x5a, 0xd3, 0x50, 0xc6, 0x83, 0x2d,
+	0xe5, 0xc6, 0xf2, 0x50, 0x78, 0x90, 0xcc, 0x06, 0x26, 0xb3, 0x36, 0x46, 0x32, 0x38, 0xa3, 0x9d,
+	0x19, 0xaf, 0xdf, 0x4a, 0x37, 0xa8, 0x27, 0x1d, 0x4c, 0x1c, 0x37, 0x16, 0x9d, 0xaf, 0xa0, 0x31,
+	0xa8, 0xbe, 0x22, 0xba, 0x7f, 0x4e, 0xa6, 0xbb, 0x70, 0xd5, 0x22, 0x37, 0x16, 0x60, 0xfc, 0xfa,
+	0x26, 0x4b, 0xac, 0xfd, 0x3c, 0x2d, 0x2f, 0x8f, 0x67, 0xcd, 0x99, 0x92, 0xbd, 0xf2, 0x17, 0x84,
+	0xb9, 0x91, 0xdb, 0xec, 0x9e, 0xd9, 0xd3, 0x0e, 0x61, 0xb8, 0x8a, 0x1e, 0x1e, 0x90, 0x62, 0x08,
+	0x2b, 0x18, 0x9a, 0xc9, 0x06, 0x6f, 0x0a, 0x96, 0xce, 0x6c, 0x4e, 0x26, 0xbe, 0x1c, 0xec, 0xaf,
+	0x7e, 0xb8, 0x46, 0xfe, 0x07, 0x45, 0xfa, 0x96, 0x14, 0x53, 0x6e, 0xe9, 0x72, 0xde, 0xf4, 0x20,
+	0xee, 0xe6, 0xca, 0xa5, 0x7d, 0xa9, 0x3d, 0xdb, 0x7e, 0xff, 0xfd, 0xcf, 0xa7, 0x89, 0x12, 0x35,
+	0x79, 0xce, 0x65, 0x94, 0x5e, 0x06, 0xf4, 0x8b, 0x41, 0xa6, 0xb3, 0xa4, 0x53, 0x36, 0x54, 0x3f,
+	0xf7, 0xc6, 0x30, 0xf9, 0xd8, 0xfd, 0xe8, 0x6b, 0x0d, 0x7c, 0x2d, 0xd1, 0x3b, 0x79, 0xbe, 0xe0,
+	0xad, 0xaf, 0x85, 0x5d, 0x37, 0x9f, 0x0d, 0x32, 0x95, 0x41, 0x85, 0xae, 0x0f, 0xdd, 0x2f, 0x8f,
+	0x37, 0x93, 0x8d, 0xdb, 0x8e, 0xee, 0xee, 0x81, 0xbb, 0xbb, 0xd4, 0xce, 0x73, 0x97, 0x65, 0x93,
+	0x1e, 0x19, 0x64, 0x66, 0x00, 0x30, 0x5a, 0x19, 0xba, 0xe3, 0x30, 0x5c, 0xcd, 0xea, 0xbf, 0x8c,
+	0xa0, 0x51, 0x06, 0x46, 0x57, 0xe9, 0x72, 0x9e, 0xd1, 0x41, 0xb0, 0x21, 0xc9, 0x0c, 0x4b, 0x23,
+	0x92, 0xcc, 0x03, 0x72, 0x44, 0x92, 0xb9, 0x88, 0x8e, 0x4e, 0x32, 0x0b, 0x2f, 0x60, 0x00, 0x68,
+	0x8c, 0xc2, 0xa0, 0x97, 0xc9, 0x51, 0x18, 0x64, 0x28, 0xbd, 0x04, 0x83, 0x94, 0xce, 0xc7, 0xc7,
+	0x67, 0x96, 0x71, 0x72, 0x66, 0x19, 0xbf, 0xcf, 0x2c, 0xe3, 0xe3, 0xb9, 0x55, 0x38, 0x39, 0xb7,
+	0x0a, 0x3f, 0xce, 0xad, 0xc2, 0x8b, 0xfb, 0x3d, 0xf7, 0x48, 0x3a, 0x9f, 0xfe, 0x6d, 0x57, 0xaa,
+	0xfc, 0x4d, 0x8f, 0x16, 0xdc, 0x28, 0xf5, 0x22, 0xfc, 0x4e, 0x6f, 0xfc, 0x0d, 0x00, 0x00, 0xff,
+	0xff, 0xa4, 0x9a, 0x40, 0xda, 0x53, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -608,8 +628,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Period retrieves current period.
 	Period(ctx context.Context, in *QueryPeriodRequest, opts ...grpc.CallOption) (*QueryPeriodResponse, error)
-	// EpochMintProvision retrieves current minting epoch provision value.
-	EpochMintProvision(ctx context.Context, in *QueryEpochMintProvisionRequest, opts ...grpc.CallOption) (*QueryEpochMintProvisionResponse, error)
+	// EpochProvision retrieves current mint/burn/reward epoch provision value.
+	EpochProvision(ctx context.Context, in *QueryEpochProvisionRequest, opts ...grpc.CallOption) (*QueryEpochProvisionResponse, error)
 	// SkippedEpochs retrieves the total number of skipped epochs.
 	SkippedEpochs(ctx context.Context, in *QuerySkippedEpochsRequest, opts ...grpc.CallOption) (*QuerySkippedEpochsResponse, error)
 	// CirculatingSupply retrieves the total number of tokens that are in
@@ -638,9 +658,9 @@ func (c *queryClient) Period(ctx context.Context, in *QueryPeriodRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) EpochMintProvision(ctx context.Context, in *QueryEpochMintProvisionRequest, opts ...grpc.CallOption) (*QueryEpochMintProvisionResponse, error) {
-	out := new(QueryEpochMintProvisionResponse)
-	err := c.cc.Invoke(ctx, "/evmos.inflation.v1.Query/EpochMintProvision", in, out, opts...)
+func (c *queryClient) EpochProvision(ctx context.Context, in *QueryEpochProvisionRequest, opts ...grpc.CallOption) (*QueryEpochProvisionResponse, error) {
+	out := new(QueryEpochProvisionResponse)
+	err := c.cc.Invoke(ctx, "/evmos.inflation.v1.Query/EpochProvision", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -687,8 +707,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 type QueryServer interface {
 	// Period retrieves current period.
 	Period(context.Context, *QueryPeriodRequest) (*QueryPeriodResponse, error)
-	// EpochMintProvision retrieves current minting epoch provision value.
-	EpochMintProvision(context.Context, *QueryEpochMintProvisionRequest) (*QueryEpochMintProvisionResponse, error)
+	// EpochProvision retrieves current mint/burn/reward epoch provision value.
+	EpochProvision(context.Context, *QueryEpochProvisionRequest) (*QueryEpochProvisionResponse, error)
 	// SkippedEpochs retrieves the total number of skipped epochs.
 	SkippedEpochs(context.Context, *QuerySkippedEpochsRequest) (*QuerySkippedEpochsResponse, error)
 	// CirculatingSupply retrieves the total number of tokens that are in
@@ -707,8 +727,8 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Period(ctx context.Context, req *QueryPeriodRequest) (*QueryPeriodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Period not implemented")
 }
-func (*UnimplementedQueryServer) EpochMintProvision(ctx context.Context, req *QueryEpochMintProvisionRequest) (*QueryEpochMintProvisionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EpochMintProvision not implemented")
+func (*UnimplementedQueryServer) EpochProvision(ctx context.Context, req *QueryEpochProvisionRequest) (*QueryEpochProvisionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EpochProvision not implemented")
 }
 func (*UnimplementedQueryServer) SkippedEpochs(ctx context.Context, req *QuerySkippedEpochsRequest) (*QuerySkippedEpochsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SkippedEpochs not implemented")
@@ -745,20 +765,20 @@ func _Query_Period_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_EpochMintProvision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEpochMintProvisionRequest)
+func _Query_EpochProvision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEpochProvisionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).EpochMintProvision(ctx, in)
+		return srv.(QueryServer).EpochProvision(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/evmos.inflation.v1.Query/EpochMintProvision",
+		FullMethod: "/evmos.inflation.v1.Query/EpochProvision",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EpochMintProvision(ctx, req.(*QueryEpochMintProvisionRequest))
+		return srv.(QueryServer).EpochProvision(ctx, req.(*QueryEpochProvisionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -844,8 +864,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Period_Handler,
 		},
 		{
-			MethodName: "EpochMintProvision",
-			Handler:    _Query_EpochMintProvision_Handler,
+			MethodName: "EpochProvision",
+			Handler:    _Query_EpochProvision_Handler,
 		},
 		{
 			MethodName: "SkippedEpochs",
@@ -919,7 +939,7 @@ func (m *QueryPeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEpochMintProvisionRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryEpochProvisionRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -929,12 +949,12 @@ func (m *QueryEpochMintProvisionRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEpochMintProvisionRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEpochProvisionRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEpochMintProvisionRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEpochProvisionRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -942,7 +962,7 @@ func (m *QueryEpochMintProvisionRequest) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEpochMintProvisionResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryEpochProvisionResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -952,18 +972,38 @@ func (m *QueryEpochMintProvisionResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEpochMintProvisionResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEpochProvisionResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEpochMintProvisionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEpochProvisionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.EpochMintProvision.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Reward.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	{
+		size, err := m.Burn.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size, err := m.Mint.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -1226,7 +1266,7 @@ func (m *QueryPeriodResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryEpochMintProvisionRequest) Size() (n int) {
+func (m *QueryEpochProvisionRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1235,13 +1275,17 @@ func (m *QueryEpochMintProvisionRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryEpochMintProvisionResponse) Size() (n int) {
+func (m *QueryEpochProvisionResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.EpochMintProvision.Size()
+	l = m.Mint.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	l = m.Burn.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	l = m.Reward.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
@@ -1452,7 +1496,7 @@ func (m *QueryPeriodResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEpochMintProvisionRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryEpochProvisionRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1475,10 +1519,10 @@ func (m *QueryEpochMintProvisionRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEpochMintProvisionRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEpochProvisionRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEpochMintProvisionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEpochProvisionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1502,7 +1546,7 @@ func (m *QueryEpochMintProvisionRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEpochMintProvisionResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryEpochProvisionResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1525,15 +1569,15 @@ func (m *QueryEpochMintProvisionResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEpochMintProvisionResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEpochProvisionResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEpochMintProvisionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEpochProvisionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EpochMintProvision", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Mint", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1560,7 +1604,73 @@ func (m *QueryEpochMintProvisionResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.EpochMintProvision.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Mint.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Burn", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Burn.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reward", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Reward.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

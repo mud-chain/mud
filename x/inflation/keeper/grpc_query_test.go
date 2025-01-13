@@ -63,8 +63,8 @@ func (suite *KeeperTestSuite) TestPeriod() { //nolint:dupl
 
 func (suite *KeeperTestSuite) TestEpochMintProvision() {
 	var (
-		req    *types.QueryEpochMintProvisionRequest
-		expRes *types.QueryEpochMintProvisionResponse
+		req    *types.QueryEpochProvisionRequest
+		expRes *types.QueryEpochProvisionResponse
 	)
 
 	testCases := []struct {
@@ -75,16 +75,20 @@ func (suite *KeeperTestSuite) TestEpochMintProvision() {
 		{
 			"default epochMintProvision",
 			func() {
-				defaultEpochMintProvision := types.EpochProvision(
-					sdk.Coin{
-						Denom:  config.BaseDenom,
-						Amount: sdk.MustNewDecFromStr("37500000000000000000000000").TruncateInt(),
+				req = &types.QueryEpochProvisionRequest{}
+				expRes = &types.QueryEpochProvisionResponse{
+					Mint: sdk.Coin{
+						Denom:  types.DefaultInflationDenom,
+						Amount: sdk.MustNewDecFromStr("102739726027397260273972").TruncateInt(),
 					},
-					365,
-				)
-				req = &types.QueryEpochMintProvisionRequest{}
-				expRes = &types.QueryEpochMintProvisionResponse{
-					EpochMintProvision: sdk.NewDecCoinFromDec(types.DefaultInflationDenom, sdk.NewDecFromInt(defaultEpochMintProvision.Amount)),
+					Reward: sdk.Coin{
+						Denom:  types.DefaultInflationDenom,
+						Amount: sdk.MustNewDecFromStr("547945205479452").TruncateInt(),
+					},
+					Burn: sdk.Coin{
+						Denom:  types.DefaultInflationDenom,
+						Amount: sdk.MustNewDecFromStr("102739725479452054794520").TruncateInt(),
+					},
 				}
 			},
 			true,
@@ -97,7 +101,7 @@ func (suite *KeeperTestSuite) TestEpochMintProvision() {
 			ctx := sdk.WrapSDKContext(suite.ctx)
 			tc.malleate()
 
-			res, err := suite.queryClient.EpochMintProvision(ctx, req)
+			res, err := suite.queryClient.EpochProvision(ctx, req)
 			if tc.expPass {
 				suite.Require().NoError(err)
 				suite.Require().Equal(expRes, res)

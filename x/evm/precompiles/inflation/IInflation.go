@@ -29,6 +29,12 @@ var (
 	_ = abi.ConvertType
 )
 
+// Coin is an auto generated low-level Go binding around an user-defined struct.
+type Coin struct {
+	Denom  string
+	Amount *big.Int
+}
+
 // Dec is an auto generated low-level Go binding around an user-defined struct.
 type Dec struct {
 	Amount    *big.Int
@@ -51,9 +57,16 @@ type Params struct {
 	InflationDecay  Dec
 }
 
+// Provision is an auto generated low-level Go binding around an user-defined struct.
+type Provision struct {
+	Mint   Coin
+	Reward Coin
+	Burn   Coin
+}
+
 // IInflationMetaData contains all meta data concerning the IInflation contract.
 var IInflationMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"name\":\"circulatingSupply\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin\",\"name\":\"circulatingSupply\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"epochMintProvision\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin\",\"name\":\"epochMintProvision\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"inflationRate\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"inflationRate\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"params\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"stakingRewards\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"communityPool\",\"type\":\"tuple\"},{\"internalType\":\"bool\",\"name\":\"enableInflation\",\"type\":\"bool\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"inflationMax\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"inflationDecay\",\"type\":\"tuple\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"period\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"period\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"skippedEpochs\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"skippedEpochs\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"name\":\"circulatingSupply\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDecCoin\",\"name\":\"circulatingSupply\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"epochProvision\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"mint\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"reward\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"burn\",\"type\":\"tuple\"}],\"internalType\":\"structProvision\",\"name\":\"provision\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"inflationRate\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"inflationRate\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"params\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"stakingRewards\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"communityPool\",\"type\":\"tuple\"},{\"internalType\":\"bool\",\"name\":\"enableInflation\",\"type\":\"bool\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"inflationMax\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structDec\",\"name\":\"inflationDecay\",\"type\":\"tuple\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"period\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"period\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"skippedEpochs\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"skippedEpochs\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // IInflationABI is the input ABI used to generate the binding from.
@@ -233,35 +246,35 @@ func (_IInflation *IInflationCallerSession) CirculatingSupply() (DecCoin, error)
 	return _IInflation.Contract.CirculatingSupply(&_IInflation.CallOpts)
 }
 
-// EpochMintProvision is a free data retrieval call binding the contract method 0x49627060.
+// EpochProvision is a free data retrieval call binding the contract method 0xda83419a.
 //
-// Solidity: function epochMintProvision() view returns((string,uint256,uint8) epochMintProvision)
-func (_IInflation *IInflationCaller) EpochMintProvision(opts *bind.CallOpts) (DecCoin, error) {
+// Solidity: function epochProvision() view returns(((string,uint256),(string,uint256),(string,uint256)) provision)
+func (_IInflation *IInflationCaller) EpochProvision(opts *bind.CallOpts) (Provision, error) {
 	var out []interface{}
-	err := _IInflation.contract.Call(opts, &out, "epochMintProvision")
+	err := _IInflation.contract.Call(opts, &out, "epochProvision")
 
 	if err != nil {
-		return *new(DecCoin), err
+		return *new(Provision), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(DecCoin)).(*DecCoin)
+	out0 := *abi.ConvertType(out[0], new(Provision)).(*Provision)
 
 	return out0, err
 
 }
 
-// EpochMintProvision is a free data retrieval call binding the contract method 0x49627060.
+// EpochProvision is a free data retrieval call binding the contract method 0xda83419a.
 //
-// Solidity: function epochMintProvision() view returns((string,uint256,uint8) epochMintProvision)
-func (_IInflation *IInflationSession) EpochMintProvision() (DecCoin, error) {
-	return _IInflation.Contract.EpochMintProvision(&_IInflation.CallOpts)
+// Solidity: function epochProvision() view returns(((string,uint256),(string,uint256),(string,uint256)) provision)
+func (_IInflation *IInflationSession) EpochProvision() (Provision, error) {
+	return _IInflation.Contract.EpochProvision(&_IInflation.CallOpts)
 }
 
-// EpochMintProvision is a free data retrieval call binding the contract method 0x49627060.
+// EpochProvision is a free data retrieval call binding the contract method 0xda83419a.
 //
-// Solidity: function epochMintProvision() view returns((string,uint256,uint8) epochMintProvision)
-func (_IInflation *IInflationCallerSession) EpochMintProvision() (DecCoin, error) {
-	return _IInflation.Contract.EpochMintProvision(&_IInflation.CallOpts)
+// Solidity: function epochProvision() view returns(((string,uint256),(string,uint256),(string,uint256)) provision)
+func (_IInflation *IInflationCallerSession) EpochProvision() (Provision, error) {
+	return _IInflation.Contract.EpochProvision(&_IInflation.CallOpts)
 }
 
 // InflationRate is a free data retrieval call binding the contract method 0x31f9e35b.

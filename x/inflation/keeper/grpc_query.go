@@ -36,16 +36,28 @@ func (k Keeper) Period(
 	return &types.QueryPeriodResponse{Period: period}, nil
 }
 
-// EpochMintProvision returns the EpochMintProvision of the inflation module.
-func (k Keeper) EpochMintProvision(
+// EpochProvision returns the EpochProvision of the inflation module.
+func (k Keeper) EpochProvision(
 	c context.Context,
-	_ *types.QueryEpochMintProvisionRequest,
-) (*types.QueryEpochMintProvisionResponse, error) {
+	_ *types.QueryEpochProvisionRequest,
+) (*types.QueryEpochProvisionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	epochMintProvision := k.GetEpochMintProvision(ctx)
-	coin := sdk.NewDecCoin(epochMintProvision.Denom, epochMintProvision.Amount)
+	params := k.GetParams(ctx)
+	bondedTokens := k.stakingKeeper.TotalBondedTokens(ctx)
+	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
+	inflationMaxAmount := sdk.NewDecFromInt(bondedTokens).Mul(params.InflationMax).QuoInt64(epochsPerPeriod).TruncateInt()
 
-	return &types.QueryEpochMintProvisionResponse{EpochMintProvision: coin}, nil
+	mint := k.GetEpochMintProvision(ctx)
+	reward := sdk.Coin{
+		Denom:  mint.Denom,
+		Amount: inflationMaxAmount,
+	}
+	burn := sdk.Coin{
+		Denom:  mint.Denom,
+		Amount: mint.Amount.Sub(reward.Amount),
+	}
+
+	return &types.QueryEpochProvisionResponse{Mint: mint, Reward: reward, Burn: burn}, nil
 }
 
 // SkippedEpochs returns the number of skipped Epochs of the inflation module.

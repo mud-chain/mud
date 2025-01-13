@@ -235,7 +235,7 @@ var _ = Describe("Inflation", Ordered, func() {
 							s.CommitAfter(time.Hour * 2) // commit after next full epoch
 						})
 
-						It("should recalculate the EpochMintProvision", func() {
+						It("should recalculate the EpochProvision", func() {
 							provisionAfter := s.app.InflationKeeper.GetEpochMintProvision(s.ctx)
 							expectAmount := sdkmath.NewInt(30000000).Mul(sdkmath.NewIntFromBigInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(evmostypes.BaseDenomUnit), nil)))
 							Expect(provisionAfter).ToNot(Equal(provision))

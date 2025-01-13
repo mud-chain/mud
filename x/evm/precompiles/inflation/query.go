@@ -7,19 +7,19 @@ import (
 )
 
 const (
-	PeriodGas             = 30_000
-	EpochMintProvisionGas = 50_000
-	SkippedEpochsGas      = 30_000
-	CirculatingSupplyGas  = 50_000
-	InflationRateGas      = 30_000
-	ParamsGas             = 50_000
+	PeriodGas            = 30_000
+	EpochProvisionGas    = 50_000
+	SkippedEpochsGas     = 30_000
+	CirculatingSupplyGas = 50_000
+	InflationRateGas     = 30_000
+	ParamsGas            = 50_000
 
-	PeriodMethodName             = "period"
-	EpochMintProvisionMethodName = "epochMintProvision"
-	SkippedEpochsMethodName      = "skippedEpochs"
-	CirculatingSupplyMethodName  = "circulatingSupply"
-	InflationRateMethodName      = "inflationRate"
-	ParamsMethodName             = "params"
+	PeriodMethodName            = "period"
+	EpochProvisionMethodName    = "epochProvision"
+	SkippedEpochsMethodName     = "skippedEpochs"
+	CirculatingSupplyMethodName = "circulatingSupply"
+	InflationRateMethodName     = "inflationRate"
+	ParamsMethodName            = "params"
 )
 
 // Period returns the current period
@@ -36,22 +36,33 @@ func (c *Contract) Period(ctx sdk.Context, _ *vm.EVM, _ *vm.Contract, _ bool) ([
 	return method.Outputs.Pack(res.Period)
 }
 
-// EpochMintProvision retrieves current minting epoch provision value.
-func (c *Contract) EpochMintProvision(ctx sdk.Context, _ *vm.EVM, _ *vm.Contract, _ bool) ([]byte, error) {
-	method := MustMethod(EpochMintProvisionMethodName)
+// EpochProvision retrieves current minting epoch provision value.
+func (c *Contract) EpochProvision(ctx sdk.Context, _ *vm.EVM, _ *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(EpochProvisionMethodName)
 
-	msg := &inflationtypes.QueryEpochMintProvisionRequest{}
+	msg := &inflationtypes.QueryEpochProvisionRequest{}
 
-	res, err := c.inflationKeeper.EpochMintProvision(ctx, msg)
+	res, err := c.inflationKeeper.EpochProvision(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
 
-	return method.Outputs.Pack(DecCoin{
-		Denom:     res.EpochMintProvision.Denom,
-		Amount:    res.EpochMintProvision.Amount.BigInt(),
-		Precision: uint8(sdk.Precision),
-	})
+	provision := Provision{
+		Mint: Coin{
+			Denom:  res.Mint.Denom,
+			Amount: res.Mint.Amount.BigInt(),
+		},
+		Reward: Coin{
+			Denom:  res.Mint.Denom,
+			Amount: res.Reward.Amount.BigInt(),
+		},
+		Burn: Coin{
+			Denom:  res.Mint.Denom,
+			Amount: res.Burn.Amount.BigInt(),
+		},
+	}
+
+	return method.Outputs.Pack(provision)
 }
 
 // SkippedEpochs retrieves the total number of skipped epochs.

@@ -39,7 +39,7 @@ func GetQueryCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		GetPeriod(),
-		GetEpochMintProvision(),
+		GetEpochProvision(),
 		GetSkippedEpochs(),
 		GetCirculatingSupply(),
 		GetInflationRate(),
@@ -79,11 +79,11 @@ func GetPeriod() *cobra.Command {
 	return cmd
 }
 
-// GetEpochMintProvision implements a command to return the current inflation
+// GetEpochProvision implements a command to return the current inflation
 // epoch provisions value.
-func GetEpochMintProvision() *cobra.Command {
+func GetEpochProvision() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "epoch-mint-provision",
+		Use:   "epoch-provision",
 		Short: "Query the current inflation epoch provisions value",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -94,13 +94,13 @@ func GetEpochMintProvision() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			req := &types.QueryEpochMintProvisionRequest{}
-			res, err := queryClient.EpochMintProvision(context.Background(), req)
+			req := &types.QueryEpochProvisionRequest{}
+			res, err := queryClient.EpochProvision(context.Background(), req)
 			if err != nil {
 				return err
 			}
 
-			return clientCtx.PrintString(fmt.Sprintf("%s\n", res.EpochMintProvision))
+			return clientCtx.PrintString(fmt.Sprintf("%s\n", res.String()))
 		},
 	}
 
