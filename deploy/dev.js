@@ -307,21 +307,28 @@ const main = async function () {
           if (Array.isArray(preMineAccounts)) {
             let duplicate = {};
             for (const ac of preMineAccounts) {
-              let address = ac;
+              let address, amount;
+              if(typeof ac === 'string') {
+                address = ac;
+                amount = preMinePerAccount || "10000000000000000000000000"
+              } else {
+                ({ address, amount } = ac);
+              }
               if (ac.length == 64) {
                 const wallet = new Wallet(ac);
                 address = ethToBech32(wallet.address, app.prefix);
               } else if (address.startsWith('0x')) {
-                address = ethToBech32(ac, app.prefix);
+                address = ethToBech32(address, app.prefix);
               }
               if (duplicate[address]) {
                 continue;
               }
               duplicate[address] = true;
-              if(address !== "mud1d4e35hk3gk4k6t5gh02dcm923z8ck86qq63aqs") {
-                accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), {base_account: {address}}));
+              // for inflation module account
+              if (address !== 'mud1d4e35hk3gk4k6t5gh02dcm923z8ck86qq63aqs') {
+                accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), { base_account: { address } }));
               }
-              balances.push(Object.assign(JSON.parse(JSON.stringify(balance)), { address }));
+              balances.push({ address, coins: app.denoms.map((denom) => ({ denom, amount })) });
             }
           }
 
@@ -337,14 +344,6 @@ const main = async function () {
               const address = curKeySeed.bip39Address;
               appState.auth.accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), { base_account: { address } }));
               appState.bank.balances.push(Object.assign(JSON.parse(JSON.stringify(balance)), { address }));
-            }
-          }
-
-          if (typeof preMinePerAccount === "string") {
-            for (let balances of appState.bank.balances) {
-              for (let coin of balances.coins) {
-                coin.amount = preMinePerAccount;
-              }
             }
           }
 
