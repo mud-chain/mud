@@ -17,19 +17,16 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	evmostypes "github.com/evmos/evmos/v12/types"
-
+	"github.com/evmos/evmos/v12/cmd/config"
 	"github.com/evmos/evmos/v12/x/inflation/types"
 )
-
-// 200M token at year 4 allocated to the team
-var teamAlloc = sdk.NewInt(200_000_000).Mul(evmostypes.PowerReduction)
 
 // MintAndAllocateInflation performs inflation minting and allocation
 func (k Keeper) MintAndAllocateInflation(
 	ctx sdk.Context,
+	bondedTokens sdkmath.Int,
 	coin sdk.Coin,
 	params types.Params,
 ) (
@@ -41,27 +38,39 @@ func (k Keeper) MintAndAllocateInflation(
 		return nil, nil, nil
 	}
 
+	distributionCoin := coin
+
 	// check inflation module has enough coin for burn and reward
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	if k.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom).Amount.LT(coin.Amount) {
-		return nil, nil, nil
+	leftCoin := k.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom)
+	if leftCoin.Amount.LT(coin.Amount) {
+		if leftCoin.Amount.IsZero() {
+			return nil, nil, nil
+		} else {
+			distributionCoin = leftCoin
+		}
 	}
 
-	// 1/3 will be directly burn, and 2/3 will be used to reward validators.
-	burnAmount := coin.Amount.QuoRaw(3)
-	burnCoins := sdk.Coins{
-		sdk.Coin{
-			Denom:  coin.Denom,
-			Amount: burnAmount,
-		},
-	}
-	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
-		return nil, nil, err
-	}
+	// If the amount of staking is excessive, we have an annualized upper limit.
+	// Once it exceeds this annualized upper limit, we will directly destroy the surplus coins.
+	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
+	inflationMaxAmount := sdk.NewDecFromInt(bondedTokens).Mul(params.InflationMax).QuoInt64(epochsPerPeriod).TruncateInt()
+	if distributionCoin.Amount.GT(inflationMaxAmount) {
+		burnAmount := distributionCoin.Amount.Sub(inflationMaxAmount)
+		burnCoins := sdk.Coins{
+			sdk.Coin{
+				Denom:  distributionCoin.Denom,
+				Amount: burnAmount,
+			},
+		}
+		if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
+			return nil, nil, err
+		}
 
-	distributionCoin := sdk.Coin{
-		Denom:  coin.Denom,
-		Amount: coin.Amount.Sub(burnAmount),
+		distributionCoin = sdk.Coin{
+			Denom:  distributionCoin.Denom,
+			Amount: inflationMaxAmount,
+		}
 	}
 
 	// Allocate minted coins according to allocation proportions (staking, community pool)
@@ -92,13 +101,15 @@ func (k Keeper) AllocateExponentialInflation(
 	// Allocate staking rewards into fee collector account
 	staking = sdk.Coins{k.GetProportions(ctx, mintedCoin, distribution.StakingRewards)}
 
-	if err := k.bankKeeper.SendCoinsFromModuleToModule(
-		ctx,
-		types.ModuleName,
-		k.feeCollectorName,
-		staking,
-	); err != nil {
-		return nil, nil, err
+	if !staking.IsZero() {
+		if err := k.bankKeeper.SendCoinsFromModuleToModule(
+			ctx,
+			types.ModuleName,
+			k.feeCollectorName,
+			staking,
+		); err != nil {
+			return nil, nil, err
+		}
 	}
 
 	communityPool = sdk.Coins{
@@ -108,20 +119,22 @@ func (k Keeper) AllocateExponentialInflation(
 		},
 	}
 
-	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	err = k.distrKeeper.FundCommunityPool(
-		ctx,
-		communityPool,
-		moduleAddr,
-	)
-	if err != nil {
-		return nil, nil, err
+	if !communityPool.IsZero() {
+		moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+		err = k.distrKeeper.FundCommunityPool(
+			ctx,
+			communityPool,
+			moduleAddr,
+		)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	return staking, communityPool, nil
 }
 
-// GetAllocationProportion calculates the proportion of coins that is to be
+// GetProportions calculates the proportion of coins that is to be
 // allocated during inflation for a given distribution.
 func (k Keeper) GetProportions(
 	_ sdk.Context,
@@ -147,35 +160,40 @@ func (k Keeper) GetCirculatingSupply(ctx sdk.Context, mintDenom string) sdk.Dec 
 	return circulatingSupply
 }
 
-// GetInflation get the epoch mint inflation
-func (k Keeper) GetInflation(ctx sdk.Context) (inflation sdk.Dec) {
+// GetInflationAmount get the inflation amount coin
+func (k Keeper) GetInflationAmount(ctx sdk.Context) (amount sdk.Coin) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyPrefixInflation)
+	bz := store.Get(types.KeyPrefixInflationAmount)
 	if len(bz) == 0 {
-		return sdk.ZeroDec()
+		return sdk.Coin{
+			Denom:  config.BaseDenom,
+			Amount: sdkmath.NewInt(0),
+		}
 	}
-	err := inflation.Unmarshal(bz)
+	err := amount.Unmarshal(bz)
 	if err != nil {
 		panic(err)
 	}
 
-	return inflation
+	return amount
 }
 
-// SetInflation set the epoch mint inflation
-func (k Keeper) SetInflation(ctx sdk.Context, inflation sdk.Dec) {
+// SetInflationAmount set the inflation amount coin
+func (k Keeper) SetInflationAmount(ctx sdk.Context, amount sdk.Coin) {
 	store := ctx.KVStore(k.storeKey)
-	bytes, err := inflation.Marshal()
+	bytes, err := amount.Marshal()
 	if err != nil {
 		panic(err)
 	}
-	store.Set(types.KeyPrefixInflation, bytes)
+	store.Set(types.KeyPrefixInflationAmount, bytes)
 }
 
 // GetEpochMintProvision get the epoch mint provision
 func (k Keeper) GetEpochMintProvision(ctx sdk.Context) (epochMintProvision sdk.Coin) {
-	inflation := types.NextInflationRate(k.GetParams(ctx), k.BondedRatio(ctx), k.GetInflation(ctx), k.GetEpochsPerPeriod(ctx))
-	epochMintProvision = types.EpochProvision(k.GetParams(ctx), k.stakingKeeper.StakingTokenSupply(ctx), k.GetEpochsPerPeriod(ctx), inflation)
+	inflationAmount := k.GetInflationAmount(ctx)
+	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
+
+	epochMintProvision = types.EpochProvision(inflationAmount, epochsPerPeriod)
 
 	return epochMintProvision
 }

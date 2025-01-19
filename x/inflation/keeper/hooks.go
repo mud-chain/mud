@@ -60,18 +60,13 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	}
 
 	// mint coins, update supply
-	totalStakingSupply := k.stakingKeeper.StakingTokenSupply(ctx)
+	bondedTokens := k.stakingKeeper.TotalBondedTokens(ctx)
 	period := k.GetPeriod(ctx)
 	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
-	bondedRatio := k.BondedRatio(ctx)
+	inflationAmount := k.GetInflationAmount(ctx)
+	mintedCoin := types.EpochProvision(inflationAmount, epochsPerPeriod)
 
-	inflation := k.GetInflation(ctx)
-	inflation = types.NextInflationRate(params, bondedRatio, inflation, epochsPerPeriod)
-	k.SetInflation(ctx, inflation)
-
-	mintedCoin := types.EpochProvision(params, totalStakingSupply, epochsPerPeriod, inflation)
-
-	staking, communityPool, err := k.MintAndAllocateInflation(ctx, mintedCoin, params)
+	staking, communityPool, err := k.MintAndAllocateInflation(ctx, bondedTokens, mintedCoin, params)
 	if err != nil {
 		panic(err)
 	}
@@ -89,6 +84,12 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	if epochNumber-epochsPerPeriod*int64(period)-int64(skippedEpochs) > epochsPerPeriod {
 		period++
 		k.SetPeriod(ctx, period)
+
+		nextInflationAmount := sdk.Coin{
+			Denom:  inflationAmount.Denom,
+			Amount: sdk.NewIntFromBigInt(sdk.NewDecFromInt(inflationAmount.Amount).Mul(params.InflationDecay).TruncateInt().BigInt()),
+		}
+		k.SetInflationAmount(ctx, nextInflationAmount)
 	}
 
 	defer func() {

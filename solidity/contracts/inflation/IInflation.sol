@@ -14,14 +14,20 @@ IInflation constant INFLATION_CONTRACT = IInflation(INFLATION_PRECOMPILE_ADDRESS
  * @dev Params defines the parameters for the auth module.
  */
 struct Params {
-    string mintDenom;
     Dec stakingRewards;
     Dec communityPool;
     bool enableInflation;
-    Dec inflationRateChange;
     Dec inflationMax;
-    Dec inflationMin;
-    Dec goalBonded;
+    Dec inflationDecay;
+}
+
+/**
+ * @dev Provision defines mint/burn/reward epoch provision value.
+ */
+struct Provision {
+    Coin mint;
+    Coin reward;
+    Coin burn;
 }
 
 interface IInflation {
@@ -31,9 +37,9 @@ interface IInflation {
     function period() external view returns (uint64 period);
 
     /**
-     * @dev epochMintProvision retrieves current minting epoch provision value.
+     * @dev epochProvision retrieves current mint/burn/reward epoch provision value.
      */
-    function epochMintProvision() external view returns (DecCoin memory epochMintProvision);
+    function epochProvision() external view returns (Provision memory provision);
 
     /**
      * @dev skippedEpochs retrieves the total number of skipped epochs.

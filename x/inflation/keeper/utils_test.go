@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -38,6 +39,9 @@ func (suite *KeeperTestSuite) DoSetupTest() {
 		epoch.CurrentEpochStartHeight = suite.ctx.BlockHeight()
 		suite.app.EpochsKeeper.SetEpochInfo(suite.ctx, epoch)
 	}
+
+	err := s.app.InflationKeeper.MintCoins(s.ctx, sdk.NewCoin(denomMint, types.DefaultInflationAmount))
+	s.Require().NoError(err)
 }
 
 func (suite *KeeperTestSuite) Commit() {

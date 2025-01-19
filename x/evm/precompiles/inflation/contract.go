@@ -36,8 +36,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case PeriodMethodName:
 		return PeriodGas
-	case EpochMintProvisionMethodName:
-		return EpochMintProvisionGas
+	case EpochProvisionMethodName:
+		return EpochProvisionGas
 	case SkippedEpochsMethodName:
 		return SkippedEpochsGas
 	case CirculatingSupplyMethodName:
@@ -65,8 +65,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case PeriodMethodName:
 			ret, err = c.Period(ctx, evm, contract, readonly)
-		case EpochMintProvisionMethodName:
-			ret, err = c.EpochMintProvision(ctx, evm, contract, readonly)
+		case EpochProvisionMethodName:
+			ret, err = c.EpochProvision(ctx, evm, contract, readonly)
 		case SkippedEpochsMethodName:
 			ret, err = c.SkippedEpochs(ctx, evm, contract, readonly)
 		case CirculatingSupplyMethodName:

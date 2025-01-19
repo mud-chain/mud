@@ -2,6 +2,9 @@ package keeper_test
 
 import (
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/evmos/evmos/v12/cmd/config"
+	evmostypes "github.com/evmos/evmos/v12/types"
 	"time"
 
 	epochstypes "github.com/evmos/evmos/v12/x/epochs/types"
@@ -29,9 +32,15 @@ func (suite *KeeperTestSuite) TestEpochIdentifierAfterEpochEnd() {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			suite.SetupTest()
 
+			// Mint coins to increase supply
+			mintDenom := config.BaseDenom
+			mintCoin := sdk.NewCoin(mintDenom, sdk.TokensFromConsensusPower(int64(400_000_000), evmostypes.PowerReduction))
+			err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
+			suite.Require().NoError(err)
+
 			params := suite.app.InflationKeeper.GetParams(suite.ctx)
 			params.EnableInflation = true
-			err := suite.app.InflationKeeper.SetParams(suite.ctx, params)
+			err = suite.app.InflationKeeper.SetParams(suite.ctx, params)
 			suite.Require().NoError(err)
 
 			futureCtx := suite.ctx.WithBlockTime(time.Now().Add(time.Hour))
@@ -176,11 +185,13 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 
 			if tc.periodChanges {
 				newProvision := suite.app.InflationKeeper.GetEpochMintProvision(suite.ctx)
+
+				inflationAmount := suite.app.InflationKeeper.GetInflationAmount(suite.ctx)
+				epochsPerPeriod := suite.app.InflationKeeper.GetEpochsPerPeriod(suite.ctx)
+
 				expectedProvision := types.EpochProvision(
-					suite.app.InflationKeeper.GetParams(suite.ctx),
-					suite.app.StakingKeeper.StakingTokenSupply(suite.ctx),
-					currentEpochPeriod,
-					suite.app.InflationKeeper.GetInflation(suite.ctx),
+					inflationAmount,
+					epochsPerPeriod,
 				)
 				suite.Require().Equal(expectedProvision, newProvision)
 				// mint provisions will change

@@ -2,7 +2,7 @@ syntax = "proto3";
 package evmos.inflation.v1;
 
 import "gogoproto/gogo.proto";
-
+import "cosmos/base/v1beta1/coin.proto";
 import "evmos/inflation/v1/inflation.proto";
 
 option go_package = "github.com/evmos/evmos/v12/x/inflation/types";
@@ -19,43 +19,26 @@ message GenesisState {
   int64 epochs_per_period = 4;
   // skipped_epochs is the number of epochs that have passed while inflation is disabled
   uint64 skipped_epochs = 5;
-  // current annual inflation rate
-  string inflation = 6 [
-    (gogoproto.moretags) = "yaml:\"inflation\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable)   = false
+  // inflation_amount inflation amount for tokens
+  cosmos.base.v1beta1.Coin inflation_amount = 6 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
   ];
 }
 
 // Params holds parameters for the inflation module.
 message Params {
-  // mint_denom specifies the type of coin to mint
-  string mint_denom = 1;
   // inflation_distribution of the minted denom
-  InflationDistribution inflation_distribution = 2 [(gogoproto.nullable) = false];
+  InflationDistribution inflation_distribution = 1 [(gogoproto.nullable) = false];
   // enable_inflation is the parameter that enables inflation and halts increasing the skipped_epochs
-  bool enable_inflation = 3;
-  // maximum annual change in inflation rate
-  string inflation_rate_change = 4 [
-    (gogoproto.moretags) = "yaml:\"inflation_rate_change\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  bool enable_inflation = 2;
   // maximum inflation rate
-  string inflation_max = 5 [
-    (gogoproto.moretags) = "yaml:\"inflation_max\"",
+  string inflation_max = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  // minimum inflation rate
-  string inflation_min = 6 [
-    (gogoproto.moretags) = "yaml:\"inflation_min\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  // goal of percent bonded cerbo
-  string goal_bonded = 7 [
-    (gogoproto.moretags) = "yaml:\"goal_bonded\"",
+  // inflation_decay inflation decay for next year
+  string inflation_decay = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];

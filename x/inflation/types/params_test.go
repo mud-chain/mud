@@ -20,10 +20,9 @@ func (suite *ParamsTestSuite) TestParamsValidate() {
 		StakingRewards: sdk.NewDecWithPrec(80, 2),
 		CommunityPool:  sdk.NewDecWithPrec(20, 2),
 	}
-	inflationRateChange := sdk.NewDecWithPrec(13, 2)
+
 	inflationMax := sdk.NewDecWithPrec(20, 2)
-	inflationMin := sdk.NewDecWithPrec(7, 2)
-	goalBonded := sdk.NewDecWithPrec(67, 2)
+	inflationDecay := sdk.NewDecWithPrec(8, 1)
 
 	testCases := []struct {
 		name     string
@@ -38,206 +37,79 @@ func (suite *ParamsTestSuite) TestParamsValidate() {
 		{
 			"valid",
 			NewParams(
-				"acbo",
 				validInflationDistribution,
 				true,
-				inflationRateChange,
 				inflationMax,
-				inflationMin,
-				goalBonded,
+				inflationDecay,
 			),
 			false,
 		},
 		{
 			"valid param literal",
 			Params{
-				MintDenom:             "acbo",
 				InflationDistribution: validInflationDistribution,
 				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
 				InflationMax:          inflationMax,
-				InflationMin:          inflationMin,
-				GoalBonded:            goalBonded,
+				InflationDecay:        inflationDecay,
 			},
 			false,
 		},
 		{
-			"invalid - denom",
-			NewParams(
-				"/acbo",
-				validInflationDistribution,
-				true,
-				inflationRateChange,
-				inflationMax,
-				inflationMin,
-				goalBonded,
-			),
-			true,
-		},
-		{
-			"invalid - denom",
-			Params{
-				MintDenom:             "",
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
-				InflationMax:          inflationMax,
-				InflationMin:          inflationMin,
-				GoalBonded:            goalBonded,
-			},
-			true,
-		},
-
-		{
 			"invalid - inflation distribution - negative staking rewards",
 			Params{
-				MintDenom: "acbo",
 				InflationDistribution: InflationDistribution{
 					StakingRewards: sdk.OneDec().Neg(),
 					CommunityPool:  sdk.NewDecWithPrec(20, 2),
 				},
-				EnableInflation:     true,
-				InflationRateChange: inflationRateChange,
-				InflationMax:        inflationMax,
-				InflationMin:        inflationMin,
-				GoalBonded:          goalBonded,
+				EnableInflation: true,
+				InflationMax:    inflationMax,
+				InflationDecay:  inflationDecay,
 			},
 			true,
 		},
 		{
 			"invalid - inflation distribution - negative community pool rewards",
 			Params{
-				MintDenom: "acbo",
 				InflationDistribution: InflationDistribution{
 					StakingRewards: sdk.NewDecWithPrec(80, 2),
 					CommunityPool:  sdk.OneDec().Neg(),
 				},
-				EnableInflation:     true,
-				InflationRateChange: inflationRateChange,
-				InflationMax:        inflationMax,
-				InflationMin:        inflationMin,
-				GoalBonded:          goalBonded,
+				EnableInflation: true,
+				InflationMax:    inflationMax,
+				InflationDecay:  inflationDecay,
 			},
 			true,
 		},
 		{
 			"invalid - inflation distribution - total distribution ratio unequal 1",
 			Params{
-				MintDenom: "acbo",
 				InflationDistribution: InflationDistribution{
 					StakingRewards: sdk.NewDecWithPrec(80, 2),
 					CommunityPool:  sdk.NewDecWithPrec(30, 2),
 				},
-				EnableInflation:     true,
-				InflationRateChange: inflationRateChange,
-				InflationMax:        inflationMax,
-				InflationMin:        inflationMin,
-				GoalBonded:          goalBonded,
-			},
-			true,
-		},
-		{
-			"invalid - inflation rate change - negative inflation rate change",
-			Params{
-				MintDenom:             "acbo",
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange.Neg(),
-				InflationMax:          inflationMax,
-				InflationMin:          inflationMin,
-				GoalBonded:            goalBonded,
-			},
-			true,
-		},
-		{
-			"invalid - inflation rate change - inflation rate change is greater than 1",
-			Params{
-				MintDenom:             "acbo",
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-				InflationRateChange:   sdk.NewDecWithPrec(110, 2),
-				InflationMax:          inflationMax,
-				InflationMin:          inflationMin,
-				GoalBonded:            goalBonded,
+				EnableInflation: true,
+				InflationMax:    inflationMax,
+				InflationDecay:  inflationDecay,
 			},
 			true,
 		},
 		{
 			"invalid - inflation max - negative inflation max",
 			Params{
-				MintDenom:             "acbo",
 				InflationDistribution: validInflationDistribution,
 				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
 				InflationMax:          inflationMax.Neg(),
-				InflationMin:          inflationMin,
-				GoalBonded:            goalBonded,
+				InflationDecay:        inflationDecay,
 			},
 			true,
 		},
 		{
 			"invalid - inflation max - inflation max is greater than 1",
 			Params{
-				MintDenom:             "acbo",
 				InflationDistribution: validInflationDistribution,
 				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
 				InflationMax:          sdk.NewDecWithPrec(110, 2),
-				InflationMin:          inflationMin,
-				GoalBonded:            goalBonded,
-			},
-			true,
-		},
-		{
-			"invalid - inflation min - negative inflation min",
-			Params{
-				MintDenom:             "acbo",
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
-				InflationMax:          inflationMax,
-				InflationMin:          inflationMin.Neg(),
-				GoalBonded:            goalBonded,
-			},
-			true,
-		},
-		{
-			"invalid - inflation min - inflation min is greater than 1",
-			Params{
-				MintDenom:             "acbo",
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
-				InflationMax:          inflationMax,
-				InflationMin:          sdk.NewDecWithPrec(110, 2),
-				GoalBonded:            goalBonded,
-			},
-			true,
-		},
-
-		{
-			"invalid - goal bonded - negative goal bonded",
-			Params{
-				MintDenom:             "acbo",
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
-				InflationMax:          inflationMax,
-				InflationMin:          inflationMin,
-				GoalBonded:            goalBonded.Neg(),
-			},
-			true,
-		},
-		{
-			"invalid - goal bonded - goal bonded is greater than 1",
-			Params{
-				MintDenom:             "acbo",
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-				InflationRateChange:   inflationRateChange,
-				InflationMax:          inflationMax,
-				InflationMin:          inflationMin,
-				GoalBonded:            sdk.NewDecWithPrec(110, 2),
+				InflationDecay:        inflationDecay,
 			},
 			true,
 		},
