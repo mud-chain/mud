@@ -340,9 +340,11 @@ const main = async function () {
             }
           }
 
-          for (let balances of appState.bank.balances) {
-            for (let coin of balances.coins) {
-              coin.amount = preMinePerAccount;
+          if (typeof preMinePerAccount === "string") {
+            for (let balances of appState.bank.balances) {
+              for (let coin of balances.coins) {
+                coin.amount = preMinePerAccount;
+              }
             }
           }
 
