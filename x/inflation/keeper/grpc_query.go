@@ -46,8 +46,13 @@ func (k Keeper) EpochProvision(
 	bondedTokens := k.stakingKeeper.TotalBondedTokens(ctx)
 	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
 	inflationMaxAmount := sdk.NewDecFromInt(bondedTokens).Mul(params.InflationMax).QuoInt64(epochsPerPeriod).TruncateInt()
-
 	mint := k.GetEpochMintProvision(ctx)
+
+	// Due to excessive delegate, the annualized rate has exceeded the annual coin - minting limit.
+	if inflationMaxAmount.GT(mint.Amount) {
+		inflationMaxAmount = mint.Amount
+	}
+
 	reward := sdk.Coin{
 		Denom:  mint.Denom,
 		Amount: inflationMaxAmount,
