@@ -326,7 +326,7 @@ func initTestnetFiles(
 			valPubKeys[i],
 			sdk.NewCoin(cmdcfg.BaseDenom, valTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
-			stakingtypes.NewCommissionRates(sdk.OneDec().QuoInt64(10), sdk.OneDec(), sdk.OneDec()),
+			stakingtypes.NewCommissionRates(sdk.OneDec().QuoInt64(10), sdk.OneDec().QuoInt64(5), sdk.OneDec().QuoInt64(10)),
 			sdk.OneInt(),
 		)
 		if err != nil {
