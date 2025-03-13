@@ -84,7 +84,7 @@ interface IErc20 {
      * @return tokenPair Information about the registered token pair
      */
     function tokenPair(
-        string calldata token
+        address token
     ) external view returns (TokenPair memory tokenPair);
 
     /**
@@ -97,9 +97,9 @@ interface IErc20 {
      * @dev ConvertCoin defines an Event emitted when coins are converted to ERC20 tokens
      */
     event ConvertCoin(
-        string indexed denom,
         address indexed receiver,
         address indexed sender,
+        string denom,
         uint256 amount
     );
 

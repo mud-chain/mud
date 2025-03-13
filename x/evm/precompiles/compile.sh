@@ -26,7 +26,7 @@ echo "===> Compiling contracts"
 [[ ! -d "$project_dir/x/evm/precompiles/contracts/artifacts" ]] && mkdir -p "$project_dir/x/evm/precompiles/contracts/artifacts"
 
 # add core contracts
-contracts=(IStaking IDistribution IBank ISlashing IEvidence IEpochs IGov IAuth IInflation)
+contracts=(IStaking IDistribution IBank ISlashing IEvidence IEpochs IGov IAuth IInflation IErc20)
 # add 3rd party contracts
 
 for contract in "${contracts[@]}"; do
