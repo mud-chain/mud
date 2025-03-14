@@ -135,6 +135,7 @@ import (
 	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
 	precompilesdistribution "github.com/evmos/evmos/v12/x/evm/precompiles/distribution"
 	precompilesepochs "github.com/evmos/evmos/v12/x/evm/precompiles/epochs"
+	precompileserc20 "github.com/evmos/evmos/v12/x/evm/precompiles/erc20"
 	precompilesevidence "github.com/evmos/evmos/v12/x/evm/precompiles/evidence"
 	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
 	precompilesinflation "github.com/evmos/evmos/v12/x/evm/precompiles/inflation"
@@ -159,6 +160,7 @@ import (
 	"github.com/evmos/evmos/v12/x/inflation"
 	inflationkeeper "github.com/evmos/evmos/v12/x/inflation/keeper"
 	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
+
 	// NOTE: override ICS20 keeper to support IBC transfers of ERC20 tokens
 	"github.com/evmos/evmos/v12/x/ibc/transfer"
 	transferkeeper "github.com/evmos/evmos/v12/x/ibc/transfer/keeper"
@@ -873,6 +875,7 @@ func (app *Evmos) BlockedAddrs() map[string]bool {
 		precompilesepochs.GetAddress().String(),
 		precompilesevidence.GetAddress().String(),
 		precompilesinflation.GetAddress().String(),
+		precompileserc20.GetAddress().String(),
 	}
 	for _, addr := range vm.PrecompiledAddressesBerlin {
 		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
@@ -1103,6 +1106,11 @@ func (app *Evmos) EvmPrecompiled() {
 	// inflation precompile
 	precompiled[precompilesinflation.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesinflation.NewPrecompiledContract(ctx, app.InflationKeeper)
+	}
+
+	// erc20 precompile
+	precompiled[precompileserc20.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompileserc20.NewPrecompiledContract(ctx, app.Erc20Keeper)
 	}
 
 	// set precompiled contracts
