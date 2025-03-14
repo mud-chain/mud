@@ -104,12 +104,12 @@ func (args *TokenPairsArgs) Validate() error {
 }
 
 type TokenPairArgs struct {
-	Token string `abi:"token"`
+	Token common.Address `abi:"token"`
 }
 
 // Validate TokenPair args
 func (args *TokenPairArgs) Validate() error {
-	if args.Token == "" {
+	if args.Token == (common.Address{}) {
 		return fmt.Errorf("token is empty")
 	}
 	return nil

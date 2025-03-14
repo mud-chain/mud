@@ -76,7 +76,7 @@ func (c *Contract) TokenPair(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, 
 	}
 
 	msg := &erc20types.QueryTokenPairRequest{
-		Token: args.Token,
+		Token: args.Token.String(),
 	}
 
 	res, err := c.erc20Keeper.TokenPair(ctx, msg)
