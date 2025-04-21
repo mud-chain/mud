@@ -186,6 +186,7 @@ const main = async function () {
     const chainName = app.chain_name;
     const daemon = `${app.chain_name}d`;
     const daemonApp = platform == 'win32' ? `${app.chain_name}d.exe` : `${app.chain_name}d`;
+    const keyring = app.keyring || "test";
 
     if (stop) {
       if (stop === 'all') {
@@ -408,7 +409,7 @@ const main = async function () {
         let vbsStop = platform == 'win32' ? `set ws=WScript.CreateObject("WScript.Shell")\n` : `#!/bin/bash\n`;
         for (let i = 0; i < nodesCount; i++) {
           let p2pPort = tendermint.port['p2p.laddr'] + i;
-          let start = (platform == 'win32' ? '' : '#!/bin/bash\n') + (isNohup && platform !== 'win32' ? 'nohup ' : '') + (platform !== 'win32' ? './' : '') + `${daemonApp} start --keyring-backend test --home ./node${i}/${daemon}/` + (isNohup && platform !== 'win32' ? ` >./${daemon}${i}.log 2>&1 &` : '');
+          let start = (platform == 'win32' ? '' : '#!/bin/bash\n') + (isNohup && platform !== 'win32' ? 'nohup ' : '') + (platform !== 'win32' ? './' : '') + `${daemonApp} start --keyring-backend ${keyring} --home ./node${i}/${daemon}/` + (isNohup && platform !== 'win32' ? ` >./${daemon}${i}.log 2>&1 &` : '');
           let stop =
             platform == 'win32'
               ? `@echo off

@@ -6,6 +6,7 @@
     "denoms": [
       "amud"
     ],
+    "keyring": "test",
     "port": {
       "api.address": 1317,
       "rosetta.address": 8080,
