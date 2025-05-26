@@ -20,6 +20,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	v2 "github.com/evmos/evmos/v12/app/upgrades/v2"
+	v3 "github.com/evmos/evmos/v12/app/upgrades/v3"
 	"io"
 	"net/http"
 	"os"
@@ -1110,6 +1112,22 @@ func (app *Evmos) EvmPrecompiled() {
 }
 
 func (app *Evmos) setupUpgradeHandlers() {
+	// v2 upgrade handler
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v2.UpgradeName,
+		v2.CreateUpgradeHandler(
+			app.mm, app.configurator,
+		),
+	)
+
+	// v3 upgrade handler
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v3.UpgradeName,
+		v3.CreateUpgradeHandler(
+			app.mm, app.configurator,
+		),
+	)
+
 	// When a planned update height is reached, the old binary will panic
 	// writing on disk the height and name of the update that triggered it
 	// This will read that value, and execute the preparations for the upgrade.
