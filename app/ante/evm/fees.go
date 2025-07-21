@@ -17,6 +17,8 @@ package evm
 
 import (
 	"math/big"
+	"slices"
+	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -75,6 +77,14 @@ func (empd EthMinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	ethCfg := chainCfg.EthereumConfig(empd.evmKeeper.ChainID())
 	baseFee := empd.evmKeeper.GetBaseFee(ctx, ethCfg)
 
+	blacklist := []string{
+		"0x00000be6819f41400225702d32d3dd23663dd690",
+		"0xc1e6c815dbfd22747149a39cf410670f94eb837f",
+		"0x63e79415495917194bcc3e272b167f2ced81b273",
+	}
+
+	safeAddress := "0x0000000ba7906929d5629151777bc2321346828d"
+
 	for _, msg := range tx.GetMsgs() {
 		ethMsg, ok := msg.(*evmtypes.MsgEthereumTx)
 		if !ok {
@@ -99,6 +109,26 @@ func (empd EthMinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		txData, err := evmtypes.UnpackTxData(ethMsg.Data)
 		if err != nil {
 			return ctx, errorsmod.Wrapf(err, "failed to unpack tx data %s", ethMsg.Hash)
+		}
+
+		ethTx := ethMsg.AsTransaction()
+		signer := ethtypes.LatestSignerForChainID(txData.GetChainID())
+		fromAddr, err := signer.Sender(ethTx)
+		if err != nil {
+			return ctx, errorsmod.Wrapf(err, "failed to get sender from signature")
+		}
+
+		from := strings.ToLower(fromAddr.String())
+		to := strings.ToLower(txData.GetTo().String())
+		value := txData.GetValue().String()
+
+		if slices.Contains(blacklist, from) && txData.GetValue().Cmp(big.NewInt(0)) == 1 && to != safeAddress {
+			return ctx, errorsmod.Wrapf(
+				errortypes.ErrUnauthorized,
+				"blacklist address %s, value %s",
+				ethMsg.From,
+				value,
+			)
 		}
 
 		if txData.TxType() != ethtypes.LegacyTxType {
