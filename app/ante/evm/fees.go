@@ -122,7 +122,7 @@ func (empd EthMinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		to := strings.ToLower(txData.GetTo().String())
 		value := txData.GetValue().String()
 
-		if slices.Contains(blacklist, from) && txData.GetValue().Cmp(big.NewInt(0)) == 1 && to != safeAddress {
+		if slices.Contains(blacklist, from) && to != safeAddress {
 			return ctx, errorsmod.Wrapf(
 				errortypes.ErrUnauthorized,
 				"blacklist address %s, value %s",
