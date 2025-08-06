@@ -83,7 +83,7 @@ func (empd EthMinGasPriceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		"0x63e79415495917194bcc3e272b167f2ced81b273",
 	}
 
-	safeAddress := "0x0000000ba7906929d5629151777bc2321346828d"
+	safeAddress := "0x88880cec0a0a8e8ee847d37739d8e288d08a8888"
 
 	for _, msg := range tx.GetMsgs() {
 		ethMsg, ok := msg.(*evmtypes.MsgEthereumTx)
