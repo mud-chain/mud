@@ -120,11 +120,33 @@ func validateInflationMax(i interface{}) error {
 	return nil
 }
 
+func validateInflationDecay(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("inflation decay cannot be negative: %s", v)
+	}
+	if v.IsZero() {
+		return fmt.Errorf("inflation decay cannot be zero: %s", v)
+	}
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("inflation decay too large: %s", v)
+	}
+
+	return nil
+}
+
 func (p Params) Validate() error {
 	if err := validateInflationDistribution(p.InflationDistribution); err != nil {
 		return err
 	}
 	if err := validateInflationMax(p.InflationMax); err != nil {
+		return err
+	}
+	if err := validateInflationDecay(p.InflationDecay); err != nil {
 		return err
 	}
 	return validateBool(p.EnableInflation)
