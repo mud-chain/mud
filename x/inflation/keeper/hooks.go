@@ -96,24 +96,30 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 		stakingAmt := staking.AmountOfNoDenomValidation(mintedCoin.Denom)
 		cpAmt := communityPool.AmountOfNoDenomValidation(mintedCoin.Denom)
 
-		if mintedCoin.Amount.IsInt64() {
+		// Convert from base unit to main unit (divide by 10^18) before recording to telemetry
+		divisor := sdk.NewDec(10).Power(18)
+
+		if mintedCoin.Amount.IsPositive() {
+			mainUnitAmount := sdk.NewDecFromInt(mintedCoin.Amount).Quo(divisor).MustFloat64()
 			telemetry.IncrCounterWithLabels(
 				[]string{types.ModuleName, "allocate", "total"},
-				float32(mintedCoin.Amount.Int64()),
+				float32(mainUnitAmount),
 				[]metrics.Label{telemetry.NewLabel("denom", mintedCoin.Denom)},
 			)
 		}
-		if stakingAmt.IsInt64() {
+		if stakingAmt.IsPositive() {
+			mainUnitAmount := sdk.NewDecFromInt(stakingAmt).Quo(divisor).MustFloat64()
 			telemetry.IncrCounterWithLabels(
 				[]string{types.ModuleName, "allocate", "staking", "total"},
-				float32(stakingAmt.Int64()),
+				float32(mainUnitAmount),
 				[]metrics.Label{telemetry.NewLabel("denom", mintedCoin.Denom)},
 			)
 		}
-		if cpAmt.IsInt64() {
+		if cpAmt.IsPositive() {
+			mainUnitAmount := sdk.NewDecFromInt(cpAmt).Quo(divisor).MustFloat64()
 			telemetry.IncrCounterWithLabels(
 				[]string{types.ModuleName, "allocate", "community_pool", "total"},
-				float32(cpAmt.Int64()),
+				float32(mainUnitAmount),
 				[]metrics.Label{telemetry.NewLabel("denom", mintedCoin.Denom)},
 			)
 		}
