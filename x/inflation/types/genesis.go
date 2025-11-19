@@ -78,6 +78,10 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
+	if err := validateInflationAmount(gs.InflationAmount); err != nil {
+		return err
+	}
+
 	return gs.Params.Validate()
 }
 
@@ -99,5 +103,22 @@ func validateSkippedEpochs(i interface{}) error {
 	if !ok {
 		return fmt.Errorf("invalid genesis state type: %T", i)
 	}
+	return nil
+}
+
+func validateInflationAmount(i interface{}) error {
+	v, ok := i.(sdk.Coin)
+	if !ok {
+		return fmt.Errorf("invalid genesis state type for inflation amount: %T", i)
+	}
+
+	if v.Denom != types.AttoEvmos {
+		return fmt.Errorf("inflation amount denomination must be %s, got %s", types.AttoEvmos, v.Denom)
+	}
+
+	if !v.Amount.IsPositive() {
+		return fmt.Errorf("inflation amount must be positive: %s", v.Amount)
+	}
+
 	return nil
 }
