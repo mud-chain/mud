@@ -38,7 +38,7 @@ type Keeper struct {
 	feeCollectorName string
 }
 
-// NewKeeper creates a new mint Keeper instance
+// NewKeeper creates a new inflation Keeper instance
 func NewKeeper(
 	storeKey storetypes.StoreKey,
 	cdc codec.BinaryCodec,
@@ -49,9 +49,9 @@ func NewKeeper(
 	sk types.StakingKeeper,
 	feeCollectorName string,
 ) Keeper {
-	// ensure mint module account is set
+	// ensure inflation module account is set
 	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
-		panic("the mint module account has not been set")
+		panic("the inflation module account has not been set")
 	}
 
 	// ensure gov module account is set and is not nil
