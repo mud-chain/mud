@@ -109,8 +109,7 @@ func GetEpochProvision() *cobra.Command {
 	return cmd
 }
 
-// GetSkippedEpochs implements a command to return the current inflation
-// period
+// GetSkippedEpochs implements a command to return the current number of skipped epochs
 func GetSkippedEpochs() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "skipped-epochs",

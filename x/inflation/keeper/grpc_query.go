@@ -90,8 +90,7 @@ func (k Keeper) InflationRate(
 	return &types.QueryInflationRateResponse{InflationRate: inflationRate}, nil
 }
 
-// CirculatingSupply returns the total supply in circulation excluding the team
-// allocation in the first year
+// CirculatingSupply returns the total supply in circulation
 func (k Keeper) CirculatingSupply(
 	c context.Context,
 	_ *types.QueryCirculatingSupplyRequest,
