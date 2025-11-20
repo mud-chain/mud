@@ -68,7 +68,14 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 
 	staking, communityPool, err := k.MintAndAllocateInflation(ctx, bondedTokens, mintedCoin, params)
 	if err != nil {
-		panic(err)
+		k.Logger(ctx).Error(
+			"failed to mint and allocate inflation",
+			"error", err,
+			"epoch-identifier", epochIdentifier,
+			"epoch-number", epochNumber,
+			"height", ctx.BlockHeight(),
+		)
+		return
 	}
 
 	// If period is passed, update the period. A period is
@@ -158,5 +165,15 @@ func (h Hooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNu
 }
 
 func (h Hooks) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
+	defer func() {
+		if r := recover(); r != nil {
+			h.k.Logger(ctx).Error(
+				"panic in AfterEpochEnd hook",
+				"epoch-identifier", epochIdentifier,
+				"epoch-number", epochNumber,
+				"panic", r,
+			)
+		}
+	}()
 	h.k.AfterEpochEnd(ctx, epochIdentifier, epochNumber)
 }
