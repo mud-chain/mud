@@ -125,12 +125,15 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 		}
 	}()
 
+	// Calculate actual distributed amount (staking + communityPool)
+	actualDistributed := staking.Add(communityPool...).AmountOf(mintedCoin.Denom)
+
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeMint,
 			sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprintf("%d", epochNumber)),
 			sdk.NewAttribute(types.AttributeKeyEpochProvisions, mintedCoin.Amount.String()),
-			sdk.NewAttribute(sdk.AttributeKeyAmount, mintedCoin.Amount.String()),
+			sdk.NewAttribute(sdk.AttributeKeyAmount, actualDistributed.String()),
 		),
 	)
 }
