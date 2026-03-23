@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	"github.com/evmos/evmos/v12/cmd/config"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -62,8 +63,8 @@ func (suite *KeeperTestSuite) TestPeriod() { //nolint:dupl
 
 func (suite *KeeperTestSuite) TestEpochMintProvision() {
 	var (
-		req    *types.QueryEpochMintProvisionRequest
-		expRes *types.QueryEpochMintProvisionResponse
+		req    *types.QueryEpochProvisionRequest
+		expRes *types.QueryEpochProvisionResponse
 	)
 
 	testCases := []struct {
@@ -74,16 +75,20 @@ func (suite *KeeperTestSuite) TestEpochMintProvision() {
 		{
 			"default epochMintProvision",
 			func() {
-				params := types.DefaultParams()
-				defaultEpochMintProvision := types.CalculateEpochMintProvision(
-					params,
-					uint64(0),
-					365,
-					sdk.OneDec(),
-				)
-				req = &types.QueryEpochMintProvisionRequest{}
-				expRes = &types.QueryEpochMintProvisionResponse{
-					EpochMintProvision: sdk.NewDecCoinFromDec(types.DefaultInflationDenom, defaultEpochMintProvision),
+				req = &types.QueryEpochProvisionRequest{}
+				expRes = &types.QueryEpochProvisionResponse{
+					Mint: sdk.Coin{
+						Denom:  types.DefaultInflationDenom,
+						Amount: sdk.MustNewDecFromStr("102739726027397260273972").TruncateInt(),
+					},
+					Reward: sdk.Coin{
+						Denom:  types.DefaultInflationDenom,
+						Amount: sdk.MustNewDecFromStr("547945205479452").TruncateInt(),
+					},
+					Burn: sdk.Coin{
+						Denom:  types.DefaultInflationDenom,
+						Amount: sdk.MustNewDecFromStr("102739725479452054794520").TruncateInt(),
+					},
 				}
 			},
 			true,
@@ -96,7 +101,7 @@ func (suite *KeeperTestSuite) TestEpochMintProvision() {
 			ctx := sdk.WrapSDKContext(suite.ctx)
 			tc.malleate()
 
-			res, err := suite.queryClient.EpochMintProvision(ctx, req)
+			res, err := suite.queryClient.EpochProvision(ctx, req)
 			if tc.expPass {
 				suite.Require().NoError(err)
 				suite.Require().Equal(expRes, res)
@@ -162,20 +167,17 @@ func (suite *KeeperTestSuite) TestQueryCirculatingSupply() {
 	ctx := sdk.WrapSDKContext(suite.ctx)
 
 	// Mint coins to increase supply
-	mintDenom := suite.app.InflationKeeper.GetParams(suite.ctx).MintDenom
+	mintDenom := config.BaseDenom
 	mintCoin := sdk.NewCoin(mintDenom, sdk.TokensFromConsensusPower(int64(400_000_000), evmostypes.PowerReduction))
 	err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
 	suite.Require().NoError(err)
-
-	// team allocation is zero if not on mainnet
-	expCirculatingSupply := sdk.NewDecCoin(mintDenom, sdk.TokensFromConsensusPower(200_000_000, evmostypes.PowerReduction))
 
 	// the total bonded tokens for the 2 accounts initialized on the setup
 	bondedAmt := sdk.NewInt64DecCoin(evmostypes.AttoEvmos, 1000100000000000000)
 
 	res, err := suite.queryClient.CirculatingSupply(ctx, &types.QueryCirculatingSupplyRequest{})
 	suite.Require().NoError(err)
-	suite.Require().Equal(expCirculatingSupply.Add(bondedAmt), res.CirculatingSupply)
+	suite.Require().Equal(bondedAmt.Amount.Add(sdk.NewDecFromInt(mintCoin.Amount)).Add(sdk.NewDecFromInt(types.DefaultInflationAmount)), res.CirculatingSupply.Amount)
 }
 
 func (suite *KeeperTestSuite) TestQueryInflationRate() {
@@ -185,12 +187,12 @@ func (suite *KeeperTestSuite) TestQueryInflationRate() {
 	bondedAmt := math.NewInt(1000100000000000000)
 
 	// Mint coins to increase supply
-	mintDenom := suite.app.InflationKeeper.GetParams(suite.ctx).MintDenom
+	mintDenom := config.BaseDenom
 	mintCoin := sdk.NewCoin(mintDenom, sdk.TokensFromConsensusPower(int64(400_000_000), evmostypes.PowerReduction).Sub(bondedAmt))
 	err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
 	suite.Require().NoError(err)
 
-	expInflationRate := sdk.MustNewDecFromStr("154.687500000000000000")
+	expInflationRate := sdk.MustNewDecFromStr("20.000000000000000000")
 	res, err := suite.queryClient.InflationRate(ctx, &types.QueryInflationRateRequest{})
 	suite.Require().NoError(err)
 	suite.Require().Equal(expInflationRate, res.InflationRate)

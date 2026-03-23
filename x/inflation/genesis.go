@@ -54,6 +54,9 @@ func InitGenesis(
 
 	skippedEpochs := data.SkippedEpochs
 	k.SetSkippedEpochs(ctx, skippedEpochs)
+
+	inflationAmount := data.InflationAmount
+	k.SetInflationAmount(ctx, inflationAmount)
 }
 
 // ExportGenesis returns a GenesisState for a given context and keeper.
@@ -64,5 +67,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 		EpochIdentifier: k.GetEpochIdentifier(ctx),
 		EpochsPerPeriod: k.GetEpochsPerPeriod(ctx),
 		SkippedEpochs:   k.GetSkippedEpochs(ctx),
+		InflationAmount: k.GetInflationAmount(ctx),
 	}
 }

@@ -30,21 +30,15 @@ func (suite *KeeperTestSuite) TestWithChainID() {
 			true,
 		},
 		{
-			"fail - other chainID",
-			"chain_7701-1",
-			0,
-			true,
-		},
-		{
 			"success - Evmos mainnet chain ID",
-			"evmos_9001-2",
-			9001,
+			"mud_168168-2",
+			168168,
 			false,
 		},
 		{
 			"success - Evmos testnet chain ID",
-			"evmos_9000-4",
-			9000,
+			"mud_168167-4",
+			168167,
 			false,
 		},
 	}

@@ -60,31 +60,13 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	}
 
 	// mint coins, update supply
+	bondedTokens := k.stakingKeeper.TotalBondedTokens(ctx)
 	period := k.GetPeriod(ctx)
 	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
-	bondedRatio := k.BondedRatio(ctx)
+	inflationAmount := k.GetInflationAmount(ctx)
+	mintedCoin := types.EpochProvision(inflationAmount, epochsPerPeriod)
 
-	epochMintProvision := types.CalculateEpochMintProvision(
-		params,
-		period,
-		epochsPerPeriod,
-		bondedRatio,
-	)
-
-	if !epochMintProvision.IsPositive() {
-		k.Logger(ctx).Error(
-			"SKIPPING INFLATION: negative epoch mint provision",
-			"value", epochMintProvision.String(),
-		)
-		return
-	}
-
-	mintedCoin := sdk.Coin{
-		Denom:  params.MintDenom,
-		Amount: epochMintProvision.TruncateInt(),
-	}
-
-	staking, incentives, communityPool, err := k.MintAndAllocateInflation(ctx, mintedCoin, params)
+	staking, communityPool, err := k.MintAndAllocateInflation(ctx, bondedTokens, mintedCoin, params)
 	if err != nil {
 		panic(err)
 	}
@@ -102,11 +84,16 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 	if epochNumber-epochsPerPeriod*int64(period)-int64(skippedEpochs) > epochsPerPeriod {
 		period++
 		k.SetPeriod(ctx, period)
+
+		nextInflationAmount := sdk.Coin{
+			Denom:  inflationAmount.Denom,
+			Amount: sdk.NewIntFromBigInt(sdk.NewDecFromInt(inflationAmount.Amount).Mul(params.InflationDecay).TruncateInt().BigInt()),
+		}
+		k.SetInflationAmount(ctx, nextInflationAmount)
 	}
 
 	defer func() {
 		stakingAmt := staking.AmountOfNoDenomValidation(mintedCoin.Denom)
-		incentivesAmt := incentives.AmountOfNoDenomValidation(mintedCoin.Denom)
 		cpAmt := communityPool.AmountOfNoDenomValidation(mintedCoin.Denom)
 
 		if mintedCoin.Amount.IsInt64() {
@@ -123,13 +110,6 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 				[]metrics.Label{telemetry.NewLabel("denom", mintedCoin.Denom)},
 			)
 		}
-		if incentivesAmt.IsInt64() {
-			telemetry.IncrCounterWithLabels(
-				[]string{types.ModuleName, "allocate", "incentives", "total"},
-				float32(incentivesAmt.Int64()),
-				[]metrics.Label{telemetry.NewLabel("denom", mintedCoin.Denom)},
-			)
-		}
 		if cpAmt.IsInt64() {
 			telemetry.IncrCounterWithLabels(
 				[]string{types.ModuleName, "allocate", "community_pool", "total"},
@@ -143,7 +123,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumb
 		sdk.NewEvent(
 			types.EventTypeMint,
 			sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprintf("%d", epochNumber)),
-			sdk.NewAttribute(types.AttributeKeyEpochProvisions, epochMintProvision.String()),
+			sdk.NewAttribute(types.AttributeKeyEpochProvisions, mintedCoin.Amount.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, mintedCoin.Amount.String()),
 		),
 	)

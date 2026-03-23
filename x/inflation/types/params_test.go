@@ -16,19 +16,13 @@ func TestParamsTestSuite(t *testing.T) {
 }
 
 func (suite *ParamsTestSuite) TestParamsValidate() {
-	validExponentialCalculation := ExponentialCalculation{
-		A:             sdk.NewDec(int64(300_000_000)),
-		R:             sdk.NewDecWithPrec(5, 1),
-		C:             sdk.NewDec(int64(9_375_000)),
-		BondingTarget: sdk.NewDecWithPrec(50, 2),
-		MaxVariance:   sdk.NewDecWithPrec(20, 2),
+	validInflationDistribution := InflationDistribution{
+		StakingRewards: sdk.NewDecWithPrec(80, 2),
+		CommunityPool:  sdk.NewDecWithPrec(20, 2),
 	}
 
-	validInflationDistribution := InflationDistribution{
-		StakingRewards:  sdk.NewDecWithPrec(533334, 6),
-		UsageIncentives: sdk.NewDecWithPrec(333333, 6),
-		CommunityPool:   sdk.NewDecWithPrec(133333, 6),
-	}
+	inflationMax := sdk.NewDecWithPrec(20, 2)
+	inflationDecay := sdk.NewDecWithPrec(8, 1)
 
 	testCases := []struct {
 		name     string
@@ -43,208 +37,79 @@ func (suite *ParamsTestSuite) TestParamsValidate() {
 		{
 			"valid",
 			NewParams(
-				"aevmos",
-				validExponentialCalculation,
 				validInflationDistribution,
 				true,
+				inflationMax,
+				inflationDecay,
 			),
 			false,
 		},
 		{
 			"valid param literal",
 			Params{
-				MintDenom:              "aevmos",
-				ExponentialCalculation: validExponentialCalculation,
-				InflationDistribution:  validInflationDistribution,
-				EnableInflation:        true,
+				InflationDistribution: validInflationDistribution,
+				EnableInflation:       true,
+				InflationMax:          inflationMax,
+				InflationDecay:        inflationDecay,
 			},
 			false,
 		},
 		{
-			"invalid - denom",
-			NewParams(
-				"/aevmos",
-				validExponentialCalculation,
-				validInflationDistribution,
-				true,
-			),
-			true,
-		},
-		{
-			"invalid - denom",
-			Params{
-				MintDenom:              "",
-				ExponentialCalculation: validExponentialCalculation,
-				InflationDistribution:  validInflationDistribution,
-				EnableInflation:        true,
-			},
-			true,
-		},
-		{
-			"invalid - exponential calculation - negative A",
-			Params{
-				MintDenom: "aevmos",
-				ExponentialCalculation: ExponentialCalculation{
-					A:             sdk.NewDec(int64(-1)),
-					R:             sdk.NewDecWithPrec(5, 1),
-					C:             sdk.NewDec(int64(9_375_000)),
-					BondingTarget: sdk.NewDecWithPrec(50, 2),
-					MaxVariance:   sdk.NewDecWithPrec(20, 2),
-				},
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-			},
-			true,
-		},
-		{
-			"invalid - exponential calculation - R greater than 1",
-			Params{
-				MintDenom: "aevmos",
-				ExponentialCalculation: ExponentialCalculation{
-					A:             sdk.NewDec(int64(300_000_000)),
-					R:             sdk.NewDecWithPrec(5, 0),
-					C:             sdk.NewDec(int64(9_375_000)),
-					BondingTarget: sdk.NewDecWithPrec(50, 2),
-					MaxVariance:   sdk.NewDecWithPrec(20, 2),
-				},
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-			},
-			true,
-		},
-		{
-			"invalid - exponential calculation - negative R",
-			Params{
-				MintDenom: "aevmos",
-				ExponentialCalculation: ExponentialCalculation{
-					A:             sdk.NewDec(int64(300_000_000)),
-					R:             sdk.NewDecWithPrec(-5, 1),
-					C:             sdk.NewDec(int64(9_375_000)),
-					BondingTarget: sdk.NewDecWithPrec(50, 2),
-					MaxVariance:   sdk.NewDecWithPrec(20, 2),
-				},
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-			},
-			true,
-		},
-		{
-			"invalid - exponential calculation - negative C",
-			Params{
-				MintDenom: "aevmos",
-				ExponentialCalculation: ExponentialCalculation{
-					A:             sdk.NewDec(int64(300_000_000)),
-					R:             sdk.NewDecWithPrec(5, 1),
-					C:             sdk.NewDec(int64(-9_375_000)),
-					BondingTarget: sdk.NewDecWithPrec(50, 2),
-					MaxVariance:   sdk.NewDecWithPrec(20, 2),
-				},
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-			},
-			true,
-		},
-		{
-			"invalid - exponential calculation - BondingTarget greater than 1",
-			Params{
-				MintDenom: "aevmos",
-				ExponentialCalculation: ExponentialCalculation{
-					A:             sdk.NewDec(int64(300_000_000)),
-					R:             sdk.NewDecWithPrec(5, 1),
-					C:             sdk.NewDec(int64(9_375_000)),
-					BondingTarget: sdk.NewDecWithPrec(50, 1),
-					MaxVariance:   sdk.NewDecWithPrec(20, 2),
-				},
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-			},
-			true,
-		},
-		{
-			"invalid - exponential calculation - negative BondingTarget",
-			Params{
-				MintDenom: "aevmos",
-				ExponentialCalculation: ExponentialCalculation{
-					A:             sdk.NewDec(int64(300_000_000)),
-					R:             sdk.NewDecWithPrec(5, 1),
-					C:             sdk.NewDec(int64(9_375_000)),
-					BondingTarget: sdk.NewDecWithPrec(50, 2).Neg(),
-					MaxVariance:   sdk.NewDecWithPrec(20, 2),
-				},
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-			},
-			true,
-		},
-		{
-			"invalid - exponential calculation - negative max Variance",
-			Params{
-				MintDenom: "aevmos",
-				ExponentialCalculation: ExponentialCalculation{
-					A:             sdk.NewDec(int64(300_000_000)),
-					R:             sdk.NewDecWithPrec(5, 1),
-					C:             sdk.NewDec(int64(9_375_000)),
-					BondingTarget: sdk.NewDecWithPrec(50, 2),
-					MaxVariance:   sdk.NewDecWithPrec(20, 2).Neg(),
-				},
-				InflationDistribution: validInflationDistribution,
-				EnableInflation:       true,
-			},
-			true,
-		},
-		{
 			"invalid - inflation distribution - negative staking rewards",
 			Params{
-				MintDenom:              "aevmos",
-				ExponentialCalculation: validExponentialCalculation,
 				InflationDistribution: InflationDistribution{
-					StakingRewards:  sdk.OneDec().Neg(),
-					UsageIncentives: sdk.NewDecWithPrec(333333, 6),
-					CommunityPool:   sdk.NewDecWithPrec(133333, 6),
+					StakingRewards: sdk.OneDec().Neg(),
+					CommunityPool:  sdk.NewDecWithPrec(20, 2),
 				},
 				EnableInflation: true,
-			},
-			true,
-		},
-		{
-			"invalid - inflation distribution - negative usage incentives",
-			Params{
-				MintDenom:              "aevmos",
-				ExponentialCalculation: validExponentialCalculation,
-				InflationDistribution: InflationDistribution{
-					StakingRewards:  sdk.NewDecWithPrec(533334, 6),
-					UsageIncentives: sdk.OneDec().Neg(),
-					CommunityPool:   sdk.NewDecWithPrec(133333, 6),
-				},
-				EnableInflation: true,
+				InflationMax:    inflationMax,
+				InflationDecay:  inflationDecay,
 			},
 			true,
 		},
 		{
 			"invalid - inflation distribution - negative community pool rewards",
 			Params{
-				MintDenom:              "aevmos",
-				ExponentialCalculation: validExponentialCalculation,
 				InflationDistribution: InflationDistribution{
-					StakingRewards:  sdk.NewDecWithPrec(533334, 6),
-					UsageIncentives: sdk.NewDecWithPrec(333333, 6),
-					CommunityPool:   sdk.OneDec().Neg(),
+					StakingRewards: sdk.NewDecWithPrec(80, 2),
+					CommunityPool:  sdk.OneDec().Neg(),
 				},
 				EnableInflation: true,
+				InflationMax:    inflationMax,
+				InflationDecay:  inflationDecay,
 			},
 			true,
 		},
 		{
 			"invalid - inflation distribution - total distribution ratio unequal 1",
 			Params{
-				MintDenom:              "aevmos",
-				ExponentialCalculation: validExponentialCalculation,
 				InflationDistribution: InflationDistribution{
-					StakingRewards:  sdk.NewDecWithPrec(533333, 6),
-					UsageIncentives: sdk.NewDecWithPrec(333333, 6),
-					CommunityPool:   sdk.NewDecWithPrec(133333, 6),
+					StakingRewards: sdk.NewDecWithPrec(80, 2),
+					CommunityPool:  sdk.NewDecWithPrec(30, 2),
 				},
 				EnableInflation: true,
+				InflationMax:    inflationMax,
+				InflationDecay:  inflationDecay,
+			},
+			true,
+		},
+		{
+			"invalid - inflation max - negative inflation max",
+			Params{
+				InflationDistribution: validInflationDistribution,
+				EnableInflation:       true,
+				InflationMax:          inflationMax.Neg(),
+				InflationDecay:        inflationDecay,
+			},
+			true,
+		},
+		{
+			"invalid - inflation max - inflation max is greater than 1",
+			Params{
+				InflationDistribution: validInflationDistribution,
+				EnableInflation:       true,
+				InflationMax:          sdk.NewDecWithPrec(110, 2),
+				InflationDecay:        inflationDecay,
 			},
 			true,
 		},

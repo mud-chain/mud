@@ -18,6 +18,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/evmos/evmos/v12/cmd/config"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/evmos/evmos/v12/x/inflation/types"
@@ -35,18 +36,33 @@ func (k Keeper) Period(
 	return &types.QueryPeriodResponse{Period: period}, nil
 }
 
-// EpochMintProvision returns the EpochMintProvision of the inflation module.
-func (k Keeper) EpochMintProvision(
+// EpochProvision returns the EpochProvision of the inflation module.
+func (k Keeper) EpochProvision(
 	c context.Context,
-	_ *types.QueryEpochMintProvisionRequest,
-) (*types.QueryEpochMintProvisionResponse, error) {
+	_ *types.QueryEpochProvisionRequest,
+) (*types.QueryEpochProvisionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	epochMintProvision := k.GetEpochMintProvision(ctx)
+	params := k.GetParams(ctx)
+	bondedTokens := k.stakingKeeper.TotalBondedTokens(ctx)
+	epochsPerPeriod := k.GetEpochsPerPeriod(ctx)
+	inflationMaxAmount := sdk.NewDecFromInt(bondedTokens).Mul(params.InflationMax).QuoInt64(epochsPerPeriod).TruncateInt()
+	mint := k.GetEpochMintProvision(ctx)
 
-	mintDenom := k.GetParams(ctx).MintDenom
-	coin := sdk.NewDecCoinFromDec(mintDenom, epochMintProvision)
+	// Due to excessive delegate, the annualized rate has exceeded the annual coin - minting limit.
+	if inflationMaxAmount.GT(mint.Amount) {
+		inflationMaxAmount = mint.Amount
+	}
 
-	return &types.QueryEpochMintProvisionResponse{EpochMintProvision: coin}, nil
+	reward := sdk.Coin{
+		Denom:  mint.Denom,
+		Amount: inflationMaxAmount,
+	}
+	burn := sdk.Coin{
+		Denom:  mint.Denom,
+		Amount: mint.Amount.Sub(reward.Amount),
+	}
+
+	return &types.QueryEpochProvisionResponse{Mint: mint, Reward: reward, Burn: burn}, nil
 }
 
 // SkippedEpochs returns the number of skipped Epochs of the inflation module.
@@ -65,8 +81,11 @@ func (k Keeper) InflationRate(
 	_ *types.QueryInflationRateRequest,
 ) (*types.QueryInflationRateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	mintDenom := k.GetParams(ctx).MintDenom
-	inflationRate := k.GetInflationRate(ctx, mintDenom)
+	inflationAmount := k.GetInflationAmount(ctx)
+	bondedTokens := k.stakingKeeper.TotalBondedTokens(ctx)
+
+	inflationRate := types.InflationRate(k.GetParams(ctx), inflationAmount.Amount, bondedTokens)
+	inflationRate = inflationRate.MulInt64(100)
 
 	return &types.QueryInflationRateResponse{InflationRate: inflationRate}, nil
 }
@@ -78,10 +97,9 @@ func (k Keeper) CirculatingSupply(
 	_ *types.QueryCirculatingSupplyRequest,
 ) (*types.QueryCirculatingSupplyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	mintDenom := k.GetParams(ctx).MintDenom
 
-	circulatingSupply := k.GetCirculatingSupply(ctx, mintDenom)
-	coin := sdk.NewDecCoinFromDec(mintDenom, circulatingSupply)
+	circulatingSupply := k.GetCirculatingSupply(ctx, config.BaseDenom)
+	coin := sdk.NewDecCoinFromDec(config.BaseDenom, circulatingSupply)
 
 	return &types.QueryCirculatingSupplyResponse{CirculatingSupply: coin}, nil
 }

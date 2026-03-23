@@ -19,6 +19,8 @@ package utils
 import (
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 
 	errorsmod "cosmossdk.io/errors"
@@ -31,12 +33,40 @@ import (
 
 const (
 	// MainnetChainID defines the Evmos EIP155 chain ID for mainnet
-	MainnetChainID = "evmos_9001"
+	MainnetChainID = "mud_168168"
 	// TestnetChainID defines the Evmos EIP155 chain ID for testnet
-	TestnetChainID = "evmos_9000"
+	TestnetChainID = "mud_168167"
 	// BaseDenom defines the Evmos mainnet denomination
-	BaseDenom = "aevmos"
+	BaseDenom = "amud"
 )
+
+// EthHexToCosmosAddr takes a given Hex string and derives a Cosmos SDK account address
+// from it.
+func EthHexToCosmosAddr(hexAddr string) sdk.AccAddress {
+	return EthToCosmosAddr(common.HexToAddress(hexAddr))
+}
+
+// EthToCosmosAddr converts a given Ethereum style address to an SDK address.
+func EthToCosmosAddr(addr common.Address) sdk.AccAddress {
+	return sdk.AccAddress(addr.Bytes())
+}
+
+// Bech32ToHexAddr converts a given Bech32 address string and converts it to
+// an Ethereum address.
+func Bech32ToHexAddr(bech32Addr string) (common.Address, error) {
+	accAddr, err := sdk.AccAddressFromBech32(bech32Addr)
+	if err != nil {
+		return common.Address{}, errorsmod.Wrapf(err, "failed to convert bech32 string to address")
+	}
+
+	return CosmosToEthAddr(accAddr), nil
+}
+
+// CosmosToEthAddr converts a given SDK account address to
+// an Ethereum address.
+func CosmosToEthAddr(accAddr sdk.AccAddress) common.Address {
+	return common.BytesToAddress(accAddr.Bytes())
+}
 
 // IsMainnet returns true if the chain-id has the Evmos mainnet EIP155 chain prefix.
 func IsMainnet(chainID string) bool {
@@ -97,4 +127,40 @@ func GetEvmosAddressFromBech32(address string) (sdk.AccAddress, error) {
 	}
 
 	return sdk.AccAddress(addressBz), nil
+}
+
+func ValAddressToHexAddress(valStrAddress string) (common.Address, error) {
+	ValAddress, err := sdk.ValAddressFromBech32(valStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress, nil
+}
+
+func ValAddressMustToHexAddress(valStrAddress string) common.Address {
+	ValAddress, err := sdk.ValAddressFromBech32(valStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress
+}
+
+func AccAddressToHexAddress(accStrAddress string) (common.Address, error) {
+	ValAddress, err := sdk.AccAddressFromBech32(accStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress, nil
+}
+
+func AccAddressMustToHexAddress(accStrAddress string) common.Address {
+	ValAddress, err := sdk.AccAddressFromBech32(accStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress
 }

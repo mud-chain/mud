@@ -1,7 +1,12 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
+	"github.com/evmos/evmos/v12/types"
+	"math/big"
 	"testing"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	epochstypes "github.com/evmos/evmos/v12/x/epochs/types"
 	"github.com/stretchr/testify/suite"
@@ -21,8 +26,12 @@ func TestGenesisTestSuite(t *testing.T) {
 func (suite *GenesisTestSuite) TestValidateGenesis() {
 	// Team Address needs to be set manually at Genesis
 	validParams := DefaultParams()
+	inflationAmount := sdk.Coin{
+		Denom:  types.AttoEvmos,
+		Amount: sdkmath.NewInt(37500000).Mul(sdkmath.NewIntFromBigInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(types.BaseDenomUnit), nil))),
+	}
 
-	newGen := NewGenesisState(validParams, uint64(0), epochstypes.DayEpochID, 365, 0)
+	newGen := NewGenesisState(validParams, uint64(0), epochstypes.DayEpochID, 365, 0, inflationAmount)
 
 	testCases := []struct {
 		name     string
@@ -51,6 +60,8 @@ func (suite *GenesisTestSuite) TestValidateGenesis() {
 				Period:          uint64(5),
 				EpochIdentifier: epochstypes.DayEpochID,
 				EpochsPerPeriod: 365,
+				SkippedEpochs:   0,
+				InflationAmount: inflationAmount,
 			},
 			true,
 		},

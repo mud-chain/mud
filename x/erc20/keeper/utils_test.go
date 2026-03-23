@@ -30,7 +30,6 @@ import (
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 	teststypes "github.com/evmos/evmos/v12/types/tests"
 	"github.com/evmos/evmos/v12/utils"
-	claimstypes "github.com/evmos/evmos/v12/x/claims/types"
 	"github.com/evmos/evmos/v12/x/erc20/types"
 	"github.com/evmos/evmos/v12/x/evm/statedb"
 	evm "github.com/evmos/evmos/v12/x/evm/types"
@@ -75,7 +74,7 @@ func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 	// init app
 	suite.app = app.Setup(false, feemarkettypes.DefaultGenesisState())
 	header := testutil.NewHeader(
-		1, time.Now().UTC(), "evmos_9001-1", consAddress, nil, nil,
+		1, time.Now().UTC(), "mud_168168-1", consAddress, nil, nil,
 	)
 	suite.ctx = suite.app.BaseApp.NewContext(false, header)
 
@@ -211,12 +210,6 @@ func (suite *KeeperTestSuite) SetupIBCTest() {
 	err = suite.IBCCosmosChain.GetSimApp().BankKeeper.MintCoins(suite.IBCCosmosChain.GetContext(), minttypes.ModuleName, stkCoin)
 	suite.Require().NoError(err)
 	err = suite.IBCCosmosChain.GetSimApp().BankKeeper.SendCoinsFromModuleToAccount(suite.IBCCosmosChain.GetContext(), minttypes.ModuleName, suite.IBCCosmosChain.SenderAccount.GetAddress(), stkCoin)
-	suite.Require().NoError(err)
-
-	claimparams := claimstypes.DefaultParams()
-	claimparams.AirdropStartTime = suite.EvmosChain.GetContext().BlockTime()
-	claimparams.EnableClaims = true
-	err = s.app.ClaimsKeeper.SetParams(suite.EvmosChain.GetContext(), claimparams)
 	suite.Require().NoError(err)
 
 	params := types.DefaultParams()

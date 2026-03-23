@@ -18,7 +18,7 @@ func TestParamsValidate(t *testing.T) {
 		{"default", DefaultParams(), false},
 		{
 			"valid",
-			NewParams("ara", false, true, true, DefaultChainConfig(), extraEips),
+			NewParams("ara", false, true, true, DefaultChainConfig(), extraEips, nil),
 			false,
 		},
 		{
@@ -56,10 +56,14 @@ func TestParamsValidate(t *testing.T) {
 
 func TestParamsEIPs(t *testing.T) {
 	extraEips := []int64{2929, 1884, 1344}
-	params := NewParams("ara", false, true, true, DefaultChainConfig(), extraEips)
+	params := NewParams("ara", false, true, true, DefaultChainConfig(), extraEips, nil)
 	actual := params.EIPs()
 
 	require.Equal(t, []int{2929, 1884, 1344}, actual)
+	require.NoError(t, validateChannels([]string{"channel-0"}))
+	require.Error(t, validateChannels(false))
+	require.Error(t, validateChannels(int64(123)))
+	require.Error(t, validateChannels(""))
 }
 
 func TestParamsValidatePriv(t *testing.T) {

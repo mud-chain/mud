@@ -15,9 +15,9 @@ service Query {
     option (google.api.http).get = "/evmos/inflation/v1/period";
   }
 
-  // EpochMintProvision retrieves current minting epoch provision value.
-  rpc EpochMintProvision(QueryEpochMintProvisionRequest) returns (QueryEpochMintProvisionResponse) {
-    option (google.api.http).get = "/evmos/inflation/v1/epoch_mint_provision";
+  // EpochProvision retrieves current mint/burn/reward epoch provision value.
+  rpc EpochProvision(QueryEpochProvisionRequest) returns (QueryEpochProvisionResponse) {
+    option (google.api.http).get = "/evmos/inflation/v1/epoch_provision";
   }
 
   // SkippedEpochs retrieves the total number of skipped epochs.
@@ -51,16 +51,22 @@ message QueryPeriodResponse {
   uint64 period = 1;
 }
 
-// QueryEpochMintProvisionRequest is the request type for the
-// Query/EpochMintProvision RPC method.
-message QueryEpochMintProvisionRequest {}
+// QueryEpochProvisionRequest is the request type for the
+// Query/EpochProvision RPC method.
+message QueryEpochProvisionRequest {}
 
-// QueryEpochMintProvisionResponse is the response type for the
+// QueryEpochProvisionResponse is the response type for the
 // Query/EpochMintProvision RPC method.
-message QueryEpochMintProvisionResponse {
-  // epoch_mint_provision is the current minting per epoch provision value.
-  cosmos.base.v1beta1.DecCoin epoch_mint_provision = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
+message QueryEpochProvisionResponse {
+  // mint is the current minting per epoch provision value.
+  cosmos.base.v1beta1.Coin mint = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin"];
+  // burn is the current burn per epoch provision value.
+  cosmos.base.v1beta1.Coin burn = 2
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin"];
+  // reward is the current reward per epoch provision value.
+  cosmos.base.v1beta1.Coin reward = 3
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin"];
 }
 
 // QuerySkippedEpochsRequest is the request type for the Query/SkippedEpochs RPC

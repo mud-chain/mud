@@ -2,7 +2,7 @@ syntax = "proto3";
 package evmos.inflation.v1;
 
 import "gogoproto/gogo.proto";
-
+import "cosmos/base/v1beta1/coin.proto";
 import "evmos/inflation/v1/inflation.proto";
 
 option go_package = "github.com/evmos/evmos/v12/x/inflation/types";
@@ -19,16 +19,27 @@ message GenesisState {
   int64 epochs_per_period = 4;
   // skipped_epochs is the number of epochs that have passed while inflation is disabled
   uint64 skipped_epochs = 5;
+  // inflation_amount inflation amount for tokens
+  cosmos.base.v1beta1.Coin inflation_amount = 6 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // Params holds parameters for the inflation module.
 message Params {
-  // mint_denom specifies the type of coin to mint
-  string mint_denom = 1;
-  // exponential_calculation takes in the variables to calculate exponential inflation
-  ExponentialCalculation exponential_calculation = 2 [(gogoproto.nullable) = false];
   // inflation_distribution of the minted denom
-  InflationDistribution inflation_distribution = 3 [(gogoproto.nullable) = false];
+  InflationDistribution inflation_distribution = 1 [(gogoproto.nullable) = false];
   // enable_inflation is the parameter that enables inflation and halts increasing the skipped_epochs
-  bool enable_inflation = 4;
+  bool enable_inflation = 2;
+  // maximum inflation rate
+  string inflation_max = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // inflation_decay inflation decay for next year
+  string inflation_decay = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }

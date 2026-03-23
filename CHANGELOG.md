@@ -35,6 +35,44 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
+## [v1.0.0] - 2024-01-20
+
+### State Machine Breaking
+
+### Features
+
+- (app) [#24](https://github.com/mud-chain/mud/pull/24) Remove upgrades.
+- (recovery) [#25](https://github.com/mud-chain/mud/pull/25) Remove recovery module.
+- (incentives) [#26](https://github.com/mud-chain/mud/pull/26) Remove incentives module.
+- (claims) [#28](https://github.com/mud-chain/mud/pull/28) Remove claims module and migrate the `EVMChannels` param to the `x/evm` module params.
+- (app) [#29](https://github.com/mud-chain/mud/pull/29) Change account prefix to ethos and base denom to aethos.
+- (app) [#32](https://github.com/mud-chain/mud/pull/32) Remove EVM only supports Evmos chain identifiers (9000 or 9001).
+- (app) [#33](https://github.com/mud-chain/mud/pull/33) Rename evmosd to ethosd.
+- (precompile-staking) [#35](https://github.com/mud-chain/mud/pull/35) Implement staking precompile contract.
+- (precompile-staking) [#37](https://github.com/mud-chain/mud/pull/37) Implement the CreateValidator tx for staking precompiled contract.
+- (precompile-distribution) [#38](https://github.com/mud-chain/mud/pull/38) Implement distribution precompile contract.
+- (precompile-gov) [#39](https://github.com/mud-chain/mud/pull/39) Implement gov precompile contract.
+- (precompile-bank) [#40](https://github.com/mud-chain/mud/pull/40) Implement bank precompile contract.
+- (revenue) [#48](https://github.com/mud-chain/mud/pull/48) Remove revenue module.
+- (vesting) [#49](https://github.com/mud-chain/mud/pull/49) Remove vesting module.
+- (evm) [#52](https://github.com/mud-chain/mud/pull/52) Enable EIP 3855 for solidity push0 instruction.
+- (precompile-staking) [#56](https://github.com/mud-chain/mud/pull/56) Implement some query rpc staking precompile contract.
+- (precompile-slashing) [#57](https://github.com/mud-chain/mud/pull/57) Implement slashing precompile contract unjail transaction.
+- (precompile-distribution) [#58](https://github.com/mud-chain/mud/pull/58) Implement distribution precompile contract four query.
+- (precompile-gov) [#59](https://github.com/mud-chain/mud/pull/59) Implement gov precompile contract query.
+- (precompile) [#60](https://github.com/mud-chain/mud/pull/60) Add query totalSupply for bank module and communityPool for distribution.
+
+### API Breaking
+
+### Improvements
+
+- (test) [#50](https://github.com/mud-chain/mud/pull/50) Fix unit test after remove revenue/vesting module.
+- (dev) [#55](https://github.com/mud-chain/mud/pull/55) Add dev.js script for development and testing.
+- (precompile) [#61](https://github.com/mud-chain/mud/pull/61) Add comment for precompile solidity files.
+
+### Bug Fixes
+
+
 ## [v12.1.6] - 2023-07-04
 
 ### Improvement

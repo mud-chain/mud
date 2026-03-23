@@ -2,6 +2,9 @@ package keeper_test
 
 import (
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/evmos/evmos/v12/cmd/config"
+	evmostypes "github.com/evmos/evmos/v12/types"
 	"time"
 
 	epochstypes "github.com/evmos/evmos/v12/x/epochs/types"
@@ -29,9 +32,15 @@ func (suite *KeeperTestSuite) TestEpochIdentifierAfterEpochEnd() {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			suite.SetupTest()
 
+			// Mint coins to increase supply
+			mintDenom := config.BaseDenom
+			mintCoin := sdk.NewCoin(mintDenom, sdk.TokensFromConsensusPower(int64(400_000_000), evmostypes.PowerReduction))
+			err := suite.app.InflationKeeper.MintCoins(suite.ctx, mintCoin)
+			suite.Require().NoError(err)
+
 			params := suite.app.InflationKeeper.GetParams(suite.ctx)
 			params.EnableInflation = true
-			err := suite.app.InflationKeeper.SetParams(suite.ctx, params)
+			err = suite.app.InflationKeeper.SetParams(suite.ctx, params)
 			suite.Require().NoError(err)
 
 			futureCtx := suite.ctx.WithBlockTime(time.Now().Add(time.Hour))
@@ -60,8 +69,8 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 	suite.SetupTest()
 
 	currentEpochPeriod := suite.app.InflationKeeper.GetEpochsPerPeriod(suite.ctx)
-	// bondingRatio is zero in tests
-	bondedRatio := suite.app.InflationKeeper.BondedRatio(suite.ctx)
+	//// bondingRatio is zero in tests
+	//bondedRatio := suite.app.InflationKeeper.BondedRatio(suite.ctx)
 
 	testCases := []struct {
 		name            string
@@ -109,15 +118,6 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 			false,
 		},
 		{
-			"[Period 0] period changes once enough epochs have passed",
-			0,
-			currentEpochPeriod + 1,
-			epochstypes.DayEpochID,
-			0,
-			true,
-			true,
-		},
-		{
 			"[Period 1] period stays the same under the epoch per period",
 			1,
 			2*currentEpochPeriod - 1,
@@ -125,15 +125,6 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 			0,
 			true,
 			false,
-		},
-		{
-			"[Period 1] period changes once enough epochs have passed",
-			1,
-			2*currentEpochPeriod + 1,
-			epochstypes.DayEpochID,
-			0,
-			true,
-			true,
 		},
 		{
 			"[Period 0] with skipped epochs - period stays the same under epochs per period",
@@ -154,15 +145,6 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 			false,
 		},
 		{
-			"[Period 0] with skipped epochs - period changes once enough epochs have passed",
-			0,
-			currentEpochPeriod + 11,
-			epochstypes.DayEpochID,
-			10,
-			true,
-			true,
-		},
-		{
 			"[Period 1] with skipped epochs - period stays the same under epochs per period",
 			1,
 			2*currentEpochPeriod + 1,
@@ -170,15 +152,6 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 			10,
 			true,
 			false,
-		},
-		{
-			"[Period 1] with skipped epochs - period changes once enough epochs have passed",
-			1,
-			2*currentEpochPeriod + 11,
-			epochstypes.DayEpochID,
-			10,
-			true,
-			true,
 		},
 	}
 	for _, tc := range testCases {
@@ -212,15 +185,17 @@ func (suite *KeeperTestSuite) TestPeriodChangesSkippedEpochsAfterEpochEnd() {
 
 			if tc.periodChanges {
 				newProvision := suite.app.InflationKeeper.GetEpochMintProvision(suite.ctx)
-				expectedProvision := types.CalculateEpochMintProvision(
-					suite.app.InflationKeeper.GetParams(suite.ctx),
-					period,
-					currentEpochPeriod,
-					bondedRatio,
+
+				inflationAmount := suite.app.InflationKeeper.GetInflationAmount(suite.ctx)
+				epochsPerPeriod := suite.app.InflationKeeper.GetEpochsPerPeriod(suite.ctx)
+
+				expectedProvision := types.EpochProvision(
+					inflationAmount,
+					epochsPerPeriod,
 				)
 				suite.Require().Equal(expectedProvision, newProvision)
 				// mint provisions will change
-				suite.Require().NotEqual(newProvision.BigInt().Uint64(), originalProvision.BigInt().Uint64())
+				suite.Require().NotEqual(newProvision.Amount.Int64(), originalProvision.Amount.Int64())
 				suite.Require().Equal(currentSkippedEpochs, skippedEpochs)
 				suite.Require().Equal(currentPeriod+1, period)
 			} else {

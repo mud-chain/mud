@@ -71,6 +71,8 @@ type Keeper struct {
 	hooks types.EvmHooks
 	// Legacy subspace
 	ss paramstypes.Subspace
+
+	precompiledFunc map[common.Address]PrecompiledContractFunc
 }
 
 // NewKeeper generates new evm module keeper
@@ -124,10 +126,6 @@ func (k *Keeper) WithChainID(ctx sdk.Context) {
 
 	if k.eip155ChainID != nil && k.eip155ChainID.Cmp(chainID) != 0 {
 		panic("chain id already set")
-	}
-
-	if !(chainID.Cmp(big.NewInt(9001)) == 0 || chainID.Cmp(big.NewInt(9000)) == 0) {
-		panic("EVM only supports Evmos chain identifiers (9000 or 9001)")
 	}
 
 	k.eip155ChainID = chainID

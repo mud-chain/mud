@@ -19,7 +19,7 @@
 *.test
 .glide/
 vendor
-build
+build/*
 bin
 tools/bin/*
 docs/_build
