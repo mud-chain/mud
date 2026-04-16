@@ -1,21 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 KEYS[0]="dev0"
 KEYS[1]="dev1"
 KEYS[2]="dev2"
-CHAINID="evmos_9000-1"
-MONIKER="localtestnet"
+CHAINID="${CHAINID:-mud_168169-1}"
+MONIKER="${MONIKER:-localtestnet}"
 # Remember to change to other types of keyring like 'file' in-case exposing to outside world,
 # otherwise your balance will be wiped quickly
 # The keyring test does not require private key to steal tokens from you
-KEYRING="test"
-KEYALGO="eth_secp256k1"
-LOGLEVEL="info"
-# Set dedicated home directory for the evmosd instance
-HOMEDIR="$HOME/.tmp-evmosd"
+KEYRING="${KEYRING:-test}"
+KEYALGO="${KEYALGO:-eth_secp256k1}"
+LOGLEVEL="${LOGLEVEL:-info}"
+# Set dedicated home directory for the mudd instance
+HOMEDIR="${HOMEDIR:-$HOME/.tmp-mudd}"
 # to trace evm
 #TRACE="--trace"
-TRACE=""
+TRACE="${TRACE:-}"
+SKIP_START="${LOCAL_NODE_SKIP_START:-0}"
+MODE="${1:-}"
 
 # Path variables
 CONFIG=$HOMEDIR/config/config.toml
@@ -29,11 +33,36 @@ command -v jq >/dev/null 2>&1 || {
 	exit 1
 }
 
-# used to exit on first error (any non-zero exit code)
-set -e
+command -v bc >/dev/null 2>&1 || {
+	echo >&2 "bc not installed."
+	exit 1
+}
 
 # Reinstall daemon
 make install
+
+resolve_daemon() {
+	if command -v mudd >/dev/null 2>&1; then
+		command -v mudd
+		return
+	fi
+
+	local gobin
+	gobin="$(go env GOBIN)"
+	if [[ -z "$gobin" ]]; then
+		gobin="$(go env GOPATH)/bin"
+	fi
+
+	if [[ -x "$gobin/mudd" ]]; then
+		echo "$gobin/mudd"
+		return
+	fi
+
+	echo >&2 "mudd binary not found after make install."
+	exit 1
+}
+
+DAEMON="$(resolve_daemon)"
 
 # User prompt if an existing local node configuration is found.
 if [ -d "$HOMEDIR" ]; then
@@ -51,46 +80,34 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	rm -rf "$HOMEDIR"
 
 	# Set client config
-	evmosd config keyring-backend $KEYRING --home "$HOMEDIR"
-	evmosd config chain-id $CHAINID --home "$HOMEDIR"
+	"$DAEMON" config keyring-backend "$KEYRING" --home "$HOMEDIR"
+	"$DAEMON" config chain-id "$CHAINID" --home "$HOMEDIR"
 
 	# If keys exist they should be deleted
 	for KEY in "${KEYS[@]}"; do
-		evmosd keys add "$KEY" --keyring-backend $KEYRING --algo $KEYALGO --home "$HOMEDIR"
+		"$DAEMON" keys add "$KEY" --keyring-backend "$KEYRING" --algo "$KEYALGO" --home "$HOMEDIR"
 	done
 
-	# Set moniker and chain-id for Evmos (Moniker can be anything, chain-id must be an integer)
-	evmosd init $MONIKER -o --chain-id $CHAINID --home "$HOMEDIR"
+	# Set moniker and chain-id for MUD (Moniker can be anything, chain-id must be an integer)
+	"$DAEMON" init "$MONIKER" -o --chain-id "$CHAINID" --home "$HOMEDIR"
 
-	# Change parameter token denominations to aevmos
-	jq '.app_state["staking"]["params"]["bond_denom"]="aevmos"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["crisis"]["constant_fee"]["denom"]="aevmos"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="aevmos"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["evm"]["params"]["evm_denom"]="aevmos"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["inflation"]["params"]["mint_denom"]="aevmos"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	# Change parameter token denominations to amud
+	jq '.app_state["staking"]["params"]["bond_denom"]="amud"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["crisis"]["constant_fee"]["denom"]="amud"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="amud"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["evm"]["params"]["evm_denom"]="amud"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["inflation"]["inflation_amount"]["denom"]="amud"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Set gas limit in genesis
 	jq '.consensus_params["block"]["max_gas"]="10000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
-	# Set claims start time
-	current_date=$(date -u +"%Y-%m-%dT%TZ")
-	jq -r --arg current_date "$current_date" '.app_state["claims"]["params"]["airdrop_start_time"]=$current_date' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		sed -i '' 's/timeout_commit = "5s"/timeout_commit = "1s"/g' "$CONFIG"
+	else
+		sed -i 's/timeout_commit = "5s"/timeout_commit = "1s"/g' "$CONFIG"
+	fi
 
-	# Set claims records for validator account
-	amount_to_claim=10000
-	claims_key=${KEYS[0]}
-	node_address=$(evmosd keys show "$claims_key" --keyring-backend $KEYRING --home "$HOMEDIR" | grep "address" | cut -c12-)
-	jq -r --arg node_address "$node_address" --arg amount_to_claim "$amount_to_claim" '.app_state["claims"]["claims_records"]=[{"initial_claimable_amount":$amount_to_claim, "actions_completed":[false, false, false, false],"address":$node_address}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-
-	# Set claims decay
-	jq '.app_state["claims"]["params"]["duration_of_decay"]="1000000s"' >"$TMP_GENESIS" "$GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["claims"]["params"]["duration_until_decay"]="100000s"' >"$TMP_GENESIS" "$GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-
-	# Claim module account:
-	# 0xA61808Fe40fEb8B3433778BBC2ecECCAA47c8c47 || evmos15cvq3ljql6utxseh0zau9m8ve2j8erz89m5wkz
-	jq -r --arg amount_to_claim "$amount_to_claim" '.app_state["bank"]["balances"] += [{"address":"evmos15cvq3ljql6utxseh0zau9m8ve2j8erz89m5wkz","coins":[{"denom":"aevmos", "amount":$amount_to_claim}]}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-
-	if [[ $1 == "pending" ]]; then
+	if [[ "$MODE" == "pending" ]]; then
 		if [[ "$OSTYPE" == "darwin"* ]]; then
 			sed -i '' 's/timeout_propose = "3s"/timeout_propose = "30s"/g' "$CONFIG"
 			sed -i '' 's/timeout_propose_delta = "500ms"/timeout_propose_delta = "5s"/g' "$CONFIG"
@@ -98,7 +115,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 			sed -i '' 's/timeout_prevote_delta = "500ms"/timeout_prevote_delta = "5s"/g' "$CONFIG"
 			sed -i '' 's/timeout_precommit = "1s"/timeout_precommit = "10s"/g' "$CONFIG"
 			sed -i '' 's/timeout_precommit_delta = "500ms"/timeout_precommit_delta = "5s"/g' "$CONFIG"
-			sed -i '' 's/timeout_commit = "5s"/timeout_commit = "150s"/g' "$CONFIG"
+			sed -i '' 's/timeout_commit = "1s"/timeout_commit = "150s"/g' "$CONFIG"
 			sed -i '' 's/timeout_broadcast_tx_commit = "10s"/timeout_broadcast_tx_commit = "150s"/g' "$CONFIG"
 		else
 			sed -i 's/timeout_propose = "3s"/timeout_propose = "30s"/g' "$CONFIG"
@@ -107,7 +124,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 			sed -i 's/timeout_prevote_delta = "500ms"/timeout_prevote_delta = "5s"/g' "$CONFIG"
 			sed -i 's/timeout_precommit = "1s"/timeout_precommit = "10s"/g' "$CONFIG"
 			sed -i 's/timeout_precommit_delta = "500ms"/timeout_precommit_delta = "5s"/g' "$CONFIG"
-			sed -i 's/timeout_commit = "5s"/timeout_commit = "150s"/g' "$CONFIG"
+			sed -i 's/timeout_commit = "1s"/timeout_commit = "150s"/g' "$CONFIG"
 			sed -i 's/timeout_broadcast_tx_commit = "10s"/timeout_broadcast_tx_commit = "150s"/g' "$CONFIG"
 		fi
 	fi
@@ -134,32 +151,57 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
 	# Allocate genesis accounts (cosmos formatted addresses)
 	for KEY in "${KEYS[@]}"; do
-		evmosd add-genesis-account "$KEY" 100000000000000000000000000aevmos --keyring-backend $KEYRING --home "$HOMEDIR"
+		"$DAEMON" add-genesis-account "$KEY" 100000000000000000000000000amud --keyring-backend "$KEYRING" --home "$HOMEDIR"
 	done
 
 	# bc is required to add these big numbers
-	total_supply=$(echo "${#KEYS[@]} * 100000000000000000000000000 + $amount_to_claim" | bc)
-	jq -r --arg total_supply "$total_supply" '.app_state["bank"]["supply"][0]["amount"]=$total_supply' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	total_supply=$(echo "${#KEYS[@]} * 100000000000000000000000000" | bc)
+	jq -r --arg total_supply "$total_supply" '.app_state["bank"]["supply"] |= (map(select(.denom != "amud")) + [{"denom":"amud","amount":$total_supply}])' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Sign genesis transaction
-	evmosd gentx "${KEYS[0]}" 1000000000000000000000aevmos --keyring-backend $KEYRING --chain-id $CHAINID --home "$HOMEDIR"
+	"$DAEMON" gentx "${KEYS[0]}" 1000000000000000000000amud --keyring-backend "$KEYRING" --chain-id "$CHAINID" --home "$HOMEDIR"
 	## In case you want to create multiple validators at genesis
-	## 1. Back to `evmosd keys add` step, init more keys
-	## 2. Back to `evmosd add-genesis-account` step, add balance for those
-	## 3. Clone this ~/.evmosd home directory into some others, let's say `~/.clonedEvmosd`
+	## 1. Back to `mudd keys add` step, init more keys
+	## 2. Back to `mudd add-genesis-account` step, add balance for those
+	## 3. Clone this ~/.mudd home directory into some others, let's say `~/.clonedMudd`
 	## 4. Run `gentx` in each of those folders
-	## 5. Copy the `gentx-*` folders under `~/.clonedEvmosd/config/gentx/` folders into the original `~/.evmosd/config/gentx`
+	## 5. Copy the `gentx-*` folders under `~/.clonedMudd/config/gentx/` folders into the original `~/.mudd/config/gentx`
 
 	# Collect genesis tx
-	evmosd collect-gentxs --home "$HOMEDIR"
+	"$DAEMON" collect-gentxs --home "$HOMEDIR"
 
 	# Run this to ensure everything worked and that the genesis file is setup correctly
-	evmosd validate-genesis --home "$HOMEDIR"
+	"$DAEMON" validate-genesis --home "$HOMEDIR"
 
-	if [[ $1 == "pending" ]]; then
+	if [[ "$MODE" == "pending" ]]; then
 		echo "pending mode is on, please wait for the first block committed."
 	fi
 fi
 
+if [[ "$SKIP_START" == "1" ]]; then
+	exit 0
+fi
+
+# Expose JSON-RPC to the host network for local development.
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	sed -i '' 's/address = "127.0.0.1:8545"/address = "0.0.0.0:8545"/g' "$APP_TOML"
+else
+	sed -i 's/address = "127.0.0.1:8545"/address = "0.0.0.0:8545"/g' "$APP_TOML"
+fi
+
 # Start the node (remove the --pruning=nothing flag if historical queries are not needed)
-evmosd start --metrics "$TRACE" --log_level $LOGLEVEL --minimum-gas-prices=0.0001aevmos --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --home "$HOMEDIR"
+START_ARGS=(
+	start
+	--metrics
+	--log_level "$LOGLEVEL"
+	--minimum-gas-prices=0.0001amud
+	--json-rpc.api eth,txpool,personal,net,debug,web3
+	--api.enable
+	--home "$HOMEDIR"
+)
+
+if [[ -n "$TRACE" ]]; then
+	START_ARGS+=("$TRACE")
+fi
+
+"$DAEMON" "${START_ARGS[@]}"
